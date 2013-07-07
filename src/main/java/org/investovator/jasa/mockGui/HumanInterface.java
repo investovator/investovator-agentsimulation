@@ -1,5 +1,8 @@
 package org.investovator.jasa.mockGui;
 
+import net.sourceforge.jabm.agent.Agent;
+import net.sourceforge.jasa.agent.TokenTradingAgent;
+import net.sourceforge.jasa.market.DuplicateShoutException;
 import net.sourceforge.jasa.market.MarketRegulator;
 import net.sourceforge.jasa.market.Order;
 
@@ -39,7 +42,7 @@ public class HumanInterface {
                 if (buyRadioButton.isSelected()){
                     isBuy=true;
                 }
-                double price;
+                double price=10;
                 //get the order type
                 boolean isMarketOrder=false;
                 if(marketRadioButton.isSelected()){
@@ -51,8 +54,13 @@ public class HumanInterface {
                 //get the quantityField
                 int quantity=Integer.parseInt(quantityField.getText());
 
+
                 //send the order
-                //MarketRegulator.exchange
+                try {
+                    MarketRegulator.exchange.add(new Order(new TokenTradingAgent(),quantity,price,isBuy));
+                } catch (DuplicateShoutException e1) {
+                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         });
 
