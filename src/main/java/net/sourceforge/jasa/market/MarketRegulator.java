@@ -1,5 +1,6 @@
 package net.sourceforge.jasa.market;
 
+import com.investovator.ats.Exchange;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,7 @@ import org.apache.log4j.Logger;
 public class MarketRegulator {
 
     static Logger logger = Logger.getLogger(MarketFacade.class);
+    public static Exchange exchange = new Exchange();
 
     public static void main(String[] args) {
         Runnable market =
