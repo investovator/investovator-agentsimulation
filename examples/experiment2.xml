@@ -11,6 +11,7 @@
     <bean id="market" class="net.sourceforge.jasa.market.MarketFacade">
         <property name="auctioneer" ref="cda" />
         <property name="controller" ref="simulationController" />
+        <property name="securityID" value="GOOG" />
     </bean>
 
     <bean id="simulationController" class="net.sourceforge.jabm.SpringSimulationController">

@@ -19,7 +19,7 @@ public class Exchange {
 
 
 
-    public void add(Order shout) throws DuplicateShoutException {
+    public synchronized void add(Order shout) throws DuplicateShoutException {
 
         String secId = shout.getSecurityID();
         if(!orderBooks.containsKey(secId)) orderBooks.put(secId, new FourHeapOrderBook());
@@ -28,7 +28,7 @@ public class Exchange {
     }
 
 
-    public void remove(Order shout) {
+    public synchronized void remove(Order shout) {
 
         String secId = shout.getSecurityID();
         FourHeapOrderBook orderBook = orderBooks.get(secId);
@@ -37,57 +37,68 @@ public class Exchange {
 
     }
 
-    private FourHeapOrderBook getOrderBook(Market market){
-        return orderBooks.get(market.getSecurityID());
+    public synchronized OrderBook getOrderBook(Market market){
+        if(!orderBooks.containsKey(market.getSecurityID())){
+            setOrderBook(new FourHeapOrderBook(), market);
+        }
+        OrderBook result =  orderBooks.get(market.getSecurityID());
+
+        return result;
     }
 
-    public void printState(Market market) {
+    public synchronized void setOrderBook(OrderBook orderBook, Market market){
+        if(!orderBooks.containsKey(market.getSecurityID()))
+            orderBooks.put(market.getSecurityID(), (FourHeapOrderBook)orderBook);
+    }
+
+    public synchronized void printState(Market market) {
         getOrderBook(market).printState();
     }
 
 
-    public List<Order> matchOrders(Market market) {
+    public synchronized List<Order> matchOrders(Market market) {
         return getOrderBook(market).matchOrders();
     }
 
 
-    public Order getHighestUnmatchedBid(Market market) {
+    public synchronized Order getHighestUnmatchedBid(Market market) {
         return getOrderBook(market).getHighestUnmatchedBid();
     }
 
 
-    public Order getLowestMatchedBid(Market market) {
+    public synchronized Order getLowestMatchedBid(Market market) {
         return getOrderBook(market).getLowestMatchedBid();
     }
 
 
-    public Order getLowestUnmatchedAsk(Market market) {
+    public synchronized Order getLowestUnmatchedAsk(Market market) {
         return getOrderBook(market).getLowestUnmatchedAsk();
     }
 
 
-    public Order getHighestMatchedAsk(Market market) {
+    public synchronized Order getHighestMatchedAsk(Market market) {
         return getOrderBook(market).getHighestMatchedAsk();
     }
 
 
-    public Iterator<Order> askIterator(Market market) {
+    public synchronized Iterator<Order> askIterator(Market market) {
         return getOrderBook(market).askIterator();
     }
 
 
-    public Iterator<Order> bidIterator(Market market) {
+    public synchronized Iterator<Order> bidIterator(Market market) {
         return getOrderBook(market).bidIterator();
     }
 
 
-    public boolean isEmpty(Market market) {
+    public synchronized boolean isEmpty(Market market) {
         return getOrderBook(market).isEmpty();
     }
 
 
-    public void reset(Market market) {
+    public synchronized void reset(Market market) {
         getOrderBook(market).reset();
     }
+
 
 }
