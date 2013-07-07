@@ -37,6 +37,25 @@ public class Exchange {
 
     }
 
+    public synchronized void add(Order shout, Market market) throws DuplicateShoutException {
+
+        String secId = market.getSecurityID();
+        shout.setSecurityID(secId);
+        if(!orderBooks.containsKey(secId)) orderBooks.put(secId, new FourHeapOrderBook());
+        FourHeapOrderBook orderBook = orderBooks.get(secId);
+        orderBook.add(shout);
+    }
+
+
+    public synchronized void remove(Order shout, Market market) {
+
+        String secId = market.getSecurityID();
+        FourHeapOrderBook orderBook = orderBooks.get(secId);
+        if(orderBook == null) return;
+        orderBook.remove(shout);
+
+    }
+
     public synchronized OrderBook getOrderBook(Market market){
         if(!orderBooks.containsKey(market.getSecurityID())){
             setOrderBook(new FourHeapOrderBook(), market);

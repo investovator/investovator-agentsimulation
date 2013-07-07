@@ -46,7 +46,7 @@ public class Order implements Comparable<Order>, Cloneable, Serializable {
     /**
      * The identifier for the security ID
      */
-    private String securityID = "GOOG";
+    private String securityID;
 
 	/**
 	 * The number of items offered/wanted.

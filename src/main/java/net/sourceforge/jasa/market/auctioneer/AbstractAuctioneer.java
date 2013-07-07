@@ -114,7 +114,7 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	}
 
 	protected void newShoutInternal(Order shout) throws DuplicateShoutException {
-		exchange.add(shout);
+		exchange.add(shout,market);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	 * Handle a request to retract a shout.
 	 */
 	public void removeShout(Order shout) {
-		exchange.remove(shout);
+		exchange.remove(shout,market);
 	}
 
 	/**
