@@ -401,12 +401,6 @@ public class MarketFacade implements EventScheduler, Market, Serializable,
 	}
 	
 
-	public static void main(String[] args) {
-		Runnable market = 
-			(Runnable) BeanFactorySingleton.getBean("market");
-		logger.info("Starting...");
-		market.run();	
-		logger.info("all done.");
-	}
+
 	
 }
