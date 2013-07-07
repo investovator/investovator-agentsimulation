@@ -41,6 +41,13 @@ import net.sourceforge.jasa.agent.TradingAgent;
 
 public class Order implements Comparable<Order>, Cloneable, Serializable {
 
+
+    //Changed for multiasset
+    /**
+     * The identifier for the security ID
+     */
+    private String securityID;
+
 	/**
 	 * The number of items offered/wanted.
 	 */
@@ -270,5 +277,11 @@ public class Order implements Comparable<Order>, Cloneable, Serializable {
 		this.timeStamp = timeStamp;
 	}
 
-	
+    public String getSecurityID() {
+        return securityID;
+    }
+
+    public void setSecurityID(String securityID) {
+        this.securityID = securityID;
+    }
 }
