@@ -164,5 +164,12 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/trove-3.0.0a7.jar</systemPath>
         </dependency>
+        <!-- To support the UI functionalities -->
+        <dependency>
+            <groupId>jgoodies</groupId>
+            <artifactId>forms</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
     </dependencies>
 </project>
