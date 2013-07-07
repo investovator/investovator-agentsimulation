@@ -1,9 +1,11 @@
 package com.investovator.ats;
 
 import net.sourceforge.jasa.market.DuplicateShoutException;
+import net.sourceforge.jasa.market.FourHeapOrderBook;
 import net.sourceforge.jasa.market.Order;
 import net.sourceforge.jasa.market.OrderBook;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,14 +18,26 @@ import java.util.List;
  */
 public class Exchange implements OrderBook {
 
+    HashMap<String, FourHeapOrderBook> orderBooks = new HashMap<String, FourHeapOrderBook>();
+
+
     @Override
     public void add(Order shout) throws DuplicateShoutException {
-        //To change body of implemented methods use File | Settings | File Templates.
+
+        String secId = shout.getSecurityID();
+        if(!orderBooks.containsKey(secId)) orderBooks.put(secId, new FourHeapOrderBook());
+        FourHeapOrderBook orderBook = orderBooks.get(secId);
+        orderBook.add(shout);
     }
 
     @Override
     public void remove(Order shout) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
+        String secId = shout.getSecurityID();
+        FourHeapOrderBook orderBook = orderBooks.get(secId);
+        if(orderBook == null) return;
+        orderBook.remove(shout);
+
     }
 
     @Override
