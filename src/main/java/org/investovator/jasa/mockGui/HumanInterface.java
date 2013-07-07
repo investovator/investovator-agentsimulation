@@ -17,7 +17,7 @@ import java.awt.event.*;
  * To change this template use File | Settings | File Templates.
  */
 public class HumanInterface {
-    private JPanel panel1;
+    public JPanel panel1;
     private JTextField stockName;
     private JRadioButton buyRadioButton;
     private JRadioButton sellRadioButton;
