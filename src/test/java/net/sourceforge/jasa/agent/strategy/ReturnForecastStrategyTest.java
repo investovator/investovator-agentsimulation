@@ -12,6 +12,7 @@ import net.sourceforge.jasa.market.auctioneer.Auctioneer;
 import net.sourceforge.jasa.sim.PRNGTestSeeds;
 import cern.jet.random.engine.MersenneTwister64;
 import cern.jet.random.engine.RandomEngine;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ReturnForecastStrategyTest extends TestCase {
 
@@ -78,7 +79,17 @@ public class ReturnForecastStrategyTest extends TestCase {
 			
 		}
 
-		@Override
+        @Override
+        public String getSecurityID() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public void setSecurityID(String securityID) {
+            throw new NotImplementedException();
+        }
+
+        @Override
 		public boolean closed() {
 			// TODO Auto-generated method stub
 			return false;

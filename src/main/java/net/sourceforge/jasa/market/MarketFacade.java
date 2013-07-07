@@ -53,7 +53,9 @@ public class MarketFacade implements EventScheduler, Market, Serializable,
 
 	protected Auctioneer auctioneer = null;
 	
-	protected SimulationController controller;	
+	protected SimulationController controller;
+
+    private String securityID;
 
 	/**
 	 * The current trading day (period)
@@ -270,7 +272,17 @@ public class MarketFacade implements EventScheduler, Market, Serializable,
 		return auctioneer;
 	}
 
-	public boolean closed() {
+    @Override
+    public String getSecurityID() {
+        return securityID;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setSecurityID(String securityID) {
+        this.securityID = securityID;
+    }
+
+    public boolean closed() {
 		return getSimulation().isClosed();
 	}
 

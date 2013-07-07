@@ -24,6 +24,21 @@ import net.sourceforge.jasa.market.auctioneer.Auctioneer;
 
 public interface Market extends QuoteProvider {
 
+
+    /**
+     * Returns securityID of the market/stock
+     * @return security id of the market/stock
+     */
+    public String getSecurityID();
+
+
+    /**
+     * set security id oif the market.
+     * @param securityID
+     */
+    public void setSecurityID(String securityID);
+
+
 	/**
 	 * Returns true if the market is closed.
 	 */
