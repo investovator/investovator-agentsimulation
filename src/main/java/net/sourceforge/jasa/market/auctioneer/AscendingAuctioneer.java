@@ -121,7 +121,7 @@ public class AscendingAuctioneer extends TransparentAuctioneer implements
 //	}
 
 	public void generateQuote() {
-		currentQuote = new MarketQuote(null, orderBook.getLowestMatchedBid());
+		currentQuote = new MarketQuote(null, exchange.getLowestMatchedBid(market));
 	}
 
 	protected void checkShoutValidity(Order shout) throws IllegalOrderException {

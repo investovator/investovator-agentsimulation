@@ -18,6 +18,7 @@ package net.sourceforge.jasa.market.auctioneer;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import com.investovator.ats.Exchange;
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
@@ -25,13 +26,7 @@ import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.Prototypeable;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.event.EndOfDayEvent;
-import net.sourceforge.jasa.market.DuplicateShoutException;
-import net.sourceforge.jasa.market.FourHeapOrderBook;
-import net.sourceforge.jasa.market.IllegalOrderException;
-import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketQuote;
-import net.sourceforge.jasa.market.Order;
-import net.sourceforge.jasa.market.OrderBook;
+import net.sourceforge.jasa.market.*;
 import net.sourceforge.jasa.market.rules.ClearingPolicy;
 import net.sourceforge.jasa.market.rules.EquilibriumClearingPolicy;
 import net.sourceforge.jasa.market.rules.PricingPolicy;
@@ -52,7 +47,10 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 
 	protected Market market;
 
-	protected OrderBook orderBook = new FourHeapOrderBook();
+	//protected OrderBook orderBook = new FourHeapOrderBook();
+
+    //Changed for multiasset
+    Exchange exchange = MarketRegulator.exchange;
 	
 	protected MarketQuote currentQuote = null;
 
@@ -71,7 +69,7 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	public Object protoClone() {
 		try {
 			AbstractAuctioneer clone = (AbstractAuctioneer) clone();
-			clone.orderBook = new FourHeapOrderBook();
+			//clone.orderBook = new FourHeapOrderBook();
 			clone.reset();
 			return clone;
 		} catch (CloneNotSupportedException e) {
@@ -116,7 +114,7 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	}
 
 	protected void newShoutInternal(Order shout) throws DuplicateShoutException {
-		orderBook.add(shout);
+		exchange.add(shout);
 	}
 
 	/**
@@ -137,18 +135,18 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	 * Handle a request to retract a shout.
 	 */
 	public void removeShout(Order shout) {
-		orderBook.remove(shout);
+		exchange.remove(shout);
 	}
 
 	/**
 	 * Log the current state of the market.
 	 */
 	public void printState() {
-		orderBook.printState();
+		exchange.printState(market);
 	}
 
 	public void reset() {
-		orderBook.reset();
+		exchange.reset(market);
 
 		if (pricingPolicy instanceof Resetable) {
 			((Resetable) pricingPolicy).reset();
@@ -169,11 +167,11 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	}
 
 	public Iterator<Order> askIterator() {
-		return orderBook.askIterator();
+		return exchange.askIterator(market);
 	}
 
 	public Iterator<Order> bidIterator() {
-		return orderBook.bidIterator();
+		return exchange.bidIterator(market);
 	}
 
 	public abstract void generateQuote();
@@ -216,13 +214,13 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	}
 
 	public double bidQuote() {
-		return Order.maxPrice(orderBook.getHighestMatchedAsk(), orderBook
-		    .getHighestUnmatchedBid());
+		return Order.maxPrice(exchange.getHighestMatchedAsk(market), exchange
+		    .getHighestUnmatchedBid(market));
 	}
 
 	public double askQuote() {
-		return Order.minPrice(orderBook.getLowestUnmatchedAsk(), orderBook
-		    .getLowestMatchedBid());
+		return Order.minPrice(exchange.getLowestUnmatchedAsk(market), exchange
+		    .getLowestMatchedBid(market));
 	}
 
 	public void eventOccurred(SimEvent event) {
@@ -243,11 +241,11 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	}
 
 	public OrderBook getOrderBook() {
-		return orderBook;
+		return exchange.getOrderBook(market);
 	}
 
 	public void setOrderBook(OrderBook orderBook) {
-		this.orderBook = orderBook;
+		this.exchange.setOrderBook(orderBook, market);
 	}
 
 	public MarketQuote getClearingQuote() {

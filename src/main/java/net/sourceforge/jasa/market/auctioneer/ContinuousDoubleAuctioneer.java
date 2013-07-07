@@ -69,7 +69,7 @@ public class ContinuousDoubleAuctioneer extends TransparentAuctioneer implements
 	@Override
 	public void onEndOfDay() {
 		super.onEndOfDay();
-		orderBook.reset();
+		exchange.getOrderBook(market).reset();
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class ContinuousDoubleAuctioneer extends TransparentAuctioneer implements
 	}
 
 	public void newShoutInternal(Order shout) throws DuplicateShoutException {
-		orderBook.add(shout);
+		exchange.add(shout);
 		generateQuote();
 		clear();
 		generateQuote();
