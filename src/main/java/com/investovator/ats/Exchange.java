@@ -1,9 +1,6 @@
 package com.investovator.ats;
 
-import net.sourceforge.jasa.market.DuplicateShoutException;
-import net.sourceforge.jasa.market.FourHeapOrderBook;
-import net.sourceforge.jasa.market.Order;
-import net.sourceforge.jasa.market.OrderBook;
+import net.sourceforge.jasa.market.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,12 +13,12 @@ import java.util.List;
  * Time: 10:05 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Exchange implements OrderBook {
+public class Exchange {
 
     HashMap<String, FourHeapOrderBook> orderBooks = new HashMap<String, FourHeapOrderBook>();
 
 
-    @Override
+
     public void add(Order shout) throws DuplicateShoutException {
 
         String secId = shout.getSecurityID();
@@ -30,7 +27,7 @@ public class Exchange implements OrderBook {
         orderBook.add(shout);
     }
 
-    @Override
+
     public void remove(Order shout) {
 
         String secId = shout.getSecurityID();
@@ -40,54 +37,57 @@ public class Exchange implements OrderBook {
 
     }
 
-    @Override
-    public void printState() {
-        //To change body of implemented methods use File | Settings | File Templates.
+    private FourHeapOrderBook getOrderBook(Market market){
+        return orderBooks.get(market.getSecurityID());
     }
 
-    @Override
-    public List<Order> matchOrders() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void printState(Market market) {
+        getOrderBook(market).printState();
     }
 
-    @Override
-    public Order getHighestUnmatchedBid() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public List<Order> matchOrders(Market market) {
+        return getOrderBook(market).matchOrders();
     }
 
-    @Override
-    public Order getLowestMatchedBid() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public Order getHighestUnmatchedBid(Market market) {
+        return getOrderBook(market).getHighestUnmatchedBid();
     }
 
-    @Override
-    public Order getLowestUnmatchedAsk() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public Order getLowestMatchedBid(Market market) {
+        return getOrderBook(market).getLowestMatchedBid();
     }
 
-    @Override
-    public Order getHighestMatchedAsk() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public Order getLowestUnmatchedAsk(Market market) {
+        return getOrderBook(market).getLowestUnmatchedAsk();
     }
 
-    @Override
-    public Iterator<Order> askIterator() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public Order getHighestMatchedAsk(Market market) {
+        return getOrderBook(market).getHighestMatchedAsk();
     }
 
-    @Override
-    public Iterator<Order> bidIterator() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public Iterator<Order> askIterator(Market market) {
+        return getOrderBook(market).askIterator();
     }
 
-    @Override
-    public boolean isEmpty() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public Iterator<Order> bidIterator(Market market) {
+        return getOrderBook(market).bidIterator();
     }
 
-    @Override
-    public void reset() {
-        //To change body of implemented methods use File | Settings | File Templates.
+
+    public boolean isEmpty(Market market) {
+        return getOrderBook(market).isEmpty();
+    }
+
+
+    public void reset(Market market) {
+        getOrderBook(market).reset();
     }
 
 }
