@@ -15,9 +15,6 @@
 
 package net.sourceforge.jasa.market;
 
-import java.io.Serializable;
-import java.util.Iterator;
-
 import net.sourceforge.jabm.AbstractSimulation;
 import net.sourceforge.jabm.SimulationController;
 import net.sourceforge.jabm.SimulationTime;
@@ -30,19 +27,16 @@ import net.sourceforge.jasa.event.MarketClosedEvent;
 import net.sourceforge.jasa.event.MarketOpenEvent;
 import net.sourceforge.jasa.event.RoundClosingEvent;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
-import net.sourceforge.jasa.market.rules.AuctionClosingCondition;
-import net.sourceforge.jasa.market.rules.CombiTimingCondition;
-import net.sourceforge.jasa.market.rules.DayEndingCondition;
-import net.sourceforge.jasa.market.rules.MaxDaysAuctionClosingCondition;
-import net.sourceforge.jasa.market.rules.MaxRoundsAuctionClosingCondition;
-import net.sourceforge.jasa.market.rules.MaxRoundsDayEndingCondition;
-import net.sourceforge.jasa.market.rules.NullAuctionClosingCondition;
-import net.sourceforge.jasa.market.rules.TimingCondition;
-
+import net.sourceforge.jasa.market.rules.*;
 import org.apache.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * @author Steve Phelps
+ * @author rajith
+ *
  * @version $Revision: 1.15 $
  * 
  */
@@ -50,9 +44,13 @@ import org.apache.log4j.Logger;
 public class MarketSimulation extends AbstractSimulation 
 		implements Serializable {
 
+    public static long DEFAULT_ROUND_DELAY = 1500;
+
 	protected Market market;
 	
 	protected boolean closed = false;
+
+    protected long roundDelay;
 	
 	/**
 	 * The current round.
@@ -84,6 +82,7 @@ public class MarketSimulation extends AbstractSimulation
 	public MarketSimulation(SimulationController controller) {
 		super(controller);
 		initialiseCounters();
+        roundDelay = DEFAULT_ROUND_DELAY;
 	}
 	
 	public MarketSimulation() {
@@ -228,7 +227,14 @@ public class MarketSimulation extends AbstractSimulation
 	}
 
 	public void runSingleRound() throws AuctionClosedException {
-		if (isClosed()) {
+
+        try {
+            Thread.sleep(roundDelay);
+        } catch (InterruptedException ignored) {
+            //Exception ignored
+        }
+
+        if (isClosed()) {
 			throw new AuctionClosedException("Auction is closed.");
 		}
 		if (closingCondition.eval()) {
@@ -438,5 +444,9 @@ public class MarketSimulation extends AbstractSimulation
 	public SimulationTime getSimulationTime() {
 		return new SimulationTime(age);
 	}
+
+    public void setRoundDelay(long roundDelay){
+        this.roundDelay = roundDelay;
+    }
 	
 }

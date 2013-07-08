@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A JASA implementation of the model described in the following paper:
+	Iori, G., Chiarella, C., November 2002. A Simulation Analysis of the Microstructure
+	of Double Auction Markets. Quantitative Finance 2, 346-353. http://ssrn.com/abstract=841608 -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="ibm" class="net.sourceforge.jasa.market.MarketFacade">
+        <property name="auctioneer" ref="cdaIBM" />
+        <property name="controller" ref="simulationControllerIBM" />
+        <property name="securityID" value="IBM" />
+    </bean>
+
+    <bean id="simulationControllerIBM" class="net.sourceforge.jabm.SpringSimulationController">
+        <property name="simulationBeanName">
+            <idref local="marketSimulationIBM" />
+        </property>
+        <property name="numSimulations" value="1" />
+        <property name="reports">
+            <list>
+                <ref bean="priceTimeSeriesChartIBM" />
+                <ref bean="transactionPriceTimeSeriesReportIBM" />
+                <ref bean="transactionPriceReportVariables" />
+                <ref bean="midPriceTimeSeriesReportIBM" />
+                <ref bean="midPriceReportVariables" />
+                <ref bean="orderFlowReportVariables" />
+                <ref bean="orderFlowTimeSeriesReportIBM" />
+                <ref bean="setInitialSpreadReportIBM" />
+                <ref bean="supplyAndDemandGraphIBM"/>
+            </list>
+        </property>
+    </bean>
+
+
+
+    <bean id="transactionPriceTimeSeriesReportIBM" class="net.sourceforge.jabm.report.SimEventReport">
+        <property name="eventPrototype">
+            <bean class="net.sourceforge.jasa.event.TransactionExecutedEvent">
+            </bean>
+        </property>
+        <property name="reportVariables" ref="transactionPriceTimeSeriesIBM" />
+    </bean>
+
+    <bean id="midPriceTimeSeriesReportIBM" class="net.sourceforge.jabm.report.SimEventReport">
+        <property name="eventPrototype">
+            <bean class="net.sourceforge.jasa.event.OrderPlacedEvent">
+            </bean>
+        </property>
+        <property name="reportVariables" ref="midPriceTimeSeriesIBM" />
+    </bean>
+
+    <bean id="orderFlowTimeSeriesReportIBM" class="net.sourceforge.jabm.report.SimEventReport">
+        <property name="eventPrototype">
+            <bean class="net.sourceforge.jasa.event.OrderPlacedEvent">
+            </bean>
+        </property>
+        <property name="reportVariables" ref="orderFlowCSVFileIBM" />
+    </bean>
+
+    <bean id="priceTimeSeriesIBM" class="net.sourceforge.jabm.report.CombiSeriesReportVariables">
+        <property name="seriesList">
+            <list>
+                <ref bean="transactionPriceTimeSeriesIBM"/>
+                <ref bean="midPriceTimeSeriesIBM" />
+                <ref bean="orderFlowTimeSeriesIBM" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="orderFlowTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
+        <property name="reportVariables" ref="orderFlowReportVariables" />
+    </bean>
+
+    <bean id="transactionPriceTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
+        <property name="reportVariables" ref="transactionPriceReportVariables" />
+    </bean>
+
+    <bean id="midPriceTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
+        <property name="reportVariables" ref="midPriceReportVariables" />
+    </bean>
+
+    <bean id="priceTimeSeriesChartIBM" class="net.sourceforge.jabm.view.TimeSeriesChart">
+        <property name="series" ref="priceTimeSeriesIBM" />
+        <property name="chartTitle" value="Price time series" />
+        <property name="rangeAxisLabel" value="Price ($)" />
+    </bean>
+
+    <bean id="orderFlowCSVFileIBM" class="net.sourceforge.jabm.report.CSVReportVariables">
+        <property name="reportVariables" ref="orderFlowReportVariables" />
+        <property name="fileNamePrefix" value="data/" />
+        <property name="fileNameSuffix" value="orderflow" />
+        <property name="fileNameExtension" value=".csv" />
+    </bean>
+
+    <bean id="setInitialSpreadReportIBM" class="net.sourceforge.jasa.report.SetInitialSpreadReport">
+        <property name="askPrice" value="1500" />
+        <property name="bidPrice" value="500" />
+        <property name="market" ref="ibm" />
+        <property name="tradingAgent" ref="fixedPriceBuyerPrototypeIBM" />
+    </bean>
+
+    <bean id="agentInitialiserIBM"
+          class="net.sourceforge.jabm.init.CombiAgentInitialiser">
+        <property name="initialisers">
+            <list>
+                <ref bean="marketAgentInitialiserIBM"/>
+                <ref bean="strategyAgentInitialiserIBM"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="strategyAgentInitialiserIBM"
+          class="net.sourceforge.jabm.init.ProportionalCombiAgentInitialiser">
+
+        <property name="proportions">
+            <list>
+                <value>0.5</value>
+                <value>0.5</value>
+            </list>
+        </property>
+
+        <property name="initialisers">
+            <list>
+
+                <bean class="net.sourceforge.jabm.init.StrategyInitialiser">
+                    <property name="strategyFactory">
+                        <bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+                            <property name="targetBeanName">
+                                <idref bean="returnForecastStrategyIBM"/>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean class="net.sourceforge.jabm.init.StrategyInitialiser">
+                    <property name="strategyFactory">
+                        <bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+                            <property name="targetBeanName">
+                                <idref bean="zeroIntelligenceStrategyIBM"/>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="marketAgentInitialiserIBM" class="net.sourceforge.jasa.agent.MarketAgentInitialiser">
+        <property name="market" ref="ibm" />
+    </bean>
+
+    <bean id="marketSimulationIBM" class="net.sourceforge.jasa.market.MarketSimulation">
+        <property name="simulationController" ref="simulationControllerIBM" />
+        <property name="market" ref="ibm" />
+        <property name="maximumDays" value="600" />
+        <property name="lengthOfDay" value="100" />
+        <property name="population" ref="populationIBM" />
+        <property name="agentMixer" ref="randomArrivalAgentMixer" />
+        <property name="agentInitialiser" ref="agentInitialiserIBM" />
+        <property name="roundDelay" value="10"/>
+    </bean>
+
+    <bean id="cdaIBM"
+          class="net.sourceforge.jasa.market.auctioneer.ContinuousDoubleAuctioneer">
+        <constructor-arg>
+            <ref bean="ibm" />
+        </constructor-arg>
+        <property name="pricingPolicy" ref="timePriorityPricing" />
+    </bean>
+
+    <bean id="populationIBM" class="net.sourceforge.jabm.Population">
+        <property name="agentList">
+            <bean class="net.sourceforge.jabm.agent.AgentList">
+                <constructor-arg>
+                    <list>
+                        <ref bean="noiseTradersIBM"/>
+                        <!--<ref bean="fundamentalists"/>-->
+                        <ref bean="linearCombinationTradersIBM"/>
+                        <ref bean="fixedPriceBuyersIBM"/>
+                        <ref bean="fixedPriceSellersIBM"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </property>
+        <property name="prng" ref="prng" />
+    </bean>
+
+    <bean id="linearCombinationTradersIBM" class="net.sourceforge.jabm.agent.AgentList">
+        <constructor-arg value="100" />
+        <constructor-arg ref="linearCombinationTraderFactoryIBM" />
+    </bean>
+
+    <bean id="noiseTradersIBM" class="net.sourceforge.jabm.agent.AgentList">
+        <constructor-arg value="80" />
+        <constructor-arg ref="noiseTraderFactoryIBM" />
+    </bean>
+
+    <bean id="fixedPriceBuyersIBM" class="net.sourceforge.jabm.agent.AgentList">
+        <constructor-arg value="1" />
+        <constructor-arg ref="fixedPriceBuyerFactoryIBM" />
+    </bean>
+
+    <bean id="fixedPriceSellersIBM" class="net.sourceforge.jabm.agent.AgentList">
+        <constructor-arg value="1" />
+        <constructor-arg ref="fixedPriceSellerFactoryIBM" />
+    </bean>
+
+    <bean id="fixedPriceBuyerFactoryIBM"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="fixedPriceBuyerPrototypeIBM" />
+        </property>
+    </bean>
+
+    <bean id="linearCombinationTraderFactoryIBM"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="linearCombinationTraderPrototypeIBM" />
+        </property>
+    </bean>
+
+    <bean id="fixedPriceSellerFactoryIBM"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="fixedPriceSellerPrototypeIBM" />
+        </property>
+    </bean>
+
+    <bean id="noiseTraderFactoryIBM"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="noiseTraderPrototypeIBM" />
+        </property>
+    </bean>
+
+    <bean id="fundamentalistFactoryIBM"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="fundamentalistPrototypeIBM" />
+        </property>
+    </bean>
+
+    <bean id="linearCombinationTraderPrototypeIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.SimpleTradingAgent">
+        <property name="strategy" ref="returnForecastStrategyIBM" />
+        <property name="valuationPolicy" ref="linearCombinationForecasterIBM" />
+    </bean>
+
+    <bean id="noiseTraderPrototypeIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.SimpleTradingAgent">
+        <property name="strategy" ref="returnForecastStrategyIBM" />
+        <property name="valuationPolicy" ref="noiseTraderForecasterIBM" />
+    </bean>
+
+    <bean id="fundamentalistPrototypeIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.SimpleTradingAgent">
+        <property name="strategy" ref="returnForecastStrategyIBM" />
+        <property name="valuationPolicy" ref="fundamentalistForecasterIBM" />
+    </bean>
+
+    <bean id="fixedPriceBuyerPrototypeIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.TokenTradingAgent">
+        <!-- <property name="market" ref="market"/> -->
+        <property name="strategy" ref="truthTellingStrategyIBM" />
+        <property name="valuationPolicy" ref="fixedValuation90IBM" />
+        <property name="isSeller" value="false" />
+        <property name="initialTradeEntitlement" value="100" />
+    </bean>
+
+    <bean id="fixedPriceSellerPrototypeIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.TokenTradingAgent">
+        <property name="strategy" ref="truthTellingStrategyIBM" />
+        <property name="valuationPolicy" ref="fixedValuation100IBM" />
+        <property name="isSeller" value="true" />
+        <property name="initialTradeEntitlement" value="100" />
+    </bean>
+
+    <bean id="truthTellingStrategyIBM" parent="strategyIBM"
+          class="net.sourceforge.jasa.agent.strategy.TruthTellingStrategy"
+          scope="prototype">
+    </bean>
+
+    <bean id="fixedValuation100IBM" class="net.sourceforge.jasa.agent.valuation.FixedValuer"
+          scope="prototype">
+        <constructor-arg value="100" />
+    </bean>
+
+    <bean id="fixedValuation90IBM" class="net.sourceforge.jasa.agent.valuation.FixedValuer"
+          scope="prototype">
+        <constructor-arg value="90" />
+    </bean>
+
+    <bean id="strategyIBM" scope="prototype"
+          class="net.sourceforge.jabm.strategy.AbstractStrategy">
+        <property name="scheduler" ref="simulationControllerIBM" />
+    </bean>
+
+    <bean id="returnForecastStrategyIBM" scope="prototype" parent="strategyIBM"
+          class="net.sourceforge.jasa.agent.strategy.ReturnForecastStrategy">
+        <property name="markupDistribution" ref="markupDistributionIBM" />
+        <property name="prng" ref="prng" />
+    </bean>
+
+    <bean id="zeroIntelligenceStrategyIBM" scope="prototype" parent="strategyIBM"
+          class="net.sourceforge.jasa.agent.strategy.RandomConstrainedStrategy">
+        <property name="markupDistribution">
+            <bean class="cern.jet.random.Uniform">
+                <constructor-arg value="0.0"/>
+                <constructor-arg value="10.0"/>
+                <constructor-arg ref="prng" />
+            </bean>
+        </property>
+    </bean>
+
+    <!--prototype-->
+    <bean id="markupDistributionIBM" scope="singleton" class="cern.jet.random.Uniform">
+        <constructor-arg value="0" />
+        <constructor-arg value="0.2" />
+        <constructor-arg ref="prng" />
+    </bean>
+
+    <bean id="noiseTraderForecasterIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.valuation.NoiseTraderForecaster">
+        <constructor-arg>
+            <ref bean="prng" />
+        </constructor-arg>
+    </bean>
+
+    <!--prototype-->
+    <bean id="fundamentalistForecasterIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.valuation.FundamentalistForecaster">
+        <property name="fundamentalPrice" value="500" />
+        <property name="timeHorizon" value="10" />
+    </bean>
+
+    <bean id="chartistForecasterIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.valuation.ChartistForecaster">
+        <constructor-arg ref="chartistWindowSizeDistributionIBM" />
+    </bean>
+
+    <bean id="linearCombinationForecasterIBM" scope="prototype"
+          class="net.sourceforge.jasa.agent.valuation.LinearWeightedReturnForecaster">
+
+        <property name="forecasters">
+            <list>
+                <ref bean="fundamentalistForecasterIBM" />
+                <ref bean="chartistForecasterIBM" />
+                <ref bean="noiseTraderForecasterIBM" />
+            </list>
+        </property>
+
+        <property name="distributions">
+            <list>
+                <ref bean="fundamentalistWeightDistribution" />
+                <ref bean="chartistWeightDistribution" />
+                <ref bean="noiseTraderWeightDistribution" />
+            </list>
+        </property>
+
+    </bean>
+
+    <!--prototype-->
+    <bean id="chartistWindowSizeDistributionIBM" class="cern.jet.random.Uniform"
+          scope="prototype">
+        <constructor-arg value="2.0" />
+        <constructor-arg value="100.0" />
+        <constructor-arg ref="prng" />
+    </bean>
+
+    <bean id="supplyAndDemandGraphIBM" class="net.sourceforge.jasa.view.ReportedSupplyAndDemandFrame">
+        <constructor-arg ref="ibm" />
+    </bean>
+
+</beans>

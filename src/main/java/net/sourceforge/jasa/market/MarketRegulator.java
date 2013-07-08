@@ -6,22 +6,31 @@ import org.apache.log4j.Logger;
 import org.investovator.jasa.mockGui.HumanInterface;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 /**
- * Created with IntelliJ IDEA.
- * User: amila
- * Date: 7/7/13
- * Time: 9:58 AM
- * To change this template use File | Settings | File Templates.
+ * @author amila
+ * @author rajith
+ *
+ * $Revision$
  */
 public class MarketRegulator {
 
     static Logger logger = Logger.getLogger(MarketFacade.class);
     public static Exchange exchange = new Exchange();
 
+    private ArrayList<MarketFacade> securities = new ArrayList<MarketFacade>();
+
+    public void setSecurities(ArrayList<MarketFacade> securitiesList) {
+        securities.addAll(securitiesList);
+    }
+
+    public ArrayList<MarketFacade> getSecurities(){
+        return securities;
+    }
+
     public static void main(String[] args) {
-        Runnable market =
-                (Runnable) BeanFactorySingleton.getBean("market");
+
 
         //run the GUI for the human player
         SwingUtilities.invokeLater(new Runnable() {
@@ -35,11 +44,19 @@ public class MarketRegulator {
                 frame.setVisible(true);
             }
         });
-//
 
-
+/*
         logger.info("Starting...");
         market.run();
-        logger.info("all done.");
+        logger.info("all done.");*/
+
+        MarketRegulator marketRegulator = (MarketRegulator) BeanFactorySingleton.getBean("marketRegulator");
+
+        logger.info("Market starting");
+
+        for(MarketFacade security: marketRegulator.getSecurities()){
+            Thread marketSecurity = new Thread(security);
+            marketSecurity.start();
+        }
     }
 }
