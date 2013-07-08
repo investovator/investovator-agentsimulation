@@ -1,7 +1,9 @@
 package com.investovator.ats;
 
 import net.sourceforge.jasa.market.*;
+import org.investovator.jasa.mockGui.OrderViewer;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -16,8 +18,35 @@ import java.util.List;
 public class Exchange {
 
     HashMap<String, FourHeapOrderBook> orderBooks = new HashMap<String, FourHeapOrderBook>();
+    HashMap<String, OrderViewer> viewers = new HashMap<String, OrderViewer>();
 
 
+    private void logOrders(Order shout, final String market) {
+
+
+
+        if(!viewers.containsKey(market)) {
+
+            final OrderViewer viewer = new OrderViewer();
+            viewer.setTitle(market);
+            viewers.put(market, viewer);
+
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+
+                    viewer.setContentPane(viewer.rootPane);
+                    viewer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    viewer.setSize(400,400);
+                    viewer.setVisible(true);
+
+                }
+            });
+        }
+
+        if(viewers.get(market) != null) viewers.get(market).printLine(shout.getAgent() + "\n");
+
+    }
 
     public synchronized void add(Order shout) throws DuplicateShoutException {
 
@@ -25,6 +54,8 @@ public class Exchange {
         if(!orderBooks.containsKey(secId)) orderBooks.put(secId, new FourHeapOrderBook());
         FourHeapOrderBook orderBook = orderBooks.get(secId);
         orderBook.add(shout);
+
+        logOrders(shout,shout.getSecurityID());
     }
 
 
@@ -35,6 +66,8 @@ public class Exchange {
         if(orderBook == null) return;
         orderBook.remove(shout);
 
+        logOrders(shout,shout.getSecurityID());
+
     }
 
     public synchronized void add(Order shout, Market market) throws DuplicateShoutException {
@@ -44,6 +77,8 @@ public class Exchange {
         if(!orderBooks.containsKey(secId)) orderBooks.put(secId, new FourHeapOrderBook());
         FourHeapOrderBook orderBook = orderBooks.get(secId);
         orderBook.add(shout);
+
+        logOrders(shout,market.getSecurityID());
     }
 
 
@@ -53,6 +88,8 @@ public class Exchange {
         FourHeapOrderBook orderBook = orderBooks.get(secId);
         if(orderBook == null) return;
         orderBook.remove(shout);
+
+        logOrders(shout,market.getSecurityID());
 
     }
 
