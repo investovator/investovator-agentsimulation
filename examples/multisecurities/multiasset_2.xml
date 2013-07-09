@@ -317,7 +317,6 @@
         </property>
     </bean>
 
-    <!--prototype-->
     <bean id="markupDistributionIBM" scope="singleton" class="cern.jet.random.Uniform">
         <constructor-arg value="0" />
         <constructor-arg value="0.2" />
@@ -331,7 +330,6 @@
         </constructor-arg>
     </bean>
 
-    <!--prototype-->
     <bean id="fundamentalistForecasterIBM" scope="prototype"
           class="net.sourceforge.jasa.agent.valuation.FundamentalistForecaster">
         <property name="fundamentalPrice" value="500" />
@@ -364,7 +362,6 @@
 
     </bean>
 
-    <!--prototype-->
     <bean id="chartistWindowSizeDistributionIBM" class="cern.jet.random.Uniform"
           scope="prototype">
         <constructor-arg value="2.0" />
@@ -375,5 +372,4 @@
     <bean id="supplyAndDemandGraphIBM" class="net.sourceforge.jasa.view.ReportedSupplyAndDemandFrame">
         <constructor-arg ref="ibm" />
     </bean>
-
 </beans>

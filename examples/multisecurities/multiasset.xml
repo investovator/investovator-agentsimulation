@@ -14,7 +14,7 @@
         <property name="securities">
             <list>
                 <ref bean="google"/>
-                <!--<ref bean="ibm"/>-->
+                <ref bean="ibm"/>
             </list>
         </property>
     </bean>
@@ -44,8 +44,6 @@
             </list>
         </property>
     </bean>
-
-
 
     <bean id="transactionPriceTimeSeriesReport" class="net.sourceforge.jabm.report.SimEventReport">
         <property name="eventPrototype">
@@ -105,16 +103,6 @@
         <property name="chartTitle" value="Price time series" />
         <property name="rangeAxisLabel" value="Price ($)" />
     </bean>
-
-    <!-- <bean id="transactionPriceTimeSeriesReport" -->
-    <!-- class="net.sourceforge.jasa.report.TransactionPriceTimeSeriesReport"> -->
-    <!-- <property name="baseFilename" value="data/transprice"/> -->
-    <!-- </bean> -->
-
-    <!-- <bean id="midPointTimeSeriesReport" -->
-    <!-- class="net.sourceforge.jasa.report.MidPointTimeSeriesReport"> -->
-    <!-- <property name="baseFilename" value="data/midpoint"/> -->
-    <!-- </bean> -->
 
     <bean id="orderFlowCSVFile" class="net.sourceforge.jabm.report.CSVReportVariables">
         <property name="reportVariables" ref="orderFlowReportVariables" />
@@ -236,7 +224,6 @@
                 <constructor-arg>
                     <list>
                         <ref bean="noiseTraders"/>
-                        <!--<ref bean="fundamentalists"/>-->
                         <ref bean="linearCombinationTraders"/>
                         <ref bean="fixedPriceBuyers"/>
                         <ref bean="fixedPriceSellers"/>
@@ -484,5 +471,4 @@
     <bean id="supplyAndDemandGraph" class="net.sourceforge.jasa.view.ReportedSupplyAndDemandFrame">
         <constructor-arg ref="google" />
     </bean>
-
 </beans>
