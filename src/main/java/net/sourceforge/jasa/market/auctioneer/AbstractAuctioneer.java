@@ -18,7 +18,7 @@ package net.sourceforge.jasa.market.auctioneer;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import com.investovator.ats.Exchange;
+import org.investovator.ats.Exchange;
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;

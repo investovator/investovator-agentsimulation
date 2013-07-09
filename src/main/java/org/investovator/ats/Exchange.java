@@ -1,4 +1,4 @@
-package com.investovator.ats;
+package org.investovator.ats;
 
 import net.sourceforge.jasa.market.*;
 import org.investovator.jasa.mockGui.OrderViewer;

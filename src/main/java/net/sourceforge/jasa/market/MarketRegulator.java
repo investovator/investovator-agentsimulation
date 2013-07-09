@@ -1,6 +1,6 @@
 package net.sourceforge.jasa.market;
 
-import com.investovator.ats.Exchange;
+import org.investovator.ats.Exchange;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import org.apache.log4j.Logger;
 import org.investovator.jasa.mockGui.HumanInterface;
