@@ -23,10 +23,10 @@
             <list>
                 <ref bean="priceTimeSeriesChartIBM" />
                 <ref bean="transactionPriceTimeSeriesReportIBM" />
-                <ref bean="transactionPriceReportVariables" />
+                <ref bean="transactionPriceReportVariablesIBM" />
                 <ref bean="midPriceTimeSeriesReportIBM" />
-                <ref bean="midPriceReportVariables" />
-                <ref bean="orderFlowReportVariables" />
+                <ref bean="midPriceReportVariablesIBM" />
+                <ref bean="orderFlowReportVariablesIBM" />
                 <ref bean="orderFlowTimeSeriesReportIBM" />
                 <ref bean="setInitialSpreadReportIBM" />
                 <ref bean="supplyAndDemandGraphIBM"/>
@@ -71,28 +71,38 @@
     </bean>
 
     <bean id="orderFlowTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
-        <property name="reportVariables" ref="orderFlowReportVariables" />
+        <property name="reportVariables" ref="orderFlowReportVariablesIBM" />
     </bean>
 
     <bean id="transactionPriceTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
-        <property name="reportVariables" ref="transactionPriceReportVariables" />
+        <property name="reportVariables" ref="transactionPriceReportVariablesIBM" />
+    </bean>
+
+    <bean id="transactionPriceReportVariablesIBM"
+          class="net.sourceforge.jasa.report.TransactionPriceReportVariables">
     </bean>
 
     <bean id="midPriceTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
-        <property name="reportVariables" ref="midPriceReportVariables" />
+        <property name="reportVariables" ref="midPriceReportVariablesIBM" />
+    </bean>
+
+    <bean id="midPriceReportVariablesIBM" class="net.sourceforge.jasa.report.MidPriceReportVariables">
     </bean>
 
     <bean id="priceTimeSeriesChartIBM" class="net.sourceforge.jabm.view.TimeSeriesChart">
         <property name="series" ref="priceTimeSeriesIBM" />
-        <property name="chartTitle" value="Price time series" />
+        <property name="chartTitle" value="Price time series - IBM" />
         <property name="rangeAxisLabel" value="Price ($)" />
     </bean>
 
     <bean id="orderFlowCSVFileIBM" class="net.sourceforge.jabm.report.CSVReportVariables">
-        <property name="reportVariables" ref="orderFlowReportVariables" />
+        <property name="reportVariables" ref="orderFlowReportVariablesIBM" />
         <property name="fileNamePrefix" value="data/" />
-        <property name="fileNameSuffix" value="orderflow" />
+        <property name="fileNameSuffix" value="orderflowIBM" />
         <property name="fileNameExtension" value=".csv" />
+    </bean>
+
+    <bean id="orderFlowReportVariablesIBM" class="net.sourceforge.jasa.report.OfferPriceReportVariables">
     </bean>
 
     <bean id="setInitialSpreadReportIBM" class="net.sourceforge.jasa.report.SetInitialSpreadReport">
