@@ -29,7 +29,7 @@
                 <ref bean="orderFlowReportVariablesIBM" />
                 <ref bean="orderFlowTimeSeriesReportIBM" />
                 <ref bean="setInitialSpreadReportIBM" />
-                <ref bean="supplyAndDemandGraphIBM"/>
+                <!--<ref bean="supplyAndDemandGraphIBM"/>-->
             </list>
         </property>
     </bean>
