@@ -126,6 +126,9 @@ public class MarketFacade implements EventScheduler, Market, Serializable,
 
 		buyer.orderFilled(getMarket(), bid, buyerCharge, quantity);
 		seller.orderFilled(getMarket(), ask, sellerPayment, quantity);
+
+        System.out.println(ask.getSecurityID()+" : "+ask.getPrice()+
+                                "(bid-"+bid.getPrice()+")@"+ask.getQuantity()+"-->"+buyerCharge);
 	}
 
 	public Market getMarket() {
