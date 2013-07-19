@@ -44,7 +44,9 @@ public class Exchange {
             });
         }
 
-        if(viewers.get(market) != null) viewers.get(market).printLine(shout.getAgent() + "\n");
+        //if(viewers.get(market) != null) viewers.get(market).printLine(shout.getAgent() + "\n");
+        if(viewers.get(market) != null) viewers.get(market).printLine(shout.getQuantity()+
+                "@"+shout.getPrice()+"::Buy-"+shout.isBid()+  "--  "+ shout.getAgent().getStrategy() +"\n");
 
     }
 
