@@ -172,7 +172,7 @@
         <property name="population" ref="populationIBM" />
         <property name="agentMixer" ref="randomArrivalAgentMixer" />
         <property name="agentInitialiser" ref="agentInitialiserIBM" />
-        <property name="roundDelay" value="10"/>
+        <property name="roundDelay" value="500"/>
     </bean>
 
     <bean id="cdaIBM"
