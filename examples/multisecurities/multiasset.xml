@@ -115,8 +115,8 @@
     </bean>
 
     <bean id="setInitialSpreadReport" class="net.sourceforge.jasa.report.SetInitialSpreadReport">
-        <property name="askPrice" value="1500" />
-        <property name="bidPrice" value="500" />
+        <property name="askPrice" value="3" />
+        <property name="bidPrice" value="2" />
         <property name="market" ref="google" />
         <property name="tradingAgent" ref="fixedPriceBuyerPrototype" />
     </bean>
@@ -192,7 +192,7 @@
         <property name="population" ref="population" />
         <property name="agentMixer" ref="randomArrivalAgentMixer" />
         <property name="agentInitialiser" ref="agentInitialiser" />
-        <property name="roundDelay" value="5"/>
+        <property name="roundDelay" value="500"/>
     </bean>
 
     <bean id="cda"

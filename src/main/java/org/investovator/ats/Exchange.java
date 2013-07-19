@@ -1,6 +1,7 @@
 package org.investovator.ats;
 
 import net.sourceforge.jasa.market.*;
+import org.investovator.jasa.mockGui.OrderBookViewer;
 import org.investovator.jasa.mockGui.OrderViewer;
 
 import javax.swing.*;
@@ -19,33 +20,56 @@ public class Exchange {
 
     HashMap<String, FourHeapOrderBook> orderBooks = new HashMap<String, FourHeapOrderBook>();
     HashMap<String, OrderViewer> viewers = new HashMap<String, OrderViewer>();
+    HashMap<String, OrderBookViewer> bookViewers = new HashMap<String, OrderBookViewer>();
 
 
     private void logOrders(Order shout, final String market) {
 
 
 
-        if(!viewers.containsKey(market)) {
+//        if(!viewers.containsKey(market)) {
+//
+//            final OrderViewer viewer = new OrderViewer();
+//            viewer.setTitle(market);
+//            viewers.put(market, viewer);
+//
+//            SwingUtilities.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    viewer.setContentPane(viewer.rootPane);
+//                    viewer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                    viewer.setSize(400,400);
+//                    viewer.setVisible(true);
+//
+//                }
+//            });
+//        }
+//
+//        if(viewers.get(market) != null) viewers.get(market).printLine("" + "\n");
 
-            final OrderViewer viewer = new OrderViewer();
-            viewer.setTitle(market);
-            viewers.put(market, viewer);
+        //orderbook view
+        if(!bookViewers.containsKey(market)) {
+
+            final OrderBookViewer bookViewer = new OrderBookViewer();
+            bookViewer.setTitle(market);
+            bookViewers.put(market, bookViewer);
 
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
 
-                    viewer.setContentPane(viewer.rootPane);
-                    viewer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    viewer.setSize(400,400);
-                    viewer.setVisible(true);
+                    bookViewer.setContentPane(bookViewer.rootPane);
+                    bookViewer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    bookViewer.setSize(400,400);
+                    bookViewer.setVisible(true);
 
                 }
             });
         }
 
-        if(viewers.get(market) != null) viewers.get(market).printLine(shout.getAgent() + "\n");
-
+        if(bookViewers.get(market) != null) bookViewers.get(market).update(orderBooks.get(market));
+        //
     }
 
     public synchronized void add(Order shout) throws DuplicateShoutException {
