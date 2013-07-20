@@ -56,11 +56,7 @@ public class HumanInterface {
 
 
                 //send the order
-                try {
-                    MarketRegulator.exchange.add(new Order(new TokenTradingAgent(),quantity,price,isBuy));
-                } catch (DuplicateShoutException e1) {
-                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+                MarketRegulator.addOrder(new Order(new TokenTradingAgent(),quantity,price,isBuy));
             }
         });
 

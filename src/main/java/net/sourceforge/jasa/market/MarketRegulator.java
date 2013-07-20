@@ -1,5 +1,6 @@
 package net.sourceforge.jasa.market;
 
+import net.sourceforge.jabm.SimulationTime;
 import org.investovator.ats.Exchange;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import org.apache.log4j.Logger;
@@ -19,7 +20,7 @@ public class MarketRegulator {
     static Logger logger = Logger.getLogger(MarketFacade.class);
     public static Exchange exchange = new Exchange();
 
-    private ArrayList<MarketFacade> securities = new ArrayList<MarketFacade>();
+    private static ArrayList<MarketFacade> securities = new ArrayList<MarketFacade>();
 
     public void setSecurities(ArrayList<MarketFacade> securitiesList) {
         securities.addAll(securitiesList);
@@ -59,4 +60,26 @@ public class MarketRegulator {
             marketSecurity.start();
         }
     }
+
+    public static void addOrder(Order order){
+        //try {
+                                //get the timestamp from the market
+                                        SimulationTime time=null;
+                                MarketFacade mark=null;
+                                for(MarketFacade market:securities){
+                                        if(market.getSecurityID().equalsIgnoreCase(order.getSecurityID())){
+                                                time=market.getSimulationTime();
+                                                mark=market;
+                                           }
+                                    }
+                                if(time==null){
+                                        try {
+                                                throw new Exception("Simulation time not set");
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                                return;
+                                            }
+                                    }
+    }
+
 }
