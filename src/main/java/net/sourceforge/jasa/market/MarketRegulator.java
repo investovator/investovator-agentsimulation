@@ -64,7 +64,7 @@ public class MarketRegulator {
     public static void addOrder(Order order){
         //try {
                                 //get the timestamp from the market
-                                        SimulationTime time=null;
+                                 SimulationTime time=null;
                                 MarketFacade mark=null;
                                 for(MarketFacade market:securities){
                                         if(market.getSecurityID().equalsIgnoreCase(order.getSecurityID())){
@@ -80,6 +80,13 @@ public class MarketRegulator {
                                                 return;
                                             }
                                     }
+            Order newOrder=new Order(order.getAgent(),order.getQuantity(),order.getPrice(),order.isBid(),time);
+        newOrder.setSecurityID(order.getSecurityID());
+        try {
+            mark.placeOrder(newOrder);
+        } catch (AuctionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
 }
