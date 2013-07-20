@@ -36,10 +36,12 @@ public class TimePriorityPricingPolicy extends DiscriminatoryPricingPolicy {
 	    MarketQuote clearingQuote) {
 		if (bid.getTimeStamp().compareTo(ask.getTimeStamp()) > 0) {
 //			 ask comes first
-			return kInterval(ask.getPrice(), bid.getPrice());
+			//return kInterval(ask.getPrice(), bid.getPrice());
+            return ask.getPrice();
 		} else {
 //			 bid comes first
-			return kInterval(bid.getPrice(), ask.getPrice());
+			//return kInterval(bid.getPrice(), ask.getPrice());
+            return ask.getPrice();
 		}
 	}
 
