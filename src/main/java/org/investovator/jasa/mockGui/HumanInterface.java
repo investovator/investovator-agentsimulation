@@ -1,7 +1,9 @@
 package org.investovator.jasa.mockGui;
 
 import net.sourceforge.jabm.agent.Agent;
+import net.sourceforge.jasa.agent.SimpleTradingAgent;
 import net.sourceforge.jasa.agent.TokenTradingAgent;
+import net.sourceforge.jasa.agent.strategy.TruthTellingStrategy;
 import net.sourceforge.jasa.market.DuplicateShoutException;
 import net.sourceforge.jasa.market.MarketRegulator;
 import net.sourceforge.jasa.market.Order;
@@ -54,9 +56,15 @@ public class HumanInterface {
                 //get the quantityField
                 int quantity=Integer.parseInt(quantityField.getText());
 
+                //create the agent
+                                    SimpleTradingAgent agent=new SimpleTradingAgent();
+                                    agent.setStrategy(new TruthTellingStrategy());
 
+                //create the order
+                Order order=new Order(agent,quantity,price,isBuy);
+                order.setSecurityID(stockID);
                 //send the order
-                MarketRegulator.addOrder(new Order(new TokenTradingAgent(),quantity,price,isBuy));
+                MarketRegulator.addOrder(order);
             }
         });
 
