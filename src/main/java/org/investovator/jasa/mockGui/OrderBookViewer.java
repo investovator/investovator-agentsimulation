@@ -43,7 +43,9 @@ public class OrderBookViewer extends JFrame{
                 Iterator itr=market.bidIterator();
                 String bids="";
                 while (itr.hasNext()){
-                    bids+= String.valueOf(((Order)itr.next()).getPrice())+"\n";
+
+                    Order tmp = (Order)itr.next();
+                    bids+=  tmp.getPrice() +" -> "+ tmp.getQuantity() +"\n";
 
                 }
                 buyOrderArea.setText(null);
@@ -53,9 +55,10 @@ public class OrderBookViewer extends JFrame{
                 //iterate through the sell orders
                 Iterator sellItr=market.askIterator();
                 String sells="";
-                while (sellItr.hasNext()){
-                    sells+= String.valueOf(((Order)sellItr.next()).getPrice())+"\n";
 
+                while (sellItr.hasNext()){
+                    Order tmpSell = (Order)sellItr.next();
+                    sells+= tmpSell.getPrice() + " -> " + tmpSell.getQuantity() +"\n";
                 }
                 sellOrderArea.setText(null);
                 sellOrderArea.setText(sells);
