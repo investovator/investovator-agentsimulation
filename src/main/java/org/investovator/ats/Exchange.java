@@ -75,6 +75,8 @@ public class Exchange {
 
         if(bookViewers.get(market) != null) bookViewers.get(market).update(orderBooks.get(market));
         //Added a basic gui for the 4-heap order book
+
+
     }
 
     public synchronized void add(Order shout) throws DuplicateShoutException {
