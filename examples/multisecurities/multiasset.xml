@@ -181,7 +181,7 @@
         <constructor-arg ref="prng" />
         <!-- In this model the probability of an agent arriving represents the
             total liquidity of the market -->
-        <property name="arrivalProbability" value="0.0" />
+        <property name="arrivalProbability" value="0.5" />
     </bean>
 
     <bean id="marketSimulation" class="net.sourceforge.jasa.market.MarketSimulation">
@@ -200,7 +200,7 @@
         <constructor-arg>
             <ref bean="google" />
         </constructor-arg>
-        <property name="pricingPolicy" ref="timePriorityPricing" />
+        <property name="pricingPolicy" ref="stockMarketTimePriorityPricingPolicy" />
     </bean>
 
     <bean id="midPointDiscriminatoryPricingPolicy"
@@ -210,6 +210,10 @@
 
     <bean id="timePriorityPricing"
           class="net.sourceforge.jasa.market.rules.TimePriorityPricingPolicy">
+    </bean>
+
+    <bean id="stockMarketTimePriorityPricingPolicy"
+          class="net.sourceforge.jasa.market.rules.StockMarketTimePriorityPricingPolicy">
     </bean>
 
     <bean id="prng" class="cern.jet.random.engine.MersenneTwister64">

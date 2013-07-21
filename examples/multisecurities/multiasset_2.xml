@@ -180,7 +180,7 @@
         <constructor-arg>
             <ref bean="ibm" />
         </constructor-arg>
-        <property name="pricingPolicy" ref="timePriorityPricing" />
+        <property name="pricingPolicy" ref="stockMarketTimePriorityPricingPolicy" />
     </bean>
 
     <bean id="populationIBM" class="net.sourceforge.jabm.Population">
