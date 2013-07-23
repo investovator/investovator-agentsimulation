@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.jabm.event.SimEvent;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.Resetable;
-import net.sourceforge.jasa.market.MarketFacade;
 
 
 /**
@@ -32,27 +30,17 @@ import net.sourceforge.jasa.market.MarketFacade;
  * A historicalDataReport that combines several different reports.
  * </p>
  * 
- * <p>
- * <b>Parameters</b><br>
- * </p>
- * <table>
- * <tr>
- * <td valign=top><i>base</i><tt>.n</tt><br>
- * <font size=-1>int &gt;= 1</font></td>
- * <td valign=top>(the number of different loggers to configure)</td>
- * <tr> </table>
- * 
- * 
  * @author Steve Phelps
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.11 $
  */
 
-public class CombiAuctionReport implements AuctionReport, Parameterizable,
-    Resetable {
+public class CombiAuctionReport implements AuctionReport, Resetable {
 
 	protected List<AuctionReport> reports = null;
+	
+	protected String name = "";
 
-	protected MarketFacade auction;
+//	protected Market auction;
 
 	public CombiAuctionReport(List<AuctionReport> reports) {
 		this.reports = reports;
@@ -133,5 +121,15 @@ public class CombiAuctionReport implements AuctionReport, Parameterizable,
 //			logger.setAuction(auction);
 //		}
 //	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 
 }

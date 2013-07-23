@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,21 +15,18 @@
 
 package net.sourceforge.jasa.market.rules;
 
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jasa.market.Market;
 
 /**
  * The interface for expressing the condition of closing an market.
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.4 $
  * 
  */
 
 public class MaxRoundsAuctionClosingCondition extends TimingCondition implements
-    Parameterizable, AuctionClosingCondition {
-
-	public static final String P_MAXIMUM_ROUNDS = "maximumrounds";
+    AuctionClosingCondition {
 
 	/**
 	 * The maximum number of rounds in the market. Ignored if negative.

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,11 +17,11 @@ package net.sourceforge.jasa.replication.electricity;
 
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.agent.SimpleTradingAgent;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.7 $
  */
 
 public class FinalRoundElectricityStats extends ElectricityStats {
@@ -30,7 +30,7 @@ public class FinalRoundElectricityStats extends ElectricityStats {
 		super();
 	}
 
-	public FinalRoundElectricityStats(MarketFacade auction) {
+	public FinalRoundElectricityStats(Market auction) {
 		super(auction);
 	}
 

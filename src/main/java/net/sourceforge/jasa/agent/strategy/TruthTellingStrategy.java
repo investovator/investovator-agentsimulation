@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,7 +15,6 @@
 
 package net.sourceforge.jasa.agent.strategy;
 
-
 import java.io.Serializable;
 
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
@@ -24,11 +23,11 @@ import net.sourceforge.jasa.market.Order;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.7 $
  */
 
 public class TruthTellingStrategy extends FixedDirectionStrategy implements
-    Serializable {
+		Serializable {
 
 	public TruthTellingStrategy(AbstractTradingAgent agent) {
 		super(agent);
@@ -39,7 +38,7 @@ public class TruthTellingStrategy extends FixedDirectionStrategy implements
 	}
 
 	public boolean modifyShout(Order shout) {
-		shout.setPrice(agent.getValuation(auction));
+		shout.setPrice(getAgent().getValuation(auction));
 		return super.modifyShout(shout);
 	}
 

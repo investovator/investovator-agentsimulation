@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,24 +26,23 @@ import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.agent.TokenTradingAgent;
-import net.sourceforge.jasa.event.EndOfDayEvent;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 
 import org.apache.log4j.Logger;
 
 
 /**
  * <p>
- * A historicalDataReport that keeps track of the surplus available to each agent in
- * theoretical equilibrium. The equilibrium price is recomputed at the end of
- * each day, thus this class can be used to keep track of theoretically
+ * A historicalDataReport that keeps track of the surplus available to each
+ * agent in theoretical equilibrium. The equilibrium price is recomputed at the
+ * end of each day, thus this class can be used to keep track of theoretically
  * available surplus even when supply and demand are changing over time. Each
  * agent is assumed to be hypothetically able to trade the specified quantity of
  * units in each day.
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.15 $
  */
 
 public class DynamicSurplusReport extends AbstractMarketStatsReport implements
@@ -52,7 +51,7 @@ public class DynamicSurplusReport extends AbstractMarketStatsReport implements
 	/**
 	 * The historicalDataReport used to calculate the equilibrium price.
 	 */
-	protected EquilibriumReport equilibriaStats;
+	protected EquilibriumReportVariables equilibriaStats;
 
 	/**
 	 * Total theoretically available profits per agent. This table maps
@@ -78,17 +77,17 @@ public class DynamicSurplusReport extends AbstractMarketStatsReport implements
 
 	static Logger logger = Logger.getLogger(DynamicSurplusReport.class);
 
-	public void setAuction(MarketFacade auction) {
+	public void setAuction(Market auction) {
 		super.setAuction(auction);
-		equilibriaStats = new EquilibriumReport(auction);
+		equilibriaStats = new EquilibriumReportVariables(auction);
 	}
-
-	public void eventOccurred(SimEvent event) {
-		super.eventOccurred(event);
-		if (event instanceof EndOfDayEvent) {
-			recalculate(event);
-		}
-	}
+//
+//	public void eventOccurred(SimEvent event) {
+//		super.eventOccurred(event);
+//		if (event instanceof EndOfDayEvent) {
+//			recalculate(event);
+//		}
+//	}
 
 	public void calculate() {
 		efficiency = calculateTotalProfits() / calculateTotalEquilibriumSurplus();
@@ -98,9 +97,8 @@ public class DynamicSurplusReport extends AbstractMarketStatsReport implements
 		return efficiency;
 	}
 
-	public void recalculate(SimEvent event) {
-
-		equilibriaStats.recalculate();
+	public void compute(SimEvent event) {
+		equilibriaStats.compute(event);
 		double ep = equilibriaStats.calculateMidEquilibriumPrice();
 
 		Iterator<Agent> i = auction.getTraderIterator();

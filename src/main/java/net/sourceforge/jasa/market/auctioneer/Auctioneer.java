@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -16,6 +16,7 @@
 package net.sourceforge.jasa.market.auctioneer;
 
 import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.jasa.event.MarketEventListener;
 import net.sourceforge.jasa.market.Account;
@@ -25,10 +26,12 @@ import net.sourceforge.jasa.market.Order;
 import net.sourceforge.jasa.market.QuoteProvider;
 import net.sourceforge.jasa.market.ShoutsNotVisibleException;
 
-
 /**
+ * Classes implementing this interface define the rules for matching
+ * orders in the marketplace and producing the resulting transaction set.
+ *  
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.10 $
  */
 
 public interface Auctioneer extends QuoteProvider, MarketEventListener {
@@ -40,22 +43,22 @@ public interface Auctioneer extends QuoteProvider, MarketEventListener {
 	public void clear();
 
 	/**
-	 * Code for handling a new shout in the market. Subclasses should override
+	 * Code for handling a new order in the market. Subclasses should override
 	 * this method if they wish to provide different handling for different
 	 * market rules.
 	 * 
-	 * @param shout
+	 * @param order
 	 *          The new shout to be processed
 	 * 
 	 * @exception IllegalOrderException
-	 *              Thrown if the shout is invalid in some way.
+	 *              Thrown if the order is invalid in some way.
 	 */
 	public void newOrder(Order order) throws IllegalOrderException;
 
 	/**
-	 * Handle a request to retract a shout.
+	 * Cancel an existing order.
 	 */
-	public void removeShout(Order order);
+	public void removeOrder(Order order);
 
 	/**
 	 * Log the current state of the market.
@@ -81,7 +84,7 @@ public interface Auctioneer extends QuoteProvider, MarketEventListener {
 	 */
 	public boolean shoutsVisible();
 
-	public boolean orderFilled(Order shout) throws ShoutsNotVisibleException;
+	public boolean orderFilled(Order order) throws ShoutsNotVisibleException;
 
 	public boolean transactionsOccurred() throws ShoutsNotVisibleException;
 
@@ -97,5 +100,9 @@ public interface Auctioneer extends QuoteProvider, MarketEventListener {
 	 * mechanisms.
 	 */
 	public Account getAccount();
+
+	public List<Order> getUnmatchedBids();
+
+	public List<Order> getUnmatchedAsks();
 
 }

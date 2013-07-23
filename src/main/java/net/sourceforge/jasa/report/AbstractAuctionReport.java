@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,17 +15,14 @@
 
 package net.sourceforge.jasa.report;
 
-
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.Resetable;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 
 import org.apache.log4j.Logger;
 
@@ -36,32 +33,32 @@ import org.apache.log4j.Logger;
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.14 $
  */
 
-public abstract class AbstractAuctionReport implements AuctionReport, Resetable,
-    Parameterizable, Serializable {
+public abstract class AbstractAuctionReport implements AuctionReport,
+		Resetable, Serializable {
 
 	static Logger logger = Logger.getLogger(AbstractAuctionReport.class);
 
 	/**
 	 * The market we are keeping statistics on.
 	 */
-	protected MarketFacade auction;
+	protected Market auction;
 
-	public AbstractAuctionReport(MarketFacade auction) {
+	public AbstractAuctionReport(Market auction) {
 		this.auction = auction;
 	}
 
 	public AbstractAuctionReport() {
 	}
 
-	public void setAuction(MarketFacade auction) {
+	public void setAuction(Market auction) {
 		this.auction = auction;
 		logger.debug("Set market to " + auction);
 	}
 
-	public MarketFacade getAuction() {
+	public Market getAuction() {
 		return auction;
 	}
 
@@ -77,8 +74,14 @@ public abstract class AbstractAuctionReport implements AuctionReport, Resetable,
 		return new HashMap<Object,Number>();
 	}
 	
+	@Override
+	public String getName() {
+		return null;
+	}
 
 	public void produceUserOutput() {
 	}
+	
+	
 
 }

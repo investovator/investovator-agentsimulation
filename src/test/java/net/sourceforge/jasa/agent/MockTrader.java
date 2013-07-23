@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,7 +20,7 @@ import net.sourceforge.jabm.EventScheduler;
 import net.sourceforge.jabm.event.AgentArrivalEvent;
 import net.sourceforge.jasa.event.MarketEvent;
 import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -61,30 +61,26 @@ public class MockTrader extends SimpleTradingAgent {
 		this.test = test;
 	}
 
-	// public void informOfSeller( Auction market, Shout winningShout,
-	// TradingAgent seller, double price, int quantity ) {
-	// super.informOfSeller(market, winningShout, seller, price, quantity);
-	// test.assertTrue(((AbstractTradingAgent) seller).isSeller());
-	// System.out.println(this + ": winning shout " + winningShout + " at price "
-	// + price + " and quantity " + quantity + " and seller: " + seller);
-	// lastWinningShout = winningShout;
-	// lastWinningPrice = price;
-	// purchaseFrom(market, (AbstractTradingAgent) seller, quantity, price);
-	// }
-	//
-	// public void informOfBuyer( Auction market, TradingAgent buyer, double
-	// price,
-	// int quantity ) {
-	// super.informOfBuyer(market, buyer, price, quantity);
-	// test.assertTrue(((AbstractTradingAgent) buyer).isBuyer());
-	// lastWinningPrice = price;
-	// lastWinningShout = getCurrentShout();
-	// }
-
 	public MockTrader(TestCase test, int stock, double funds, double privateValue,
 			TradingStrategy strategy, EventScheduler scheduler) {
 		super(stock, funds, privateValue, strategy, scheduler);
 		this.test = test;
+	}
+
+	public MockTrader(TestCase test,
+			int stock, double funds, double privateValue,
+			MockStrategy strategy1, MarketSimulation auction) {
+		this(test, stock, funds, privateValue, strategy1, auction.getSimulationController());
+	}
+
+	public MockTrader(TestCase test, int stock, double funds, double privateValue,
+			MarketSimulation auction) {
+		this(test, stock, funds, privateValue, auction.getSimulationController());
+	}
+
+	public MockTrader(TestCase test, int stock, int funds,
+			MarketSimulation auction) {
+		this(test, stock, funds, auction.getSimulationController());
 	}
 
 	@Override
@@ -119,7 +115,7 @@ public class MockTrader extends SimpleTradingAgent {
 	public void onMarketClosed(MarketEvent event) {
 		super.onMarketClosed(event);
 		logger.debug(this + ": recieved auctionClosed()");
-		((MarketFacade) event.getAuction()).remove(this);
+		event.getAuction().remove(this);
 		receivedAuctionClosed = true;
 		receivedAuctionClosedAfterAuctionOpen = receivedAuctionOpen;
 	}
@@ -130,8 +126,6 @@ public class MockTrader extends SimpleTradingAgent {
 		receivedEndOfDayAfterRequestShout = day <= requestShoutDay;
 	}
 
-	
-	
 	public boolean active() {
 		return true;
 	}

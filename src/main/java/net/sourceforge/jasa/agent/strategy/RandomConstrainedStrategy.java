@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -44,7 +44,7 @@ import cern.jet.random.AbstractContinousDistribution;
  * </table>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.10 $
  */
 
 public class RandomConstrainedStrategy extends FixedDirectionStrategy
@@ -64,9 +64,9 @@ public class RandomConstrainedStrategy extends FixedDirectionStrategy
 		double markup = markupDistribution.nextDouble();
 		double price = 0;
 		if (isBuy()) {
-			price = agent.getValuation(auction) - markup;
+			price = getAgent().getValuation(auction) - markup;
 		} else {
-			price = agent.getValuation(auction) + markup;
+			price = getAgent().getValuation(auction) + markup;
 		}
 		if (price > 0) {
 			shout.setPrice(price);

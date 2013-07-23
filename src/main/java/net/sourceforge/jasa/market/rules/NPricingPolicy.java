@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +18,6 @@ package net.sourceforge.jasa.market.rules;
 import java.io.Serializable;
 
 import net.sourceforge.jabm.util.FixedLengthQueue;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.market.MarketQuote;
 import net.sourceforge.jasa.market.Order;
@@ -31,33 +30,13 @@ import org.apache.log4j.Logger;
  * case of the price falls out of the range between the current bid and ask, the
  * nearest boundary is used.
  * 
- * <p>
- * <b>Parameters </b>
- * </p>
- * 
- * <table>
- * 
- * <tr>
- * <td valign=top><i>base </i> <tt>.n</tt><br>
- * <font size=-1>int >= 1 </font></td>
- * <td valign=top>(the number of latest successful shout pairs used to
- * determine next clearing price)</td>
- * <tr>
- * 
- * </table>
- * 
  * @author Jinzhong Niu
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.4 $
  */
 
-public class NPricingPolicy implements PricingPolicy, Resetable, Serializable,
-    Parameterizable {
+public class NPricingPolicy implements PricingPolicy, Resetable, Serializable {
 
 	protected int n;
-
-	public static final String P_N = "n";
-
-	public static final String P_DEF_BASE = "npricingpolicy";
 
 	protected FixedLengthQueue queue;
 

@@ -6,7 +6,7 @@
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
-                value="%m%n"/>
+                value="%C{1} | %m%n"/>
         </layout>
     </appender>
     
@@ -23,5 +23,5 @@
     	<level value="INFO"/>
     	<appender-ref ref="CONSOLE"/>
     </root>
-    
+	
 </log4j:configuration>

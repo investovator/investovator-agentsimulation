@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -27,7 +27,7 @@ import net.sourceforge.jasa.market.Order;
  * current valuation.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.8 $
  */
 
 public class ProportionalMarkupStrategy extends FixedDirectionStrategy
@@ -60,11 +60,11 @@ public class ProportionalMarkupStrategy extends FixedDirectionStrategy
 	public boolean modifyShout(Order shout) {
 		double delta;
 		if (isSell()) {
-			delta = markup * agent.getValuation(auction);
+			delta = markup * getAgent().getValuation(auction);
 		} else {
-			delta = -markup * agent.getValuation(auction);
+			delta = -markup * getAgent().getValuation(auction);
 		}
-		shout.setPrice(agent.getValuation(auction) + delta);
+		shout.setPrice(getAgent().getValuation(auction) + delta);
 		shout.setQuantity(quantity);
 		if (shout.getPrice() < 0) {
 			shout.setPrice(0);

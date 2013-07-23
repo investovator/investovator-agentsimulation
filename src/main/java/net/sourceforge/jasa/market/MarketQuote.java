@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,7 +21,7 @@ import java.io.Serializable;
  * A price quote summarising the current state of an market.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.8 $
  */
 
 public class MarketQuote implements Serializable {
@@ -77,19 +77,19 @@ public class MarketQuote implements Serializable {
 	}
 	
 	public boolean isValid() {
-		return isValid(ask) && isValid(bid);
+		return isValid(ask) || isValid(bid);
 	}
 	
 	public double getMidPoint() {	
 		if (!isValid()) {
 			return Double.NaN;
 		}
-//		if (!isValid(ask)) {
-//			return bid;
-//		}
-//		if (!isValid(bid)) {
-//			return ask;
-//		}
+		if (!isValid(ask)) {
+			return bid;
+		}
+		if (!isValid(bid)) {
+			return ask;
+		}
 		return (ask + bid) / 2.0;
 	}
 

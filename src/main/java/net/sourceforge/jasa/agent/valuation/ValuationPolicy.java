@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,23 +15,22 @@
 
 package net.sourceforge.jasa.agent.valuation;
 
-import net.sourceforge.jabm.EventScheduler;
-import net.sourceforge.jabm.util.Parameterizable;
+import net.sourceforge.jabm.event.EventSubscriber;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.agent.TradingAgent;
 import net.sourceforge.jasa.event.MarketEventListener;
 import net.sourceforge.jasa.market.Market;
 
-
-
 /**
- * A commodity valuation policy for RoundRobinTrader agents.
+ * A valuation policy for trading agents.  The valuation policy
+ * is responsible for determining the long-run expected value of the 
+ * asset or commodity being traded in the specified market.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.10 $
  */
 
-public interface ValuationPolicy extends Resetable, Parameterizable,
+public interface ValuationPolicy extends Resetable, EventSubscriber,
     MarketEventListener {
 
 	/**
@@ -46,9 +45,9 @@ public interface ValuationPolicy extends Resetable, Parameterizable,
 	public void consumeUnit(Market auction);
 
 	public void setAgent(TradingAgent agent);
+	
+	public TradingAgent getAgent();
 
 	public void initialise();
-
-	public void subscribeToEvents(EventScheduler scheduler);
 
 }

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,29 +15,31 @@
 
 package net.sourceforge.jasa.agent;
 
+import net.sourceforge.jabm.EventScheduler;
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jasa.agent.strategy.AbstractTradingStrategy;
+import net.sourceforge.jasa.agent.strategy.TradeDirectionPolicy;
 import net.sourceforge.jasa.market.Market;
+import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.Order;
-
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.15 $
  */
 
-public class MockStrategy extends AbstractTradingStrategy {
+public class MockStrategy extends AbstractTradingStrategy implements TradeDirectionPolicy {
 
 	protected int currentShout = 0;
 
 	public Order[] shouts;
 
-	public MockStrategy(Order[] shouts) {
+	public MockStrategy(Order[] shouts, MarketSimulation marketSimulation) {
 		this.shouts = shouts;
+		setScheduler(marketSimulation.getSimulationController());
+		setTradeDirectionPolicy(this);
 	}
-
-	
 
 	@Override
 	public void subscribeToEvents() {
@@ -70,12 +72,17 @@ public class MockStrategy extends AbstractTradingStrategy {
 		Order current = shouts[currentShout];
 		shout.setPrice(current.getPrice());
 		shout.setQuantity(current.getQuantity());
-		shout.setIsBid(current.isBid());
+//		shout.setIsBid(current.isBid());
 		System.out.println("Placing order " + shout);
 		return true;
 	}
 	
 	public boolean isBuy() {
+		return shouts[currentShout].isBid();
+	}
+
+	@Override
+	public boolean isBuy(Market market, TradingAgent agent) {
 		return shouts[currentShout].isBid();
 	}
 

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,18 +18,19 @@ package net.sourceforge.jasa.report;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationFinishedEvent;
 import net.sourceforge.jasa.event.MarketClosedEvent;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 
 /**
  * A historicalDataReport that performs additional calculations at the end of an market
  * before producing its results.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.11 $
+ * @deprecated
  */
 public abstract class AbstractMarketStatsReport extends AbstractAuctionReport {
 
-	public AbstractMarketStatsReport(MarketFacade auction) {
+	public AbstractMarketStatsReport(Market auction) {
 		super(auction);
 	}
 

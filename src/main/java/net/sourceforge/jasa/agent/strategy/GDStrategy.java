@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * @see net.sourceforge.jasa.report.HistoricalDataReport
  * 
  * @author Marek Marcinkiewicz
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.12 $
  */
 
 public class GDStrategy extends FixedDirectionStrategy implements
@@ -205,7 +205,7 @@ public class GDStrategy extends FixedDirectionStrategy implements
 
 		assert p1 >= 0 && p1 <= (1 + 10E-6) && p2 >= 0 && p2 <= (1 + 10E-6);
 
-		double pvalue = agent.getValuation(auction);
+		double pvalue = getAgent().getValuation(auction);
 
 		// double denom = (-6 * a1 * a1 * a2 * a2) + (4 * a1 * a1 * a1 * a2)
 		// + (4 * a1 * a2 * a2 * a2) + (-1 * a1 * a1 * a1 * a1)

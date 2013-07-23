@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ import cern.jet.random.engine.RandomEngine;
 /**
  * 
  * @author Steve Phelps
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.5 $
  */
 
 public class SimpleMomentumStrategy extends MomentumStrategy implements
@@ -36,9 +36,9 @@ public class SimpleMomentumStrategy extends MomentumStrategy implements
 	}
 
 	protected void adjustMargin() {
-		if (agent.lastOrderFilled()) {
+		if (getAgent().lastOrderFilled()) {
 			adjustMargin(1.0);
-		} else if (agent.active()) {
+		} else if (getAgent().active()) {
 			adjustMargin(0);
 		}
 	}

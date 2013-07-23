@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -46,7 +46,7 @@ import org.jfree.data.time.TimePeriodValue;
  * A class updates values of major ReportVariables on ReportVariableBoard.
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.13 $
  * 
  * @deprecated See ReportVariables interface and its implementors.
  */
@@ -161,7 +161,7 @@ public class ReportVariableBoardUpdater extends AbstractAuctionReport implements
 			transPriceAuction.devSquareSum += Math.pow(
 			    ((TransactionExecutedEvent) event).getPrice() - equilPrice, 2);
 		} else if (event instanceof MarketOpenEvent) {
-			EquilibriumReport eqmReport = new EquilibriumReport(getAuction());
+			EquilibriumReportVariables eqmReport = new EquilibriumReportVariables(getAuction());
 			eqmReport.calculate();
 			equilPrice = eqmReport.calculateMidEquilibriumPrice();
 			ReportVariableBoard.getInstance().reportValue(EQUIL_PRICE,

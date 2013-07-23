@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,8 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.sourceforge.jabm.util.Parameterizable;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 
 /**
  * The class for expressing the combination of timing conditions.
@@ -36,12 +35,12 @@ import net.sourceforge.jasa.market.MarketFacade;
  * <tr>
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.8 $
  * 
  */
 
 public class CombiTimingCondition extends TimingCondition implements
-    Parameterizable, AuctionClosingCondition, DayEndingCondition {
+     AuctionClosingCondition, DayEndingCondition {
 
 	protected List<TimingCondition> conditions = null;
 
@@ -92,7 +91,7 @@ public class CombiTimingCondition extends TimingCondition implements
 		return conditions.iterator();
 	}
 
-	public void setAuction(MarketFacade auction) {
+	public void setAuction(Market auction) {
 		super.setAuction(auction);
 		Iterator<TimingCondition> i = conditionIterator();
 		while (i.hasNext()) {

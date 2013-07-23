@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,7 +21,7 @@ import net.sourceforge.jabm.report.DataWriter;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.market.AscendingOrderComparator;
 import net.sourceforge.jasa.market.DescendingOrderComparator;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * or a swing table.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.9 $
  */
 
 public class ReportedSupplyAndDemandStats extends SupplyAndDemandStats {
@@ -51,7 +51,7 @@ public class ReportedSupplyAndDemandStats extends SupplyAndDemandStats {
 
 	static Logger logger = Logger.getLogger(TrueSupplyAndDemandStats.class);
 
-	public ReportedSupplyAndDemandStats(MarketFacade auction,
+	public ReportedSupplyAndDemandStats(Market auction,
 	    DataWriter supplyStats, DataWriter demandStats) {
 		super(auction, supplyStats, demandStats);
 	}

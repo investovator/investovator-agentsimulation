@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,7 +17,6 @@ package net.sourceforge.jasa.report;
 
 import java.util.Vector;
 
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.SummaryStats;
 import net.sourceforge.jasa.event.EndOfDayEvent;
 import net.sourceforge.jasa.event.MarketEvent;
@@ -28,11 +27,10 @@ import org.apache.log4j.Logger;
  * A historicalDataReport that collects price statistics for each trading day.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.6 $
  */
 
-public class DailyStatsReport extends PriceStatisticsReport implements
-    Parameterizable {
+public class DailyStatsReport extends PriceStatisticsReport {
 
 	protected Vector<SummaryStats[]> dailyStats;
 

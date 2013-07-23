@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,10 +19,10 @@ import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 
 /**
- * An event that is fired every time a good is sold in an market.
+ * An event that is fired every time an order is fulfilled.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.5 $
  */
 
 public class TransactionExecutedEvent extends MarketEvent {

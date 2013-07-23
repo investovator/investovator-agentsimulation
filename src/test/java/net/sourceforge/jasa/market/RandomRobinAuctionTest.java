@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -17,6 +17,10 @@ package net.sourceforge.jasa.market;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.sourceforge.jabm.Population;
+import net.sourceforge.jabm.SpringSimulationController;
+import net.sourceforge.jabm.init.BasicAgentInitialiser;
+import net.sourceforge.jabm.mixing.RandomRobinAgentMixer;
 import net.sourceforge.jasa.agent.MockStrategy;
 import net.sourceforge.jasa.agent.MockTrader;
 import net.sourceforge.jasa.market.auctioneer.AbstractAuctioneer;
@@ -32,22 +36,10 @@ import cern.jet.random.engine.RandomEngine;
 
 public class RandomRobinAuctionTest extends TestCase {
 
-	/**
-	 * @uml.property name="auctioneer"
-	 * @uml.associationEnd
-	 */
 	Auctioneer auctioneer;
 
-	/**
-	 * @uml.property name="market"
-	 * @uml.associationEnd
-	 */
-	MarketFacade auction;
+	MarketSimulation auction;
 
-	/**
-	 * @uml.property name="traders"
-	 * @uml.associationEnd multiplicity="(0 -1)"
-	 */
 	MockTrader[] traders;
 	
 	protected RandomEngine prng;
@@ -69,17 +61,17 @@ public class RandomRobinAuctionTest extends TestCase {
 		MockTrader trader = traders[0];
 		trader.setStrategy(new MockStrategy(new Order[] {
 		    new Order(trader, 1, 500, true), new Order(trader, 1, 600, true),
-		    new Order(trader, 1, 700, true) }));
+		    new Order(trader, 1, 700, true) }, auction));
 
 		trader = traders[1];
 		trader.setStrategy(new MockStrategy(new Order[] {
 		    new Order(trader, 1, 500, true), new Order(trader, 1, 550, true),
-		    new Order(trader, 1, 750, true) }));
+		    new Order(trader, 1, 750, true) }, auction));
 
 		trader = traders[2];
 		trader.setStrategy(new MockStrategy(new Order[] {
 		    new Order(trader, 1, 900, false), new Order(trader, 1, 950, false),
-		    new Order(trader, 1, 725, false) }));
+		    new Order(trader, 1, 725, false) }, auction));
 		
 		for (int i = 0; i < traders.length; i++) {
 			System.out.println("Registering trader " + traders[i]);
@@ -101,7 +93,11 @@ public class RandomRobinAuctionTest extends TestCase {
 	}
 
 	public void setUpAuction() {
-		auction = new MarketFacade(prng);
+		auction = new MarketSimulation();
+		auction.setSimulationController(new SpringSimulationController());
+		auction.setPopulation(new Population());
+		auction.setAgentMixer(new RandomRobinAgentMixer(prng));
+		auction.setAgentInitialiser(new BasicAgentInitialiser());
 		auction.setMaximumRounds(3);
 	}
 
@@ -170,7 +166,9 @@ public class RandomRobinAuctionTest extends TestCase {
 
 	public void testProtocol() {
 
-		assertTrue(auction.getNumberOfTraders() == traders.length);
+		int n = auction.getNumberOfTraders();
+		System.out.println("Simulation reports " + n + " traders");
+		assertTrue(n == traders.length);
 		assertTrue(!auction.closed());
 
 		auction.setMaximumRounds(2);
@@ -310,10 +308,7 @@ public class RandomRobinAuctionTest extends TestCase {
 		auction.clear(testAsk, testBid, 200, 200, testQty);
 
 		// Test that 2 units were transfered from seller to buyer
-		// Note that the buyer will immediately cash-in the stock so
-		// net qty should remain unchanged
-		// @see net.sourceforge.jasa.agent.AbstractTradingAgent.cashIn()
-		assertTrue(buyer.getCommodityHolding().getQuantity() == buyerInitial + 0);
+		assertTrue(buyer.getCommodityHolding().getQuantity() == buyerInitial + 2);
 
 		// Test that 2 units were transfered from the seller
 		assertTrue(seller.getCommodityHolding().getQuantity() == sellerInitial

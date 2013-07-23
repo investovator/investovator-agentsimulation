@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * </p>
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 
 public class GenericAuctioneer extends TransparentAuctioneer implements

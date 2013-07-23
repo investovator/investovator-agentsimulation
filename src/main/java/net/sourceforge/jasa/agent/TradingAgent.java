@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -29,37 +29,16 @@ import net.sourceforge.jasa.market.Order;
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.12 $
  */
 
 public interface TradingAgent extends Agent, MarketEventListener {
 	
 	public boolean register(Market market);
-	
-	/**
-	 * Request a shout from this trader. The trader will perform any bidding
-	 * activity in this method and return when it is done. An market invokes this
-	 * method on a trader when it is the traders "turn" to bid in that market.
-	 * 
-	 * @param market
-	 *          The market in which to trade
-	 */
-//	public void onAgentArrival(Market auction);
-
-	/**
-	 * Returns true if the agent is a buyer in the specified market.
-	 */
-//	public boolean isBuyer(Market auction);
-
-	/**
-	 * Returns true if the agent is a seller in the specified market.
-	 */
-	//TODO delete
-//	public boolean isSeller(Market auction);
 
 	public Account getAccount();
 
-	public CommodityHolding getCommodityHolding();
+	public Inventory getCommodityHolding();
 
 	public void orderFilled(Market auction, Order shout, double price,
 	    int quantity);

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@ import cern.jet.random.engine.RandomEngine;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.8 $
  */
 
 public class PriestVanTolStrategy extends MomentumStrategy implements
@@ -76,7 +76,7 @@ public class PriestVanTolStrategy extends MomentumStrategy implements
 
 	protected double calculatePrice(double margin) {
 		double price = super.calculatePrice(margin);
-		if (!agent.active()) {
+		if (!getAgent().active()) {
 			if (isBuy()) {
 				if (price > currentPrice) {
 					return currentPrice;

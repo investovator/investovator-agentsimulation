@@ -6,156 +6,22 @@
 
     <groupId>org.investovator</groupId>
     <artifactId>jasa</artifactId>
-    <version>1.1.investovatorv1</version>
+    <version>1.2_01investovatorv0.1</version>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>3.0.5.RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-asm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>3.0.5.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections-testframework</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math</artifactId>
-            <version>2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-3d</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>java3d</groupId>
-                    <artifactId>j3d-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>java3d</groupId>
-                    <artifactId>vecmath</artifactId>
-                </exclusion>
-            </exclusions>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-3d-demos</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-algorithms</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-graph-impl</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-io</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-jai</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-samples</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.collections</groupId>
-            <artifactId>collections-generic</artifactId>
-            <version>4.01</version>
-        </dependency>
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-adapters</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>bsh</groupId>
-            <artifactId>bsh</artifactId>
-            <version>2.0b4</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-        </dependency>
-
-    <!--local jars in lib folder-->
-        <dependency>
             <groupId>net.sourceforge.jabm</groupId>
             <artifactId>jabm</artifactId>
-            <version>0.6</version>
+            <version>0.8</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/jabm-0.6.jar</systemPath>
+            <systemPath>${basedir}/lib/jabm-0.8-with-libs.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.repast</groupId>
-            <artifactId>repast</artifactId>
-            <version>3.1</version>
+            <groupId>org.ta-lib</groupId>
+            <artifactId>ta-lib</artifactId>
+            <version>0.4.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/repastj-3.1.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.go.trove</groupId>
-            <artifactId>trove-repast</artifactId>
-            <version>3.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/ptplot-repast.jar</systemPath>
+            <systemPath>${project.basedir}/lib/ta-lib-0.4.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.go.trove</groupId>
@@ -165,4 +31,5 @@
             <systemPath>${basedir}/lib/trove-3.0.0a7.jar</systemPath>
         </dependency>
     </dependencies>
+    
 </project>

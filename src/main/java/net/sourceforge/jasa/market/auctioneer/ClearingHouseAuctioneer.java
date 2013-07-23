@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@ import net.sourceforge.jasa.market.rules.UniformPricingPolicy;
  * performed at the end of every round.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 
 public class ClearingHouseAuctioneer extends TransparentAuctioneer implements

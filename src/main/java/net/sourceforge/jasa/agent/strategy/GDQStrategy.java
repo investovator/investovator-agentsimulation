@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * @see net.sourceforge.jasa.report.HistoricalDataReport
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.11 $
  */
 
 public class GDQStrategy extends FixedDirectionStrategy implements
@@ -209,7 +209,7 @@ public class GDQStrategy extends FixedDirectionStrategy implements
 			assert p1 >= 0 && p1 <= (1 + 10E-6) && p2 >= 0 && p2 <= (1 + 10E-6);
 		}
 
-		double pvalue = agent.getValuation(auction);
+		double pvalue = getAgent().getValuation(auction);
 
 		double a12 = a1 - a2;
 		double alpha2 = (s * a12 - (p1 - p2)) / (a12 * a12);

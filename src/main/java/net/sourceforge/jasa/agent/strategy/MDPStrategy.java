@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -31,7 +31,7 @@ import net.sourceforge.jasa.market.MarketQuote;
  * rounds. The current market-quote is hashed to produce an integer state value.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.7 $
  *          </p>
  */
 
@@ -70,7 +70,7 @@ public class MDPStrategy extends DiscreteLearnerStrategy implements
 	}
 
 	public void learn(Market auction) {
-		learner.newState(agent.getLastPayoff(), auctionState(auction));
+		learner.newState(getAgent().getLastPayoff(), auctionState(auction));
 	}
 
 	/**

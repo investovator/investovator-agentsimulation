@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,13 +18,17 @@ package net.sourceforge.jasa.replication.zi;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.sourceforge.jabm.Population;
+import net.sourceforge.jabm.SpringSimulationController;
+import net.sourceforge.jabm.init.BasicAgentInitialiser;
 import net.sourceforge.jabm.learning.WidrowHoffLearner;
+import net.sourceforge.jabm.mixing.RandomRobinAgentMixer;
 import net.sourceforge.jasa.agent.TokenTradingAgent;
 import net.sourceforge.jasa.agent.strategy.ZIPStrategy;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.auctioneer.ClearingHouseAuctioneer;
 import net.sourceforge.jasa.report.AuctionReport;
-import net.sourceforge.jasa.report.EquilibriumReport;
+import net.sourceforge.jasa.report.EquilibriumReportVariables;
 import net.sourceforge.jasa.sim.PRNGTestSeeds;
 
 import org.apache.log4j.Logger;
@@ -33,40 +37,16 @@ import cern.jet.random.engine.MersenneTwister64;
 
 public class ZIPStrategyTest extends TestCase {
 
-	/**
-	 * @uml.property name="buyers"
-	 * @uml.associationEnd multiplicity="(0 -1)"
-	 */
 	TokenTradingAgent[] buyers;
 
-	/**
-	 * @uml.property name="sellers"
-	 * @uml.associationEnd multiplicity="(0 -1)"
-	 */
 	TokenTradingAgent[] sellers;
 
-	/**
-	 * @uml.property name="market"
-	 * @uml.associationEnd
-	 */
-	MarketFacade auction;
+	MarketSimulation auction;
 
-	/**
-	 * @uml.property name="auctioneer"
-	 * @uml.associationEnd
-	 */
 	ClearingHouseAuctioneer auctioneer;
 
-	/**
-	 * @uml.property name="marketDataLogger"
-	 * @uml.associationEnd
-	 */
 	AuctionReport marketDataLogger;
 
-	/**
-	 * @uml.property name="prng"
-	 * @uml.associationEnd multiplicity="(1 1)"
-	 */
 	MersenneTwister64 prng = new MersenneTwister64(PRNGTestSeeds.UNIT_TEST_SEED);
 
 	static final int NUM_ROUNDS = 1000;
@@ -87,11 +67,15 @@ public class ZIPStrategyTest extends TestCase {
 
 	public ZIPStrategyTest(String name) {
 		super(name);
-//		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.BasicConfigurator.configure();
 	}
 
 	public void setUp() {
-		auction = new MarketFacade(prng);
+		auction = new MarketSimulation();
+		auction.setSimulationController(new SpringSimulationController());
+		auction.setPopulation(new Population());
+		auction.setAgentMixer(new RandomRobinAgentMixer(prng));
+		auction.setAgentInitialiser(new BasicAgentInitialiser());
 		auctioneer = new ClearingHouseAuctioneer(auction);
 		auction.setAuctioneer(auctioneer);
 		auction.setMaximumRounds(NUM_ROUNDS);
@@ -102,26 +86,25 @@ public class ZIPStrategyTest extends TestCase {
 		sellers = new TokenTradingAgent[NUM_SELLERS];
 		registerTraders(buyers, false);
 		registerTraders(sellers, true);
-		EquilibriumReport eqStats = new EquilibriumReport(auction);
+		EquilibriumReportVariables eqStats = 
+				new EquilibriumReportVariables(auction);
 		eqStats.calculate();
 		logger.info(eqStats);
 	}
 
 	public void testReplication() {
-		for (int day = 0; day < NUM_DAYS; day++) {
-			logger.debug("Day " + day);
+//		for (int day = 0; day < NUM_DAYS; day++) {
+//			logger.debug("Day " + day);
 			auction.run();
-//			auction.generateReport();
-			auction.reset();
-
-		}
+//			auction.reset();
+//		}
 	}
 
 	public void registerTraders(TokenTradingAgent[] traders, boolean areSellers) {
 		double privValue = PRIV_VALUE_RANGE_MIN;
 		for (int i = 0; i < traders.length; i++) {
 			traders[i] = new TokenTradingAgent(privValue, TRADE_ENTITLEMENT,
-					auction);
+					auction.getSimulationController());
 			ZIPStrategy strategy = new ZIPStrategy(prng);
 			strategy.setBuy(!areSellers);
 			double learningRate = 0.1 + prng.nextDouble() * 0.4;
@@ -129,6 +112,7 @@ public class ZIPStrategyTest extends TestCase {
 					prng);
 			strategy.setLearner(learner);
 			traders[i].setStrategy(strategy);
+			strategy.setAgent(traders[i]);
 			auction.register(traders[i]);
 			privValue += PRIV_VALUE_INCREMENT;
 		}

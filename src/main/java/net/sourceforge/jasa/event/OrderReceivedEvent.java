@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ import net.sourceforge.jasa.market.Order;
  * represents a shout is received and placed.
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class OrderReceivedEvent extends MarketEvent {

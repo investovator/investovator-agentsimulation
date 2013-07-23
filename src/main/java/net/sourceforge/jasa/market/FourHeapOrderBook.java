@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,16 +17,18 @@ package net.sourceforge.jasa.market;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.TreeSet;
 
-import org.apache.commons.collections.buffer.PriorityBuffer;
 import org.apache.commons.collections.iterators.CollatingIterator;
 import org.apache.log4j.Logger;
 
 /**
  * <p>
- * This class provides market shout management services using the 4-Heap
+ * This class provides market order-matching services using the 4-Heap
  * algorithm. See:
  * </p>
  * 
@@ -35,13 +37,8 @@ import org.apache.log4j.Logger;
  * by Wurman, Walsh and Wellman 1998.
  * </p>
  * 
- * <p>
- * All state is maintained in memory resident data structures and no crash
- * recovery is provided.
- * </p>
- * 
  * @author Steve Phelps
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.17 $
  */
 
 public class FourHeapOrderBook implements OrderBook, Serializable {
@@ -49,26 +46,32 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	/**
 	 * Matched bids in ascending order
 	 */
-	protected PriorityBuffer bIn = new PriorityBuffer(greaterThan);
+	protected PriorityQueue<Order> bIn = new PriorityQueue<Order>(
+			new TreeSet<Order>(greaterThan));
 
 	/**
 	 * Unmatched bids in descending order
 	 */
-	protected PriorityBuffer bOut = new PriorityBuffer(lessThan);
+	protected PriorityQueue<Order> bOut = new PriorityQueue<Order>(
+			new TreeSet<Order>(lessThan));
 
 	/**
 	 * Matched asks in descending order
 	 */
-	protected PriorityBuffer sIn = new PriorityBuffer(lessThan);
+	protected PriorityQueue<Order> sIn = new PriorityQueue<Order>(
+			new TreeSet<Order>(lessThan));
 
 	/**
 	 * Unmatched asks in ascending order
 	 */
-	protected PriorityBuffer sOut = new PriorityBuffer(greaterThan);
+	protected PriorityQueue<Order> sOut = new PriorityQueue<Order>(
+			new TreeSet<Order>(greaterThan));
 
-	protected static AscendingOrderComparator greaterThan = new AscendingOrderComparator();
+	protected static AscendingOrderComparator greaterThan = 
+			new AscendingOrderComparator();
 
-	protected static DescendingOrderComparator lessThan = new DescendingOrderComparator();
+	protected static DescendingOrderComparator lessThan = 
+			new DescendingOrderComparator();
 
 	static Logger logger = Logger.getLogger(FourHeapOrderBook.class);
 
@@ -76,14 +79,13 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		initialise();
 	}
 
-	public synchronized void remove(Order shout) {
-		preRemovalProcessing();
+	public void remove(Order shout) {
 		if (shout.isAsk()) {
 			removeAsk(shout);
 		} else {
 			removeBid(shout);
 		}
-		postRemovalProcessing();
+		checkIntegrity();
 	}
 
 	protected void removeAsk(Order shout) {
@@ -119,7 +121,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	}
 
 	@SuppressWarnings("all")
-	public void prettyPrint(String title, PriorityBuffer shouts) {
+	public void prettyPrint(String title, PriorityQueue shouts) {
 		logger.info(title);
 		logger.info("--------------");		
 		Iterator i = shouts.iterator();
@@ -139,7 +141,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	 *          The shout to insert
 	 * 
 	 */
-	private static void insertShout(PriorityBuffer heap, Order shout)
+	private static void insertShout(PriorityQueue<Order> heap, Order shout)
 	    throws DuplicateShoutException {
 		try {
 			heap.add(shout);
@@ -173,7 +175,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		if (bOut.isEmpty()) {
 			return null;
 		}
-		return (Order) bOut.get();
+		return (Order) bOut.peek();
 	}
 
 	/**
@@ -183,7 +185,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		if (bIn.isEmpty()) {
 			return null;
 		}
-		return (Order) bIn.get();
+		return (Order) bIn.peek();
 	}
 
 	/**
@@ -193,7 +195,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		if (sOut.isEmpty()) {
 			return null;
 		}
-		return (Order) sOut.get();
+		return (Order) sOut.peek();
 	}
 
 	/**
@@ -203,7 +205,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		if (sIn.isEmpty()) {
 			return null;
 		}
-		return (Order) sIn.get();
+		return (Order) sIn.peek();
 	}
 
 	/**
@@ -219,9 +221,9 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	 * @return A reference to the, possibly modified, shout.
 	 * 
 	 */
-	protected static Order unifyShout(Order shout, PriorityBuffer heap) {
+	protected static Order unifyShout(Order shout, PriorityQueue<Order> heap) {
 
-		Order top = (Order) heap.get();
+		Order top = (Order) heap.peek();
 
 		if (shout.getQuantity() > top.getQuantity()) {
 			shout = shout.splat(shout.getQuantity() - top.getQuantity());
@@ -235,17 +237,16 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		return shout;
 	}
 
-	protected int displaceShout(Order shout, PriorityBuffer from,
-	    PriorityBuffer to) throws DuplicateShoutException {
+	protected int displaceShout(Order shout, PriorityQueue<Order> from,
+			PriorityQueue<Order> to) throws DuplicateShoutException {
 		shout = unifyShout(shout, from);
 		to.add(from.remove());
 		insertShout(from, shout);
 		return shout.getQuantity();
 	}
 
-	public int promoteShout(Order shout, PriorityBuffer from, PriorityBuffer to,
-	    PriorityBuffer matched) throws DuplicateShoutException {
-
+	public int promoteShout(Order shout, PriorityQueue<Order> from, PriorityQueue<Order> to,
+			PriorityQueue<Order> matched) throws DuplicateShoutException {
 		shout = unifyShout(shout, from);
 		insertShout(matched, shout);
 		to.add(from.remove());
@@ -281,6 +282,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 		} else {
 			addAsk(shout);
 		}
+		checkIntegrity();
 	}
 
 	protected void addBid(Order bid) throws DuplicateShoutException {
@@ -293,7 +295,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 			Order sOutTop = getLowestUnmatchedAsk();
 			Order bInTop = getLowestMatchedBid();
 
-			if (sOutTop != null && bidVal >= sOutTop.getPrice()
+			if (sOutTop != null && sOutTop.matches(bid)
 			    && (bInTop == null || bInTop.getPrice() >= sOutTop.getPrice())) {
 
 				// found match
@@ -322,7 +324,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 
 			if (bOutTop != null && bOutTop.matches(ask)
 			    && (sInTop == null || sInTop.matches(bOutTop))) {
-
+				//TODO alter logic so that this maintains heap constraints
 				uninsertedUnits -= promoteHighestUnmatchedBid(ask);
 
 			} else if (sInTop != null && ask.getPrice() <= sInTop.getPrice()) {
@@ -336,23 +338,13 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 
 			}
 		}
+
 	}
 
-	/*
-	 * public void newShout( Shout shout ) throws DuplicateShoutException { if (
-	 * shout.isAsk() ) { newAsk(shout); } else { newBid(shout); } }
-	 */
-
-	// protected Iterator matchedBidDisassembler() {
-	// return new QueueDisassembler(bIn);
-	// }
-	//
-	// protected Iterator matchedAskDisassembler() {
-	// return new QueueDisassembler(sIn);
-	// }
 	@SuppressWarnings("unchecked")
 	public Iterator<Order> askIterator() {
-		return new CollatingIterator(greaterThan, sIn.iterator(), sOut.iterator());
+		return new CollatingIterator(greaterThan, sIn.iterator(),
+				sOut.iterator());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -372,7 +364,8 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	 * </p>
 	 */
 	public List<Order> matchOrders() {
-		ArrayList<Order> result = new ArrayList<Order>(sIn.size() + bIn.size());
+		ArrayList<Order> result = 
+				new ArrayList<Order>(sIn.size() + bIn.size());
 		while (!sIn.isEmpty()) {
 			Order sInTop = (Order) sIn.remove();
 			Order bInTop = (Order) bIn.remove();
@@ -387,15 +380,13 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 				Order remainder = sInTop.split(nS - nB);
 				sIn.add(remainder);
 			}
+			assert bInTop.getAgent() != sInTop.getAgent();
 			result.add(bInTop);
 			result.add(sInTop);
 		}
 		assert bIn.isEmpty();
-
-        //printState();
+		checkIntegrity();
 		return result;
-
-
 	}
 
 	protected void initialise() {
@@ -410,33 +401,17 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	}
 
 	/**
-	 * Sub-classes should override this method if they wish to check market state
-	 * integrity before shout removal. This is useful for testing/debugging.
-	 */
-	protected void preRemovalProcessing() {
-		// Do nothing
-	}
-
-	/**
-	 * Sub-classes should override this method if they wish to check market state
-	 * integrity after shout removal. This is useful for testing/debugging.
-	 */
-	protected void postRemovalProcessing() {
-		// Do nothing
-	}
-
-	/**
 	 * Remove, possibly several, shouts from heap such that quantity(heap) is
-	 * reduced by the supplied quantity and reinsert the shouts using the standard
-	 * insertion logic. quantity(heap) is defined as the total quantity of every
-	 * shout in the heap.
+	 * reduced by the supplied quantity and reinsert the shouts using the
+	 * standard insertion logic. quantity(heap) is defined as the total quantity
+	 * of every shout in the heap.
 	 * 
 	 * @param heap
-	 *          The heap to remove shouts from.
+	 *            The heap to remove shouts from.
 	 * @param quantity
-	 *          The total quantity to remove.
+	 *            The total quantity to remove.
 	 */
-	protected void reinsert(PriorityBuffer heap, int quantity) {
+	protected void reinsert(PriorityQueue<Order> heap, int quantity) {
 
 		while (quantity > 0) {
 
@@ -458,12 +433,65 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 				throw new AuctionRuntimeException("Invalid market state");
 			}
 		}
+		
 	}
 
+	/**
+	 * Compute the total number of orders in the book.
+	 */
+	public int size() {
+		return bIn.size() + bOut.size() + sIn.size() + sOut.size();
+	}
+	
 	@Override
 	public boolean isEmpty() {
 		return bIn.isEmpty() && sIn.isEmpty() && 
 					bOut.isEmpty() && bIn.isEmpty();
+	}
+
+	@Override
+	public int getDepth() {
+		return Math.max(bOut.size(), sOut.size());
+	}
+	
+	@Override
+	public List<Order> getUnmatchedBids() {
+		ArrayList<Order> bids = new ArrayList<Order>(bOut);
+		Collections.sort(bids, lessThan);
+		return bids;
+	}
+
+	@Override
+	public List<Order> getUnmatchedAsks() {
+		ArrayList<Order> asks = new ArrayList<Order>(sOut);
+		Collections.sort(asks, greaterThan);
+		return asks;
+	}
+
+	public void checkIntegrity() {
+		// These conditions are violated when we have unmatched orders from 
+		//	the same trader on both sides of the book.  However this does not 
+		//  appear to violate the integrity of the auction state.  See
+		//  FourHeapTest.testSameSide().
+		
+		//  TODO: Prove this and then update integrity checks to take into
+		//       	account unmatched orders from the same trader.
+		
+//		Order bInTop = getLowestMatchedBid();
+//		Order sInTop = getHighestMatchedAsk();
+//		Order bOutTop = getHighestUnmatchedBid();
+//		Order sOutTop = getLowestUnmatchedAsk();
+//
+//		checkBalanced(bInTop, bOutTop, "bIn >= bOut");
+//		checkBalanced(sOutTop, sInTop, "sOut >= sIn");
+//		checkBalanced(sOutTop, bOutTop, "sOut >= bOut");
+//		checkBalanced(bInTop, sInTop, "bIn >= sIn");
+	}
+	
+	protected void checkBalanced(Order s1, Order s2, String condition) {
+		if (!((s1 == null || s2 == null) || s1.getPrice() >= (s2.getPrice()))) {
+			throw new RuntimeException("Heaps not balanced! - " + condition);
+		}
 	}
 
 }

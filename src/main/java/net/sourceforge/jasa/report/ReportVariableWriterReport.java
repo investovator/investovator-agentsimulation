@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,14 +24,12 @@ import java.util.Observer;
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.report.CSVWriter;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.SummaryStats;
 import net.sourceforge.jasa.event.EndOfDayEvent;
 import net.sourceforge.jasa.event.MarketClosedEvent;
 import net.sourceforge.jasa.event.MarketOpenEvent;
 import net.sourceforge.jasa.event.TransactionExecutedEvent;
 import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketFacade;
 
 import org.apache.log4j.Logger;
 import org.jfree.data.time.TimePeriodValue;
@@ -41,11 +39,11 @@ import org.jfree.data.time.TimePeriodValue;
  * can be used to log data to eg, CSV files, a database backend, etc.
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.10 $
  */
 
 public class ReportVariableWriterReport implements AuctionReport,
-    Parameterizable, Observer {
+     Observer {
 
 	protected static boolean initialized = false;
 
@@ -67,7 +65,7 @@ public class ReportVariableWriterReport implements AuctionReport,
 	/**
 	 * The market we are keeping statistics on.
 	 */
-	protected MarketFacade auction;
+	protected Market auction;
 
 	static DecimalFormat formatter = new DecimalFormat(
 	    "+#########0.000;-#########.000");
@@ -321,7 +319,7 @@ public class ReportVariableWriterReport implements AuctionReport,
 		return new HashMap<Object, Number>();
 	}
 
-	public void setAuction(MarketFacade auction) {
+	public void setAuction(Market auction) {
 		this.auction = auction;
 	}
 
@@ -434,4 +432,11 @@ public class ReportVariableWriterReport implements AuctionReport,
 			}
 		}
 	}
+
+	@Override
+	public String getName() {
+		return null;
+	}
+	
+	
 }

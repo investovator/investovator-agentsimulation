@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,8 +15,6 @@
 
 package net.sourceforge.jasa.market;
 
-
-
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
@@ -25,46 +23,49 @@ import net.sourceforge.jasa.agent.TradingAgent;
 
 /**
  * <p>
- * A class representing a shout in an market. A shout may be either a bid
+ * A class representing an order in an market. An order may be either a bid
  * (offer to buy) or an ask (offer to sell).
  * </p>
  * 
  * <p>
- * Shouts are mutable within this package for performance reasons, hence care
+ * Orders are mutable within this package for performance reasons, hence care
  * should be taken not to rely on, e.g. shouts held in collections remaining
  * constant.
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.14 $
  */
 
 public class Order implements Comparable<Order>, Cloneable, Serializable {
 
 	/**
-	 * The number of items offered/wanted.
+	 * The volume of this order.
 	 */
 	protected int quantity;
 
 	/**
-	 * The price of this offer
+	 * The price of this offer.
 	 */
 	protected double price;
 
 	/**
-	 * The agent placing this offer
+	 * The agent placing this order.
 	 */
 	protected TradingAgent agent;
 
 	/**
-	 * True if this shout is a bid. False if this shout is an ask.
+	 * True if this order is a bid. False if this order is an ask.
 	 */
 	protected boolean isBid;
 	
+	/**
+	 * The time that this order was placed.
+	 */
 	protected SimulationTime timeStamp;
 
 	/**
-	 * The child of this shout.
+	 * The child of this order.
 	 */
 	protected Order child = null;
 
@@ -116,6 +117,11 @@ public class Order implements Comparable<Order>, Cloneable, Serializable {
 		return !isBid;
 	}
 
+	/**
+	 * Check whether two orders "cross"; that is, check whether this order could
+	 * potentially be matched against the supplied order resulting in a
+	 * transaction.
+	 */
 	public boolean matches(Order other) {
 		if (this.getAgent() == other.getAgent()) {
 			return false;
@@ -132,10 +138,17 @@ public class Order implements Comparable<Order>, Cloneable, Serializable {
 			return 1;
 		} else if (price < other.price) {
 			return -1;
+//		} else if (timeStamp != null && timeStamp.getTicks() < other.timeStamp.getTicks()) {
+//			return 1;
+//		} else if (timeStamp != null && timeStamp.getTicks() > other.timeStamp.getTicks()) {
+//			return -1;
+//		} else if (this.hashCode() > other.hashCode()) {
+//			return 1;
+//		} else if (this.hashCode() < other.hashCode()) {
+//			return -1;
 		} else {
 			return 0;
 		}
-		// return new Long(this.price).compareTo(new Long(other.getPrice()));
 	}
 
 	public boolean isValid() {
@@ -143,6 +156,9 @@ public class Order implements Comparable<Order>, Cloneable, Serializable {
 			return false;
 		}
 		if (quantity < 1) {
+			return false;
+		}
+		if (Double.isInfinite(price) || Double.isNaN(price)) {
 			return false;
 		}
 		return true;
@@ -229,21 +245,31 @@ public class Order implements Comparable<Order>, Cloneable, Serializable {
 	 * 
 	 */
 	Order split(int excess) {
-		quantity -= excess;
-		Order newShout = new Order(agent, excess, price, isBid, timeStamp);
-		child = newShout;
-		assert isValid();
-		assert newShout.isValid();
-		return newShout;
+		this.quantity -= excess;
+		try {
+			this.child = null;
+			this.child = (Order) this.clone();
+			this.child.setQuantity(excess);
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+		assert this.isValid();
+		assert child.isValid();
+		return this.child;
 	}
 
 	Order splat(int excess) {
-		Order newShout = new Order(agent, quantity - excess, price, isBid, timeStamp);
-		quantity = excess;
-		child = newShout;
-		assert isValid();
-		assert newShout.isValid();
-		return newShout;
+		try {
+			this.child = null;
+			this.child = (Order) this.clone();
+			this.child.setQuantity(this.quantity - excess);
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+		this.quantity = excess;
+		assert this.isValid();
+		assert child.isValid();
+		return this.child;
 	}
 
 	public void setIsBid(boolean isBid) {

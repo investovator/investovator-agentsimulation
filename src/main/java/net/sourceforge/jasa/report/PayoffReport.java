@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.8 $
  */
 
 public abstract class PayoffReport extends DynamicSurplusReport implements
@@ -44,7 +44,7 @@ public abstract class PayoffReport extends DynamicSurplusReport implements
 
 	public void calculate() {
 		super.calculate();
-		int numAgents = auction.getNumberOfRegisteredTraders();
+		int numAgents = auction.getPopulation().size();
 		double averageSurplus = calculateTotalEquilibriumSurplus() / numAgents;
 		table.clear();
 		Iterator<Agent> i = auction.getTraderIterator();

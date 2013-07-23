@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,9 +21,8 @@ import net.sourceforge.jabm.util.Prototypeable;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.agent.TokenTradingAgent;
 import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketFacade;
 import net.sourceforge.jasa.market.Order;
-import net.sourceforge.jasa.report.EquilibriumReport;
+import net.sourceforge.jasa.report.EquilibriumReportVariables;
 
 /**
  * A strategy which will bid at the true equilibrium price, if profitable, or
@@ -31,7 +30,7 @@ import net.sourceforge.jasa.report.EquilibriumReport;
  * be useful for testing and control experiments.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.10 $
  */
 
 public class EquilibriumPriceStrategy extends FixedDirectionStrategy
@@ -59,8 +58,7 @@ public class EquilibriumPriceStrategy extends FixedDirectionStrategy
 	}
 
 	public boolean modifyShout(Order shout) {
-		EquilibriumReport eqReport = new EquilibriumReport(
-		    (MarketFacade) auction);
+		EquilibriumReportVariables eqReport = new EquilibriumReportVariables(auction);
 		eqReport.calculate();
 		double price = eqReport.calculateMidEquilibriumPrice();
 		TokenTradingAgent tokenTradingAgent = (TokenTradingAgent) agent;

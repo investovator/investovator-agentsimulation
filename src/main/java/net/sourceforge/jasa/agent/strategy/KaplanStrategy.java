@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -68,7 +68,7 @@ import org.apache.log4j.Logger;
  * @see net.sourceforge.jasa.report.DailyStatsReport
  * 
  * @author Steve Phelps
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.10 $
  */
 
 public class KaplanStrategy extends FixedDirectionStrategy implements
@@ -139,14 +139,14 @@ public class KaplanStrategy extends FixedDirectionStrategy implements
 		quote = auction.getQuote();
 		if (timeRunningOut() || juicyOffer() || smallSpread()) {
 			logger.debug("quote = " + quote);
-			logger.debug("my priv value = " + agent.getValuation(auction));
-			shout.setPrice(agent.getValuation(auction));
+			logger.debug("my priv value = " + getAgent().getValuation(auction));
+			shout.setPrice(getAgent().getValuation(auction));
 			if (isBuy()) {
-				if (quote.getAsk() <= agent.getValuation(auction)) {
+				if (quote.getAsk() <= getAgent().getValuation(auction)) {
 					shout.setPrice(quote.getAsk());
 				}
 			} else {
-				if (quote.getBid() >= agent.getValuation(auction)) {
+				if (quote.getBid() >= getAgent().getValuation(auction)) {
 					shout.setPrice(quote.getBid());
 				}
 			}

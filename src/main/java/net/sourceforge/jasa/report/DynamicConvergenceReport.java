@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,11 +17,9 @@ package net.sourceforge.jasa.report;
 
 import java.util.Map;
 
+import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.util.Resetable;
-import net.sourceforge.jasa.event.EndOfDayEvent;
-import net.sourceforge.jasa.event.MarketEvent;
-import net.sourceforge.jasa.event.TransactionExecutedEvent;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +34,7 @@ import org.apache.log4j.Logger;
  * </p>
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.10 $
  */
 
 public class DynamicConvergenceReport extends AbstractMarketStatsReport
@@ -45,7 +43,7 @@ public class DynamicConvergenceReport extends AbstractMarketStatsReport
 	/**
 	 * The historicalDataReport used to calculate the equilibrium price.
 	 */
-	protected EquilibriumReport equilibriaStats;
+	protected EquilibriumReportVariables equilibriaStats;
 
 	/**
 	 * The quantity that each agent can theoretically trade per day. This should
@@ -68,19 +66,19 @@ public class DynamicConvergenceReport extends AbstractMarketStatsReport
 
 	static Logger logger = Logger.getLogger(DynamicConvergenceReport.class);
 
-	public void setAuction(MarketFacade auction) {
+	public void setAuction(Market auction) {
 		super.setAuction(auction);
-		equilibriaStats = new EquilibriumReport(auction);
+		equilibriaStats = new EquilibriumReportVariables();
 	}
 
-	public void eventOccurred(MarketEvent event) {
-		super.eventOccurred(event);
-		if (event instanceof EndOfDayEvent) {
-			recalculate();
-		} else if (event instanceof TransactionExecutedEvent) {
-			newPrice(((TransactionExecutedEvent) event).getPrice());
-		}
-	}
+//	public void eventOccurred(MarketEvent event) {
+//		super.eventOccurred(event);
+//		if (event instanceof EndOfDayEvent) {
+//			compute();
+//		} else if (event instanceof TransactionExecutedEvent) {
+//			newPrice(((TransactionExecutedEvent) event).getPrice());
+//		}
+//	}
 
 	public void calculate() {
 
@@ -90,8 +88,8 @@ public class DynamicConvergenceReport extends AbstractMarketStatsReport
 		return alpha;
 	}
 
-	protected void recalculate() {
-		equilibriaStats.recalculate();
+	protected void compute(SimEvent event) {
+		equilibriaStats.compute(event);
 		equilibriumPrice = equilibriaStats.calculateMidEquilibriumPrice();
 	}
 

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@ import java.util.List;
 import net.sourceforge.jabm.report.DataWriter;
 import net.sourceforge.jasa.market.AscendingOrderComparator;
 import net.sourceforge.jasa.market.DescendingOrderComparator;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 /**
  * 
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.9 $
  */
 
 public class AuctionStateStats extends SupplyAndDemandStats {
@@ -48,7 +48,7 @@ public class AuctionStateStats extends SupplyAndDemandStats {
 	 * @param demandStats
 	 *          The DataWriter to write the demand curve to.
 	 */
-	public AuctionStateStats(MarketFacade auction, DataWriter supplyStats,
+	public AuctionStateStats(Market auction, DataWriter supplyStats,
 	    DataWriter demandStats) {
 		super(auction, supplyStats, demandStats);
 	}
@@ -73,6 +73,11 @@ public class AuctionStateStats extends SupplyAndDemandStats {
 			bids.add(bid);
 		}
 		writeStats(demandStats, bids, new DescendingOrderComparator());
+	}
+
+	@Override
+	public String getName() {
+		return "Supply and demand: auction state";
 	}
 
 }

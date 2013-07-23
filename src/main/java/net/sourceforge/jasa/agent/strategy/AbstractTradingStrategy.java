@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,7 +17,8 @@ package net.sourceforge.jasa.agent.strategy;
 
 import java.io.Serializable;
 
-import net.sourceforge.jabm.agent.Agent;
+import org.springframework.beans.factory.annotation.Required;
+
 import net.sourceforge.jabm.strategy.AbstractStrategy;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
@@ -32,16 +33,14 @@ import net.sourceforge.jasa.market.Order;
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.9 $
  */
 public abstract class AbstractTradingStrategy extends AbstractStrategy
 		implements Serializable, TradingStrategy, Resetable, Cloneable {
 
-	protected AbstractTradingAgent agent;
-//
-//	protected Order currentShout;
-
 	protected Market auction;
+	
+	protected TradeDirectionPolicy tradeDirectionPolicy;
 
 	public AbstractTradingStrategy() {
 		initialise();
@@ -49,10 +48,6 @@ public abstract class AbstractTradingStrategy extends AbstractStrategy
 
 	public AbstractTradingStrategy(AbstractTradingAgent agent) {
 		this();
-		this.agent = agent;
-	}
-
-	public void setAgent(AbstractTradingAgent agent) {
 		this.agent = agent;
 	}
 
@@ -70,6 +65,13 @@ public abstract class AbstractTradingStrategy extends AbstractStrategy
 		}
 	}
 
+	/**
+	 * Modify the price and quantity of the given shout according to this
+	 * strategy.
+	 * 
+	 * @return false if no shout is to be placed at this time
+	 */
+	@Override
 	public Order modifyOrder(Order currentShout, Market auction) {
 		this.auction = auction;
 		if (currentShout == null) {
@@ -82,61 +84,40 @@ public abstract class AbstractTradingStrategy extends AbstractStrategy
 			return null;
 		}
 	}
-
-	/**
-	 * Modify the price and quantity of the given shout according to this
-	 * strategy.
-	 * 
-	 * @return false if no shout is to be placed at this time
-	 */
+	
 	public boolean modifyShout(Order shout) {
-		//TODO Introduce a new class FixedDirectionStrategy
-//		shout.setIsBid(agent.isBuyer(auction));
-		shout.setAgent(agent);
+		shout.setAgent(getAgent());
+		shout.setIsBid(tradeDirectionPolicy.isBuy(this.auction, getAgent()));
 		return true;
 	}
 
 	public void initialise() {
-//		currentShout = new Order();
 	}
-
-//	@Override
-//	public void eventOccurred(SimEvent event) {
-//		if (event instanceof RoundFinishedEvent) {
-//			onRoundClosed((RoundFinishedEvent) event);
-//		}
-//	}
-	
-	@Override
-//	public void subscribeToEvents(EventScheduler scheduler) {
-//		scheduler.addListener(RoundClosedEvent.class, this);
-//	}
 
 	public AbstractTradingAgent getAgent() {
-		return agent;
+		return (AbstractTradingAgent) agent;
 	}
 
+	public void setAgent(AbstractTradingAgent agent) {
+		this.agent = agent;
+	}
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 
-//	@Override
-//	public void execute(List<Agent> otherAgents) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
-	@Override
-	public void setAgent(Agent agent) {
-		this.agent = (AbstractTradingAgent) agent;
+	public boolean isBuy(Market market) {
+		return tradeDirectionPolicy.isBuy(market, getAgent());
 	}
 
-//	@Override
-//	public Strategy transfer(Agent newAgent) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public TradeDirectionPolicy getTradeDirectionPolicy() {
+		return tradeDirectionPolicy;
+	}
 
-//	public abstract void onRoundClosed(Market auction);
+	@Required
+	public void setTradeDirectionPolicy(TradeDirectionPolicy tradeDirectionPolicy) {
+		this.tradeDirectionPolicy = tradeDirectionPolicy;
+	}
+	
 }

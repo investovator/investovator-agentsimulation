@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import net.sourceforge.jasa.agent.valuation.NoiseTraderForecaster;
 import net.sourceforge.jasa.sim.PRNGTestSeeds;
 
-import org.apache.commons.math.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import cern.jet.random.engine.MersenneTwister64;
 import cern.jet.random.engine.RandomEngine;
@@ -23,7 +23,7 @@ public class NoiseTraderForecastTest extends TestCase {
 	public void testForecast() {
 		SummaryStatistics stats = new SummaryStatistics();
 		for(int i=0; i<10000; i++) {
-			double forecast = forecaster.determineValue(null);
+			double forecast = forecaster.getReturnForecast(null);
 			stats.addValue(forecast);
 		}
 		assertEquals(0, stats.getMean(), 0.01);

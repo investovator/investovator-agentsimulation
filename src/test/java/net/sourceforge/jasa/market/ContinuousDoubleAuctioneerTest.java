@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,7 +23,7 @@ import net.sourceforge.jasa.market.rules.DiscriminatoryPricingPolicy;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.5 $
  */
 public class ContinuousDoubleAuctioneerTest extends AuctioneerTest {
 
@@ -38,20 +38,20 @@ public class ContinuousDoubleAuctioneerTest extends AuctioneerTest {
 		    .setPricingPolicy(new DiscriminatoryPricingPolicy(0));
 		auction.setAuctioneer(auctioneer);
 	}
-
-	public void testImprovementRule() {
-		System.out.println("testImprovementRule()");
-		assertTrue(shoutOK(new Order(traders[0], 1, 21, true)));
-		assertTrue(!shoutOK(new Order(traders[1], 1, 20, true)));
-		assertTrue(shoutOK(new Order(traders[1], 1, 42, true)));
-		assertTrue(shoutOK(new Order(traders[2], 1, 43, false)));
-		assertTrue(shoutOK(new Order(traders[3], 1, 23, false)));
-		assertTrue(!shoutOK(new Order(traders[4], 1, 50, false)));
-		assertTrue(!shoutOK(new Order(traders[3], 1, 51, false)));
-		assertTrue(shoutOK(new Order(traders[3], 1, 20, false)));
-		assertTrue(shoutOK(new Order(traders[4], 1, 25, false)));
-		assertTrue(!shoutOK(new Order(traders[2], 1, 26, false)));
-	}
+//
+//	public void testImprovementRule() {
+//		System.out.println("testImprovementRule()");
+//		assertTrue(shoutOK(new Order(traders[0], 1, 21, true)));
+//		assertTrue(!shoutOK(new Order(traders[1], 1, 20, true)));
+//		assertTrue(shoutOK(new Order(traders[1], 1, 42, true)));
+//		assertTrue(shoutOK(new Order(traders[2], 1, 43, false)));
+//		assertTrue(shoutOK(new Order(traders[3], 1, 23, false)));
+//		assertTrue(!shoutOK(new Order(traders[4], 1, 50, false)));
+//		assertTrue(!shoutOK(new Order(traders[3], 1, 51, false)));
+//		assertTrue(shoutOK(new Order(traders[3], 1, 20, false)));
+//		assertTrue(shoutOK(new Order(traders[4], 1, 25, false)));
+//		assertTrue(!shoutOK(new Order(traders[2], 1, 26, false)));
+//	}
 
 	public boolean shoutOK(Order newShout) {
 		try {

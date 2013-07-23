@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,11 +17,11 @@ package net.sourceforge.jasa.market.auctioneer;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.Prototypeable;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.event.EndOfDayEvent;
@@ -44,11 +44,11 @@ import org.apache.log4j.Logger;
  * classes.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.15 $
  */
 
 public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
-    Resetable, Prototypeable, Cloneable, Parameterizable {
+    Resetable, Prototypeable, Cloneable {
 
 	protected Market market;
 
@@ -66,6 +66,9 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	
 	public AbstractAuctioneer(Market auction) {
 		this.market = auction;
+	}
+	
+	public AbstractAuctioneer() {
 	}
 
 	public Object protoClone() {
@@ -136,7 +139,7 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	/**
 	 * Handle a request to retract a shout.
 	 */
-	public void removeShout(Order shout) {
+	public void removeOrder(Order shout) {
 		orderBook.remove(shout);
 	}
 
@@ -249,6 +252,14 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	public void setOrderBook(OrderBook orderBook) {
 		this.orderBook = orderBook;
 	}
+	
+	public List<Order> getUnmatchedAsks() {
+		return orderBook.getUnmatchedAsks();
+	}
+	
+	public List<Order> getUnmatchedBids() {
+		return orderBook.getUnmatchedBids();
+	}
 
 	public MarketQuote getClearingQuote() {
 		return clearingQuote;
@@ -265,7 +276,7 @@ public abstract class AbstractAuctioneer implements Serializable, Auctioneer,
 	public void setClearingPolicy(ClearingPolicy clearingPolicy) {
 		this.clearingPolicy = clearingPolicy;
 	}
-
+	
 	public String toString() {
 		return "(" + getClass() + ")";
 	}

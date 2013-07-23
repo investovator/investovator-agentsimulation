@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@ import java.util.Map;
 import net.sourceforge.jabm.agent.Agent;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.agent.FixedDirectionTradingAgent;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -38,10 +38,10 @@ import org.apache.log4j.Logger;
  * @see DynamicSurplusReport
  * 
  * @author Steve Phelps
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.13 $
  */
 
-public class SurplusReport extends EquilibriumReport {
+public class SurplusReport extends EquilibriumReportVariables {
 
 	/**
 	 * The profits of the buyers in theoretical equilibrium.
@@ -97,7 +97,7 @@ public class SurplusReport extends EquilibriumReport {
 
 	static Logger logger = Logger.getLogger(SurplusReport.class);
 
-	public SurplusReport(MarketFacade auction) {
+	public SurplusReport(Market auction) {
 		super(auction);
 	}
 

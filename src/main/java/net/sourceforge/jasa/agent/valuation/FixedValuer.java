@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import net.sourceforge.jabm.EventScheduler;
 import net.sourceforge.jabm.event.SimEvent;
-import net.sourceforge.jasa.agent.TradingAgent;
 import net.sourceforge.jasa.market.Market;
 
 /**
@@ -27,10 +26,10 @@ import net.sourceforge.jasa.market.Market;
  * of time or market.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.8 $
  */
 
-public class FixedValuer implements ValuationPolicy, Serializable {
+public class FixedValuer extends AbstractValuationPolicy implements Serializable {
 
 	protected double value;
 
@@ -62,10 +61,6 @@ public class FixedValuer implements ValuationPolicy, Serializable {
 
 	public void setValue(double value) {
 		this.value = value;
-	}
-
-	public void setAgent(TradingAgent agent) {
-		// No action required
 	}
 
 	public String toString() {

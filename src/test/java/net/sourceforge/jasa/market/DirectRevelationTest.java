@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ import net.sourceforge.jasa.replication.electricity.ElectricityTest;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.10 $
  */
 
 public class DirectRevelationTest extends ElectricityTest {
@@ -59,12 +59,21 @@ public class DirectRevelationTest extends ElectricityTest {
 		TruthTellingStrategy truthTelling = new TruthTellingStrategy();
 		truthTelling.setQuantity(capacity);
 		agent.setStrategy(truthTelling);
+		truthTelling.setAgent(agent);
 		agent.initialise();
 	}
-
+	
 	@Override
-	public void assignValuer(FixedDirectionTradingAgent agent) {
-		agent.setValuationPolicy(new RandomValuer(VALUE_MIN, VALUE_MAX, prng));
+	public void registerTraders(MarketSimulation auction, boolean areSellers,
+			int num, int capacity, double[] values) {
+		for (int i = 0; i < num; i++) {
+			FixedDirectionTradingAgent agent = 
+					new FixedDirectionTradingAgent(auction.getSimulationController());
+			assignStrategy(capacity, agent);
+			agent.setIsSeller(areSellers);
+			agent.setValuationPolicy(new RandomValuer(VALUE_MIN, VALUE_MAX, prng));
+			auction.register(agent);
+		}
 	}
 
 	public static void main(String[] args) {

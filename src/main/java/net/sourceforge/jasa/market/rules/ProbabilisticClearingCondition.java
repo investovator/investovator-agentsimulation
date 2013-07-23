@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,7 +15,6 @@
 
 package net.sourceforge.jasa.market.rules;
 
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jasa.event.MarketEvent;
 import net.sourceforge.jasa.event.OrderPlacedEvent;
 
@@ -29,12 +28,9 @@ import cern.jet.random.AbstractDistribution;
  * For the moment, it presents a continuum between CDA and CH.
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.4 $
- * 
+ * @version $Revision: 1.6 $
  */
-
-public class ProbabilisticClearingCondition extends RoundClearingCondition
-    implements Parameterizable {
+public class ProbabilisticClearingCondition extends RoundClearingCondition {
 
 	AbstractDistribution distribution;
 
@@ -49,7 +45,6 @@ public class ProbabilisticClearingCondition extends RoundClearingCondition
 		super();
 		this.distribution = distribution;
 	}
-
 
 	public void eventOccurred(MarketEvent event) {
 		super.eventOccurred(event);

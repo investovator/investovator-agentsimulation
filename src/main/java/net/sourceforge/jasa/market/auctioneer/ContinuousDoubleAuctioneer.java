@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,7 +33,7 @@ import net.sourceforge.jasa.market.rules.DiscriminatoryPricingPolicy;
  * current quote in order to be accepted.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.12 $
  */
 
 public class ContinuousDoubleAuctioneer extends TransparentAuctioneer implements
@@ -49,6 +49,10 @@ public class ContinuousDoubleAuctioneer extends TransparentAuctioneer implements
 		super(auction);
 		account = new ZeroFundsAccount(this);
 		setPricingPolicy(new DiscriminatoryPricingPolicy(0));
+	}
+	
+	public ContinuousDoubleAuctioneer() {
+		this(null);
 	}
 
 	public void generateQuote() {

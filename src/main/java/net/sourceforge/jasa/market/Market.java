@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,14 +15,21 @@
 
 package net.sourceforge.jasa.market;
 
+import java.util.Iterator;
+
+import net.sourceforge.jabm.Population;
+import net.sourceforge.jabm.agent.Agent;
+import net.sourceforge.jabm.util.Resetable;
+import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
 
 /**
+ * An order-driven market exchange.
+ * 
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.11 $
  */
-
-public interface Market extends QuoteProvider {
+public interface Market extends QuoteProvider, Resetable {
 
 	/**
 	 * Returns true if the market is closed.
@@ -35,17 +42,17 @@ public interface Market extends QuoteProvider {
 	public void close();
 
 	/**
-	 * Place a new shout in the market.
+	 * Place a new order in the market.
 	 */
 	public void placeOrder(Order shout) throws AuctionException;
 
 	/**
-	 * Remove a shout from the market.
+	 * Remove an order from the market.
 	 */
 	public void removeOrder(Order shout);
 
 	/**
-	 * Return the last shout placed in the market.
+	 * Return the most recent order placed in the market.
 	 */
 	public Order getLastOrder() throws ShoutsNotVisibleException;
 
@@ -61,9 +68,15 @@ public interface Market extends QuoteProvider {
 
 	/**
 	 * Handle a single clearing operation between two traders
+	 *  for a single unit.
 	 */
 	public void clear(Order ask, Order bid, double price);
 
+	/**
+	 * Handle a single clearing operation between two traders
+	 *  specifying the prices paid by each party and the volume of 
+	 *  the trade.
+	 */
 	public void clear(Order ask, Order bid, double buyerCharge,
 	    double sellerPayment, int quantity);
 
@@ -98,12 +111,22 @@ public interface Market extends QuoteProvider {
 	 */
 	public boolean transactionsOccurred() throws ShoutsNotVisibleException;
 
+	/**
+	 * Return the price of the most transaction that occurred in the market.
+	 * @return
+	 */
 	public double getLastTransactionPrice();
 	
+	/**
+	 * Return the current price.  This is typically a mid-price or
+	 * a recent transaction price.
+	 */
 	public double getCurrentPrice();
 
-//	public double getLastTransactionPrice();
+	public Iterator<Agent> getTraderIterator();
 
-//	public AuctionReport getReport(Class reportClass);
+	public void remove(AbstractTradingAgent abstractTradingAgent);
+
+	public Population getPopulation();
 
 }

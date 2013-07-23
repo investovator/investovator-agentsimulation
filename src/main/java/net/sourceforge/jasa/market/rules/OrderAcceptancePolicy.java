@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -16,7 +16,6 @@
 package net.sourceforge.jasa.market.rules;
 
 import net.sourceforge.jabm.event.SimEvent;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jasa.event.MarketEventListener;
 import net.sourceforge.jasa.market.IllegalOrderException;
 import net.sourceforge.jasa.market.Order;
@@ -27,10 +26,10 @@ import net.sourceforge.jasa.market.auctioneer.AbstractAuctioneer;
  * shout-accepting policy determines whether a shout should be accepted or not.
  * 
  * @author Jinzhong Niu
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.6 $
  */
 
-public abstract class OrderAcceptancePolicy implements Parameterizable,
+public abstract class OrderAcceptancePolicy implements 
     MarketEventListener {
 
 	protected AbstractAuctioneer auctioneer;

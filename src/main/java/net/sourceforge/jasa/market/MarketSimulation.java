@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,16 +19,23 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 import net.sourceforge.jabm.AbstractSimulation;
+import net.sourceforge.jabm.Population;
 import net.sourceforge.jabm.SimulationController;
 import net.sourceforge.jabm.SimulationTime;
+import net.sourceforge.jabm.agent.Agent;
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.RoundStartingEvent;
 import net.sourceforge.jabm.event.SimulationFinishedEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
+import net.sourceforge.jasa.agent.AbstractTradingAgent;
+import net.sourceforge.jasa.agent.TradingAgent;
 import net.sourceforge.jasa.event.EndOfDayEvent;
 import net.sourceforge.jasa.event.MarketClosedEvent;
 import net.sourceforge.jasa.event.MarketOpenEvent;
+import net.sourceforge.jasa.event.OrderPlacedEvent;
+import net.sourceforge.jasa.event.OrderReceivedEvent;
 import net.sourceforge.jasa.event.RoundClosingEvent;
+import net.sourceforge.jasa.event.TransactionExecutedEvent;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
 import net.sourceforge.jasa.market.rules.AuctionClosingCondition;
 import net.sourceforge.jasa.market.rules.CombiTimingCondition;
@@ -42,25 +49,36 @@ import net.sourceforge.jasa.market.rules.TimingCondition;
 import org.apache.log4j.Logger;
 
 /**
- * @author Steve Phelps
- * @version $Revision: 1.15 $
+ * A simulation of an order-driven market.
  * 
+ * @author Steve Phelps
+ * @version $Revision: 1.36 $
  */
-
 public class MarketSimulation extends AbstractSimulation 
-		implements Serializable {
+		implements Serializable, Market {
 
-	protected Market market;
+	/**
+	 * The auctioneer for this market.
+	 */
+	protected Auctioneer auctioneer = null;
 	
+	/**
+	 * Is the market currently closed.
+	 */
 	protected boolean closed = false;
 	
 	/**
-	 * The current round.
+	 * The current "round".  A round, a.k.a. a "tick", represents a discrete
+	 * unit of time.  The round attribute thus corresponds to the simulation
+	 * clock.
 	 */
 	protected int round;
 
 	protected int age = 0;
 
+	/**
+	 * Records the surplus of the mechanism if it is not budget-balanced.
+	 */
 	protected Account account = new Account();
 
 	/**
@@ -75,8 +93,18 @@ public class MarketSimulation extends AbstractSimulation
 
 	protected boolean endOfRound = false;
 
+	/**
+	 * The price of the most recent transaction.
+	 */
+	protected double lastTransactionPrice = Double.NaN;
+	
+	/**
+	 * The initial price in the market.
+	 */
+	protected double initialPrice = 0.0;
+
 	public static final String ERROR_SHOUTSVISIBLE 
-	= "Auctioneer does not permit shout inspection";
+		= "Auctioneer does not permit shout inspection";
 
 	static Logger logger = Logger.getLogger(MarketSimulation.class);
 
@@ -100,7 +128,7 @@ public class MarketSimulation extends AbstractSimulation
 	
 	public void initialise() {
 		initialiseCounters();
-		addListener(market.getAuctioneer());
+		addListener(auctioneer);
 	}
 	
 	public void reset() {
@@ -108,19 +136,15 @@ public class MarketSimulation extends AbstractSimulation
 	}
 	
 	public void informAuctionClosed() {
-		fireEvent(new MarketClosedEvent(market, getRound()));
+		fireEvent(new MarketClosedEvent(this, getRound()));
 	}
 
 	public void informEndOfDay() {
-		fireEvent(new EndOfDayEvent(market, getRound()));
+		fireEvent(new EndOfDayEvent(this, getRound()));
 	}
 
-//	public void informBeginOfDay() {
-//		fireEvent(new DayOpeningEvent(market, getRound()));
-//	}
-
 	public void informAuctionOpen() {
-		fireEvent(new MarketOpenEvent(market, getRound()));
+		fireEvent(new MarketOpenEvent(this, getRound()));
 	}
 	
 	public void informRoundOpening() {
@@ -152,25 +176,25 @@ public class MarketSimulation extends AbstractSimulation
 	}
 	
 	public Auctioneer getAuctioneer() {
-		return market.getAuctioneer();
+		return auctioneer;
 	}
 
 	/**
-	 * Get the last bid placed in the market.
+	 * Get the most recent bid (buy order) placed in the market.
 	 */
 	public Order getLastBid() throws ShoutsNotVisibleException {
 		return getAuctioneer().getLastBid();
 	}
 
 	/**
-	 * Get the last ask placed in the market.
+	 * Get the most recent ask (sell order) placed in the market.
 	 */
 	public Order getLastAsk() throws ShoutsNotVisibleException {
 		return getAuctioneer().getLastAsk();
 	}
 
 	/**
-	 * Runs the market.
+	 * Run the simulation.
 	 */
 	public void run() {
 
@@ -183,37 +207,44 @@ public class MarketSimulation extends AbstractSimulation
 
 		begin();
 
-		try {
-			while (!closed) {
-				step();
-			}
-
-		} catch (AuctionClosedException e) {
-			throw new AuctionRuntimeException(e);
+		while (!closed) {
+			step();
 		}
 
 		end();
 	}
 
+	/**
+	 * Begin the simulation.
+	 */
 	public void begin() {
 		initialiseAgents();
+		reset();
 		fireEvent(new SimulationStartingEvent(this));
 		informAuctionOpen();
 	}
-
+	
+	/**
+	 * End the simulation. 
+	 */
 	public void end() {
 		informAuctionClosed();
 		fireEvent(new SimulationFinishedEvent(this));
 	}
 
-	public void step() throws AuctionClosedException {
+	/**
+	 * Step through a single tick of the simulation.
+	 */
+	public void step() {
+		super.step();
 		runSingleRound();
 	}
 
+	/**
+	 * End the current simulation tick.
+	 */
 	public void endRound() {
 		informRoundClosing();
-
-//		getAuctioneer().endOfRoundProcessing();
 
 		endOfRound = true;
 		round++;
@@ -223,14 +254,15 @@ public class MarketSimulation extends AbstractSimulation
 		checkEndOfDay();
 	}
 	
+	/**
+	 * Check whether the market is open.
+	 * @return
+	 */
 	public boolean isClosed() {
 		return closed;
 	}
 
-	public void runSingleRound() throws AuctionClosedException {
-		if (isClosed()) {
-			throw new AuctionClosedException("Auction is closed.");
-		}
+	public void runSingleRound() {
 		if (closingCondition.eval()) {
 			close();
 		} else {
@@ -241,66 +273,21 @@ public class MarketSimulation extends AbstractSimulation
 	}
 
 	public void informRoundClosing() {
-		fireEvent(new RoundClosingEvent(getMarket(), getAge()));
+		fireEvent(new RoundClosingEvent(this, getAge()));
 	}
 
 	public void informRoundClosed() {
 		fireEvent(new RoundFinishedEvent(this));
 	}
 
-//	public void placeOrder(Order shout) throws AuctionException {
-//
-//		// TODO: to switch the following two lines?
-//
-//		fireEvent(new OrderReceivedEvent(market, round, shout));
-//		market.placeOrder(shout);
-//		fireEvent(new OrderPlacedEvent(market, round, shout));
-//
-////		setChanged();
-////		notifyObservers();
-//	}
-//
-//	public void changeShout(Order shout) throws AuctionException {
-//		removeOrder(shout);
-//		placeOrder(shout);
-//	}
-//	
-//	public void removeOrder(Order shout) {
-//		// Remove this shout and all of its children.
-//		for (Order s = shout; s != null; s = s.getChild()) {
-//			getAuctioneer().removeShout(s);
-//			// if ( s != shout ) {
-//			// ShoutPool.release(s);
-//			// }
-//		}
-//		shout.makeChildless();
-//	}
-
-	/**
-	 * Return an iterator iterating over all traders registered (as opposed to
-	 * actively trading) in the market.
-	 */
-//	public Iterator getTraderIterator() {
-////		return registeredTraders.iterator();
-//		return null;
-//	}
-
-//	public Iterator getActiveTraderIterator() {
-////		return activeTraders.iterator();
-//		return null;
-//	}
-//
-//	protected void initialise() {
-//		round = 0;
-//		day = 0;
-//		age = 0;
-//	}
-
 	protected void checkEndOfDay() {
 		if (dayEndingCondition != null && dayEndingCondition.eval())
 			endDay();
 	}
 	
+	/**
+	 * Close the market.
+	 */
 	public void close() {
 		closed = true;
 	}
@@ -313,10 +300,13 @@ public class MarketSimulation extends AbstractSimulation
 		// report.debug("day = " + day + " of " + getMaximumDays());
 		round = 0;
 		informEndOfDay();
-//		getAuctioneer().endOfDayProcessing();
+//		getAuctioneer().endOfDayProcessing();Exception 
 		day++;
 	}
 
+	/**
+	 * Return the time remaining before the market closes.
+	 */
 	public int getRemainingTime() {
 		TimingCondition cond = getAuctionClosingCondition(MaxRoundsAuctionClosingCondition.class);
 
@@ -335,6 +325,10 @@ public class MarketSimulation extends AbstractSimulation
 		}
 	}
 
+	/**
+	 * Return the duration in ticks of a single trading day.
+	 * @return
+	 */
 	public int getLengthOfDay() {
 		TimingCondition cond = getDayEndingCondition(MaxRoundsDayEndingCondition.class);
 
@@ -345,12 +339,20 @@ public class MarketSimulation extends AbstractSimulation
 		}
 	}
 
+	/**
+	 * Configure the maximum duration of a trading day in ticks.
+	 * @param lengthOfDay
+	 */
 	public void setLengthOfDay(int lengthOfDay) {
-		MaxRoundsDayEndingCondition cond = new MaxRoundsDayEndingCondition(market);
+		MaxRoundsDayEndingCondition cond = new MaxRoundsDayEndingCondition(this);
 		cond.setLengthOfDay(lengthOfDay);
 		setDayEndingCondition(cond);
 	}
 
+	/**
+	 * Return the maximum number of trading days in the simulation.
+	 * @return
+	 */
 	public int getMaximumDays() {
 		TimingCondition cond = getAuctionClosingCondition(MaxDaysAuctionClosingCondition.class);
 
@@ -361,13 +363,21 @@ public class MarketSimulation extends AbstractSimulation
 		}
 	}
 
+	/**
+	 * Configure the absolute duration of the entire simulation in ticks.
+	 * @param maximumRounds
+	 */
 	public void setMaximumRounds(int maximumRounds) {
 		MaxRoundsAuctionClosingCondition cond = 
-			new MaxRoundsAuctionClosingCondition(market);
+			new MaxRoundsAuctionClosingCondition(this);
 		cond.setMaximumRounds(maximumRounds);
 		setAuctionClosingCondition(cond);
 	}
 
+	/**
+	 * Get the absolute duration of the entire simulation in ticks.
+	 * @return
+	 */
 	public int getMaximumRounds() {
 		TimingCondition cond = 
 			getAuctionClosingCondition(MaxRoundsAuctionClosingCondition.class);
@@ -379,9 +389,13 @@ public class MarketSimulation extends AbstractSimulation
 		}
 	}
 
+	/**
+	 * Configure the maximum number of days in the simulation.
+	 * @param maximumDays
+	 */
 	public void setMaximumDays(int maximumDays) {
 		MaxDaysAuctionClosingCondition cond = new MaxDaysAuctionClosingCondition(
-		    market);
+		    this);
 		cond.setMaximumDays(maximumDays);
 		setAuctionClosingCondition(cond);
 	}
@@ -426,17 +440,225 @@ public class MarketSimulation extends AbstractSimulation
 		dayEndingCondition = cond;
 	}
 
-	public Market getMarket() {
-		return market;
-	}
-
-	public void setMarket(Market market) {
-		this.market = market;
-	}
-
 	@Override
 	public SimulationTime getSimulationTime() {
 		return new SimulationTime(age);
 	}
+
+	/**
+	 * Match a buy order with a sell order at the specified price
+	 * and inform both parties of the resulting transaction.
+	 * 
+	 * @param transactionPrice  The price of the transaction.
+	 */
+	public void clear(Order ask, Order bid, double transactionPrice) {
+		assert ask.getQuantity() == bid.getQuantity();
+		assert transactionPrice >= ask.getPrice();
+		assert transactionPrice <= bid.getPrice();
+		lastTransactionPrice = transactionPrice;
+		clear(ask, bid, transactionPrice, transactionPrice, ask.getQuantity());
+	}
+
+	/**
+	 * Match a buy order with a sell order and inform both parties of the
+	 * resulting transaction. The buyer and seller transact at different prifces
+	 * specified by the corresponding parameters.
+	 * 
+	 * @param buyerCharge
+	 *            The price that the buyer must pay.
+	 * @param sellerPayment
+	 *            The price that the seller must pay.
+	 * @param quantity
+	 *            The volume of the transaction.
+	 * @param ask
+	 *            The sell order involved in the transaction
+	 * @param bid
+	 *            The buy order involved in the transaction.
+	 */
+	public void clear(Order ask, Order bid, double buyerCharge,
+	    double sellerPayment, int quantity) {
+
+		TradingAgent buyer = (TradingAgent) bid.getAgent();
+		TradingAgent seller = (TradingAgent) ask.getAgent();
+
+		TransactionExecutedEvent transactionEvent = new TransactionExecutedEvent(
+				this, getAge(), ask,
+				bid, buyerCharge, ask.getQuantity());
+		fireEvent(transactionEvent);
+		
+		auctioneer.getAccount().doubleEntry(buyer.getAccount(), buyerCharge*quantity,
+		    seller.getAccount(), sellerPayment*quantity);
+		
+		seller.getCommodityHolding()
+		    .transfer(buyer.getCommodityHolding(), quantity);
+
+		buyer.orderFilled(this, bid, buyerCharge, quantity);
+		seller.orderFilled(this, ask, sellerPayment, quantity);
+	}
 	
+	/**
+	 * Determines whether or not the given shout was matched in the current round
+	 * of trading.
+	 */
+	public boolean orderAccepted(Order shout) throws ShoutsNotVisibleException {
+		return auctioneer.orderFilled(shout);
+	}
+
+	/**
+	 * Determines whether or not any transactions have occured in the current
+	 * round of trading.
+	 */
+	public boolean transactionsOccurred() throws ShoutsNotVisibleException {
+		return auctioneer.transactionsOccurred();
+	}
+
+	/**
+	 * Remove a trader from the market.
+	 */
+	public void remove(TradingAgent trader) {
+//		if (!defunctTraders.contains(trader)) {
+//			defunctTraders.add(trader);
+//		}
+	}
+
+	/**
+	 * Return the number of traders currently active in the market.
+	 */
+	public int getNumberOfTraders() {
+		return getTraders().getAgentList().size();
+	}
+
+	/**
+	 * Return the total number of traders registered in the market.
+	 */
+	public int getNumberOfRegisteredTraders() {
+		return getNumberOfTraders();
+	}
+
+	protected void activate(TradingAgent agent) {
+	}
+
+	public Population getTraders() {
+		return getPopulation();
+	}
+
+	/**
+	 * Configure the Auctioneer for this market.  The auctioneer is responsible
+	 * for matching orders and clearing the market.
+	 * 
+	 * @param auctioneer
+	 */
+	public void setAuctioneer(Auctioneer auctioneer) {
+		this.auctioneer = auctioneer;
+		this.auctioneer.setMarket(this);
+	}
+
+	public boolean closed() {
+		return isClosed();
+	}
+
+	public Order getLastOrder() throws ShoutsNotVisibleException {
+		return auctioneer.getLastShout();
+	}
+
+	public MarketQuote getQuote() {
+		return auctioneer.getQuote();
+	}
+
+
+	public void removeOrder(Order shout) {
+		// Remove this shout and all of its children.
+		for (Order s = shout; s != null; s = s.getChild()) {
+			auctioneer.removeOrder(s);
+			// if ( s != shout ) {
+			// ShoutPool.release(s);
+			// }
+		}
+		shout.makeChildless();
+	}
+	
+	/**
+	 * Submit a new order to the market.
+	 * 
+	 * @param shout
+	 *          The new shout in the market.
+	 */
+	public void placeOrder(Order order) throws AuctionException {
+		if (closed()) {
+			throw new AuctionClosedException("Auction is closed.");
+		}
+		if (order == null) {
+			throw new IllegalOrderException("null shout");
+		}
+		fireEvent(new OrderReceivedEvent(this, getRound(), order));
+		order.setTimeStamp(getSimulationTime());
+		auctioneer.newOrder(order);
+		fireEvent(new OrderPlacedEvent(this, getAge(), order));
+	}
+
+	public void printState() {
+		auctioneer.printState();
+	}
+	
+	public void register(TradingAgent trader) {
+		getTraders().add(trader);
+		trader.register(this);		
+	}
+
+	public Iterator<Agent> getTraderIterator() {
+		return getTraders().getAgents().iterator();
+	}
+
+	public double getLastTransactionPrice() {
+		return lastTransactionPrice;
+	}
+
+	public void setLastTransactionPrice(double lastTransactionPrice) {
+		this.lastTransactionPrice = lastTransactionPrice;
+	}
+	
+	@Override
+	public double getCurrentPrice() {
+		if (age == 0) {
+			return getInitialPrice();
+		} 
+		double result = getLastTransactionPrice();
+		try {
+			if (!transactionsOccurred()) {
+				result = getQuote().getMidPoint();
+			}
+			if (Double.isNaN(result)) {
+				return getInitialPrice();
+			}
+		} catch (ShoutsNotVisibleException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
+	@Override
+	public void remove(AbstractTradingAgent abstractTradingAgent) {
+		//TODO
+//		throw new RuntimeException("method not implemented");
+	}
+
+	public double getInitialPrice() {
+		return initialPrice;
+	}
+
+	/**
+	 * Set the price which will be used at the opening of the market.
+	 * 
+	 * @param initialPrice The initial price.
+	 */
+	public void setInitialPrice(double initialPrice) {
+		this.initialPrice = initialPrice;
+	}
+
+	@Override
+	public void terminate() {
+		super.terminate();
+		close();
+	}
+
 }

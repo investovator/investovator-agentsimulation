@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.7 $
  */
 
 public interface OrderBook extends net.sourceforge.jabm.util.Resetable {
@@ -84,5 +84,11 @@ public interface OrderBook extends net.sourceforge.jabm.util.Resetable {
 	public Iterator<Order> bidIterator();
 
 	public boolean isEmpty();
+
+	public int getDepth();
+
+	public List<Order> getUnmatchedBids();
+
+	public List<Order> getUnmatchedAsks();
 
 }

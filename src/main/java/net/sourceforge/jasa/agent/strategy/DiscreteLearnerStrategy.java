@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,7 +21,6 @@ import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -31,7 +30,7 @@ import org.apache.log4j.Logger;
  * learning algorithm.
  *
  * @author Steve Phelps
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.12 $
  */
 
 public abstract class DiscreteLearnerStrategy extends AdaptiveStrategyImpl
@@ -60,9 +59,9 @@ public abstract class DiscreteLearnerStrategy extends AdaptiveStrategyImpl
 	}
 
 	public void onRoundFinished(RoundFinishedEvent event) {
-		if (agent.active()) {
-			MarketSimulation simulation = (MarketSimulation) event.getSimulation();
-			Market auction = simulation.getMarket();
+		if (getAgent().active()) {
+			Market auction = (Market) event.getSimulation();
+//			Market auction = simulation.getMarket();
 			learn(auction);
 		}
 	}
@@ -89,9 +88,9 @@ public abstract class DiscreteLearnerStrategy extends AdaptiveStrategyImpl
 		// Now turn the action into a price
 		double price;
 		if (isSell()) {
-			price = agent.getValuation(auction) + action * markupScale;
+			price = getAgent().getValuation(auction) + action * markupScale;
 		} else {
-			price = agent.getValuation(auction) - action * markupScale;
+			price = getAgent().getValuation(auction) - action * markupScale;
 		}
 		if (price < 0) {
 			// report.debug(this + ": set negative price- clipping at 0");

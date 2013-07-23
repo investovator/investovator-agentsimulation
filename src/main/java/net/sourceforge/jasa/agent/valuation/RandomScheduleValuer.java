@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,13 +22,12 @@ import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jasa.market.Market;
 import cern.jet.random.engine.RandomEngine;
 
-
 /**
  * A valuation policy which specifies a randomly-generated series of valuations
  * for each unit of commodity.
  * 
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.7 $
  */
 
 public class RandomScheduleValuer extends RandomValuer implements Serializable {

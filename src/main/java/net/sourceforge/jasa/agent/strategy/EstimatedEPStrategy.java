@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2004 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -46,7 +46,7 @@ public class EstimatedEPStrategy extends FixedDirectionStrategy {
 	public boolean modifyShout(Order shout) {
 		double a = estimatedAskQuote();
 		double b = estimatedBidQuote();
-		double t = agent.getValuation(auction);
+		double t = getAgent().getValuation(auction);
 		double p = 0;
 		if (Double.isInfinite(a) || Double.isInfinite(b)) {
 			p = t;

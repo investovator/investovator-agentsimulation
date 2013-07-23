@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,6 +18,10 @@ package net.sourceforge.jasa.market;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.sourceforge.jabm.Population;
+import net.sourceforge.jabm.SpringSimulationController;
+import net.sourceforge.jabm.init.BasicAgentInitialiser;
+import net.sourceforge.jabm.mixing.RandomRobinAgentMixer;
 import net.sourceforge.jabm.util.MathUtil;
 import net.sourceforge.jasa.agent.MockTrader;
 import net.sourceforge.jasa.agent.strategy.TruthTellingStrategy;
@@ -29,7 +33,7 @@ import cern.jet.random.engine.RandomEngine;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.10 $
  */
 
 public class KPricingPolicyTest extends TestCase {
@@ -44,7 +48,7 @@ public class KPricingPolicyTest extends TestCase {
 	 * @uml.property name="market"
 	 * @uml.associationEnd
 	 */
-	MarketFacade auction;
+	MarketSimulation auction;
 
 	/**
 	 * @uml.property name="agents"
@@ -60,9 +64,14 @@ public class KPricingPolicyTest extends TestCase {
 
 	public void setUp() {
 		prng = new MersenneTwister64(PRNGTestSeeds.UNIT_TEST_SEED);
-		auction = new MarketFacade(prng);
+		auction = new MarketSimulation();
+		auction.setSimulationController(new SpringSimulationController());
+		auction.setPopulation(new Population());
+		auction.setAgentMixer(new RandomRobinAgentMixer(prng));
+		auction.setAgentInitialiser(new BasicAgentInitialiser());
 		auctioneer = new ClearingHouseAuctioneer(auction);
 		auction.setAuctioneer(auctioneer);
+		auction.setPopulation(new Population());
 
 		agents = new MockTrader[4];
 
@@ -75,9 +84,7 @@ public class KPricingPolicyTest extends TestCase {
 		for (int i = 0; i < agents.length; i++) {
 			TruthTellingStrategy strategy = new TruthTellingStrategy(agents[i]);
 			agents[i].setStrategy(strategy);
-			if (i < 2) {
-				strategy.setBuy(true);
-			}
+			strategy.setBuy(i < 2);
 			auction.register(agents[i]);
 		}
 
@@ -111,7 +118,7 @@ public class KPricingPolicyTest extends TestCase {
 		auction.run();
 
 		for (int i = 0; i < agents.length; i++) {
-			if (agents[i].lastOrderFilled() && agents[i].isBuyer()) {
+			if (agents[i].lastOrderFilled() && agents[i].isBuyer(auction)) {
 				assertTrue(MathUtil.approxEqual(agents[i].lastWinningPrice, agents[i]
 				    .getValuation(auction)));
 			}
@@ -125,7 +132,7 @@ public class KPricingPolicyTest extends TestCase {
 		auction.run();
 
 		for (int i = 0; i < agents.length; i++) {
-			if (agents[i].isSeller()) {
+			if (agents[i].isSeller(auction)) {
 				assertTrue(MathUtil.approxEqual(agents[i].lastWinningPrice, agents[i]
 				    .getValuation(auction)));
 			}

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.TreeSet;
 
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
@@ -34,7 +35,6 @@ import net.sourceforge.jasa.market.AuctionRuntimeException;
 import net.sourceforge.jasa.market.Order;
 import net.sourceforge.jasa.market.ShoutsNotVisibleException;
 
-import org.apache.commons.collections.bag.TreeBag;
 import org.apache.commons.collections.list.TreeList;
 import org.apache.log4j.Logger;
 
@@ -52,9 +52,9 @@ import org.apache.log4j.Logger;
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.18 $
  */
-
+@Deprecated
 public class HistoricalDataReport extends AbstractAuctionReport implements
     Serializable, Resetable {
 
@@ -62,7 +62,7 @@ public class HistoricalDataReport extends AbstractAuctionReport implements
 
 	protected LinkedList<Order> bids = new LinkedList<Order>();
 
-	protected TreeBag sortedShouts = new TreeBag();
+	protected TreeSet<Order> sortedShouts = new TreeSet<Order>();
 
 	protected HashSet<Order> acceptedShouts = new HashSet<Order>();
 //
@@ -117,7 +117,8 @@ public class HistoricalDataReport extends AbstractAuctionReport implements
 	protected void removeNShouts(int n, LinkedList<Order> shouts) {
 		for (int i = 0; i < n; i++) {
 			Order shout = shouts.removeFirst();
-			if (!sortedShouts.remove(shout, 1)) {
+			if (!sortedShouts.remove(shout)) {
+				assert !sortedShouts.contains(shout);
 				throw new AuctionRuntimeException("Could not process " + shout);
 			}
 			acceptedShouts.remove(shout);

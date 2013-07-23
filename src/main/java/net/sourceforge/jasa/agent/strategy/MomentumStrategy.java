@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -30,6 +30,8 @@ import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Required;
 
 import cern.jet.random.AbstractContinousDistribution;
 import cern.jet.random.Uniform;
@@ -38,11 +40,11 @@ import cern.jet.random.engine.RandomEngine;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.12 $
  */
 
 public abstract class MomentumStrategy extends FixedDirectionStrategy implements
-    Serializable {
+    Serializable, InitializingBean {
 
 	protected MimicryLearner learner;
 
@@ -75,8 +77,10 @@ public abstract class MomentumStrategy extends FixedDirectionStrategy implements
 		this.prng = prng;
 		initialise();		
 	}
-
 	
+	public MomentumStrategy() {
+		super();
+	}
 
 //	public void setup(ParameterDatabase parameters, Parameter base) {
 //
@@ -102,17 +106,17 @@ public abstract class MomentumStrategy extends FixedDirectionStrategy implements
 
 	public void initialise() {
 		super.initialise();
-		relativePerterbationDistribution = new Uniform(0, scaling, prng);
-		absolutePerterbationDistribution = new Uniform(0, 0.05, prng);
-		initialMarginDistribution = new Uniform(0.05, 0.35, prng);
+		if (prng != null) {
+			relativePerterbationDistribution = new Uniform(0, scaling, prng);
+			absolutePerterbationDistribution = new Uniform(0, 0.05, prng);
+			initialMarginDistribution = new Uniform(0.05, 0.35, prng);
+		}
 	}
 
 	public boolean modifyShout(Order shout) {
 		shout.setPrice(currentPrice);
 		return super.modifyShout(shout);
 	}
-	
-	
 
 	@Override
 	public void subscribeToEvents(EventScheduler scheduler) {
@@ -132,11 +136,12 @@ public abstract class MomentumStrategy extends FixedDirectionStrategy implements
 		} else if (event instanceof AgentPolledEvent) {
 			onAgentPolled((AgentPolledEvent) event);
 		} else if (event instanceof MarketOpenEvent) {
-			onMarketOpen();
+			onMarketOpen((MarketOpenEvent) event);
 		}
 	}
 
-	public void onMarketOpen() {
+	public void onMarketOpen(MarketOpenEvent event) {
+		this.auction = event.getAuction();
 		if (isSell()) {
 			setMargin(initialMarginDistribution.nextDouble());
 		} else {
@@ -215,6 +220,33 @@ public abstract class MomentumStrategy extends FixedDirectionStrategy implements
 	public double getTrPrice() {
 		return trPrice;
 	}
+	
+	public RandomEngine getPrng() {
+		return prng;
+	}
+
+	@Required
+	public void setPrng(RandomEngine prng) {
+		this.prng = prng;
+	}
+
+	public void setLearner(MimicryLearner learner) {
+		this.learner = learner;
+	}
+	
+	public AbstractContinousDistribution getInitialMarginDistribution() {
+		return initialMarginDistribution;
+	}
+
+	public void setInitialMarginDistribution(
+			AbstractContinousDistribution initialMarginDistribution) {
+		this.initialMarginDistribution = initialMarginDistribution;
+	}
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		initialise();
+	}
 
 	private void updateCurrentPrice() {
 		currentPrice = calculatePrice(learner.act());
@@ -224,14 +256,14 @@ public abstract class MomentumStrategy extends FixedDirectionStrategy implements
 	protected double calculatePrice(double margin) {
 		if ((isBuy() && margin <= 0.0 && margin > -1.0)
 		    || (isSell() && margin >= 0.0)) {
-			return agent.getValuation(auction) * (1 + margin);
+			return getAgent().getValuation(auction) * (1 + margin);
 		} else {
 			return currentPrice;
 		}
 	}
 
 	protected double targetMargin(double targetPrice) {
-		double privValue = agent.getValuation(auction);
+		double privValue = getAgent().getValuation(auction);
 		double targetMargin = 0;
 		targetMargin = (targetPrice - privValue) / privValue;
 

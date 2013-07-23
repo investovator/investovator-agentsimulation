@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,7 +26,7 @@ import net.sourceforge.jasa.agent.FixedDirectionTradingAgent;
 import net.sourceforge.jasa.agent.SimpleTradingAgent;
 import net.sourceforge.jasa.agent.TokenTradingAgent;
 import net.sourceforge.jasa.market.IllegalOrderException;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.NotAnImprovementOverQuoteException;
 import net.sourceforge.jasa.market.Order;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.14 $
  */
 
 public class ElectricityStats extends SurplusReport implements Cloneable {
@@ -122,7 +122,7 @@ public class ElectricityStats extends SurplusReport implements Cloneable {
 
 	static Logger logger = Logger.getLogger(ElectricityStats.class);
 
-	public ElectricityStats(MarketFacade auction) {
+	public ElectricityStats(Market auction) {
 		this.auction = auction;
 		calculate();
 	}
@@ -252,7 +252,7 @@ public class ElectricityStats extends SurplusReport implements Cloneable {
 		Iterator<Order> shoutIterator = shouts.iterator();
 		while (shoutIterator.hasNext()) {
 			Order s = shoutIterator.next();
-			auctioneer.removeShout(s);
+			auctioneer.removeOrder(s);
 		}
 	}
 

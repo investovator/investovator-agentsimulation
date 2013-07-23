@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.jabm.report.DataWriter;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -29,10 +29,10 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.10 $
  */
 
-public abstract class SupplyAndDemandStats extends DirectRevelationReport {
+public abstract class SupplyAndDemandStats extends DirectRevelationReportVariables {
 
 	/**
 	 * The DataWriter to write the supply curve to.
@@ -56,9 +56,9 @@ public abstract class SupplyAndDemandStats extends DirectRevelationReport {
 	 * @param demandStats
 	 *          The DataWriter to write the demand curve to.
 	 */
-	public SupplyAndDemandStats(MarketFacade auction,
+	public SupplyAndDemandStats(Market auction,
 	    DataWriter supplyStats, DataWriter demandStats) {
-		super(auction);
+		super("Supply & Demand", auction);
 		this.supplyStats = supplyStats;
 		this.demandStats = demandStats;
 	}
@@ -67,11 +67,6 @@ public abstract class SupplyAndDemandStats extends DirectRevelationReport {
 		writeSupplyStats();
 		writeDemandStats();
 	}
-
-	public abstract void writeSupplyStats();
-
-	public abstract void writeDemandStats();
-
 	public void writeStats(DataWriter stats, List<Order> shouts, 
 							Comparator<Order> comparator) {
 		int qty = 0, qty1 = 0;
@@ -92,4 +87,10 @@ public abstract class SupplyAndDemandStats extends DirectRevelationReport {
 			qty = qty1;
 		}
 	}
+
+
+	public abstract void writeSupplyStats();
+
+	public abstract void writeDemandStats();
+
 }

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -12,7 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  */
-
 package net.sourceforge.jasa.agent;
 
 import java.io.Serializable;
@@ -27,7 +26,6 @@ import net.sourceforge.jabm.agent.utility.UtilityFunction;
 import net.sourceforge.jabm.event.AgentArrivalEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.util.IdAllocator;
-import net.sourceforge.jabm.util.Parameterizable;
 import net.sourceforge.jabm.util.Prototypeable;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.agent.strategy.FixedQuantityStrategy;
@@ -43,7 +41,6 @@ import net.sourceforge.jasa.market.AuctionException;
 import net.sourceforge.jasa.market.AuctionRuntimeException;
 import net.sourceforge.jasa.market.IllegalOrderException;
 import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketFacade;
 import net.sourceforge.jasa.market.Order;
 
 import org.apache.log4j.Logger;
@@ -53,18 +50,19 @@ import org.apache.log4j.Logger;
  * An abstract class representing a simple agent trading in a round-robin
  * market. Traders of this type deal in a single commodity for which they have
  * a well-defined valuation.
+ * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.33 $
  */
 
-public abstract class AbstractTradingAgent extends AbstractAgent implements TradingAgent,
-    Serializable, Parameterizable, Prototypeable, Cloneable {
+public abstract class AbstractTradingAgent extends AbstractAgent implements
+		TradingAgent, Serializable, Prototypeable, Cloneable {
 
 	/**
-	 * The number of items of stock this agent posseses.
+	 * The inventory of the agent.
 	 */
-	protected CommodityHolding stock = new CommodityHolding();
+	protected Inventory stock = new Inventory();
 
 	/**
 	 * The initial stock of this agent
@@ -91,6 +89,9 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	 */
 	protected ValuationPolicy valuer;
 
+	/**
+	 * The utility function of this agent.
+	 */
 	protected UtilityFunction utilityFunction;
 	
 	/**
@@ -104,7 +105,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	protected double totalPayoff = 0;
 
 	/**
-	 * Did the last shout we place in the market result in a transaction?
+	 * Did the last order we place in the market result in a transaction?
 	 */
 	protected boolean lastOrderFilled = false;
 
@@ -166,11 +167,14 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	}
 
 	/**
-	 * Place a shout in the market as determined by the agent's strategy.
+	 * Place an order in the market as determined by the agent's strategy.
 	 */
 	public void onAgentArrival(Market market, AgentArrivalEvent event) {
 		try {
 			if (currentOrder != null) {
+				// Currently JASA does not provide an API call for order
+				//  revision, so we implement this by cancelling the previous
+				//  order and placing a new revised order.
 				market.removeOrder(currentOrder);
 			}
 			Order newOrder = 
@@ -242,7 +246,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	}
 
 	public void onMarketClosed(MarketEvent event) {
-		((MarketFacade) event.getAuction()).remove(this);
+		((Market) event.getAuction()).remove(this);
 	}
 
 	public Order getCurrentOrder() {
@@ -253,7 +257,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 		return account;
 	}
 
-	public synchronized void giveFunds(AbstractTradingAgent recipient,
+	public void giveFunds(AbstractTradingAgent recipient,
 			double amount) {
 		account.transfer(recipient.getAccount(), amount);
 	}
@@ -265,7 +269,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	 * @param amount
 	 *          The total amount of money to give to the seller
 	 */
-	public synchronized void pay(double amount) {
+	public void pay(double amount) {
 		account.credit(amount);
 	}
 
@@ -311,15 +315,6 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 		((FixedValuer) valuer).setValue(privateValue);
 	}
 
-//	public void setStrategy(TradingStrategy strategy) {
-//		this.strategy = strategy;
-//		strategy.setAgent(this);
-//	}
-//
-//	public TradingStrategy getStrategy() {
-//		return strategy;
-//	}
-
 	/**
 	 * Return the profit made in the most recent market round. This can be used
 	 * as, e.g. input to a re-inforcement learning algorithm.
@@ -352,9 +347,6 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 		return utilityFunction.calculatePayoff(profit);
 	}
 
-//	public abstract double calculateProfit(Market auction, int quantity,
-//			double price);
-
 	public void orderFilled(Market auction, Order shout, double price,
 	    int quantity) {
 		lastOrderFilled = true;
@@ -373,6 +365,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 
 	public void setValuationPolicy(ValuationPolicy valuer) {
 		this.valuer = valuer;
+		valuer.setAgent(this);
 	}
 	
 	public UtilityFunction getUtilityFunction() {
@@ -391,7 +384,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 		this.group = group;
 	}
 
-	public CommodityHolding getCommodityHolding() {
+	public Inventory getCommodityHolding() {
 		return stock;
 	}
 	
@@ -413,12 +406,9 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	}
 	
 	public boolean register(Market market) {
-//		MarketFacade auction = (MarketFacade) market;
-//		auction.addListener(this);
+		markets = new HashSet<Market>();
 		return markets.add(market);
 	}
-
-	
 	
 	// TODO: jniu
 	public double equilibriumProfitsEachDay(Market auction,
@@ -428,15 +418,8 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
 		return super.clone();
 	}
-
-//	@Override
-//	public void addListener(EventListener listener) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 	@Override
 	public double getPayoff() {
@@ -455,7 +438,6 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 
 	@Override
 	public boolean isInteracted() {
-		// TODO Auto-generated method stub
 		return active();
 	}
 
@@ -463,27 +445,24 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 		return ((FixedQuantityStrategy) strategy).getQuantity();
 	}
 
-	public boolean isBuyer() {
+	public boolean isBuyer(Market auction) {
 		if (currentOrder == null) {
-			return getTradingStrategy().isBuy();
+			return getTradingStrategy().isBuy(auction);
 		} else {
 			return currentOrder.isBid();
 		}
 	}
 	
-	public boolean isSeller() {
-		return !isBuyer();
+	public boolean isSeller(Market auction) {
+		return !isBuyer(auction);
 	}
 
 	@Override
 	public double calculateProfit(Market auction, int quantity, double price) {
-//		if (currentOrder == null) {
-//			return 0;
-//		}
-		if (isBuyer()) {
+		if (isBuyer(auction)) {
 			return (getValuation(auction) - price) * quantity;
 		} else {
-			return  (price - getValuation(auction)) * quantity;
+			return (price - getValuation(auction)) * quantity;
 		}
 	}
 	
@@ -493,7 +472,6 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements Trad
 	 */
 	public double equilibriumProfits(Market auction, double equilibriumPrice,
 			int quantity) {
-		// TODO Auto-generated method stub
 		return calculateProfit(auction, quantity, equilibriumPrice);
 	}
 	

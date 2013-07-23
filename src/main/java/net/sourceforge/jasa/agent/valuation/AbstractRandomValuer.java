@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,7 +20,7 @@ import java.io.Serializable;
 import net.sourceforge.jasa.market.Market;
 import cern.jet.random.AbstractContinousDistribution;
 
-public abstract class AbstractRandomValuer implements ValuationPolicy,
+public abstract class AbstractRandomValuer extends AbstractValuationPolicy implements 
     Serializable {
 
 	/**

@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,7 +33,7 @@ import net.sourceforge.jasa.market.Market;
  * </p>
  * 
  * @author Steve Phelps
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.7 $
  */
 
 public class StimuliResponseStrategy extends DiscreteLearnerStrategy implements
@@ -81,7 +81,7 @@ public class StimuliResponseStrategy extends DiscreteLearnerStrategy implements
 	}
 
 	public void learn(Market auction) {
-		learner.reward(agent.getLastPayoff());
+		learner.reward(getAgent().getLastPayoff());
 	}
 
 	public void reset() {

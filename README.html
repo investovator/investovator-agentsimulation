@@ -11,8 +11,8 @@ README for JASA
 
 <p>
 Last modified: $Author: sphelps $<br>
-$Date: 2011/01/17 13:56:38 $<br>
-$Revision: 1.6 $<br>
+$Date: 2013/06/10 10:24:09 $<br>
+$Revision: 1.12 $<br>
 </p>
 
 <a name="About"></a>
@@ -56,9 +56,9 @@ Obtaining the latest release
 </A>
 
 <p>
-The latest release of JASA can be downloaded from <a href="http://sourceforge.net/project/showfiles.php?group_id=47257&package_id=40190">SourceForge</a>.
+The latest release of JASA can be downloaded from 
+<a href="http://sourceforge.net/project/showfiles.php?group_id=47257&package_id=40190">SourceForge</a>.
 </p>
-
 
 <A name="documentation"></A>
 <h3>
@@ -93,11 +93,10 @@ Running the examples
 The examples can be run using <A href="ant.apache.org">Apache Ant</A>.  Launch a 
 command window or shell and set your working directory to the <code>jasa/</code> subdirectory.
 Next <a href="http://ant.apache.org/manual/running.html">run ant</a>
- and pass it the argument </code>ChiarellaAndIori</code> in order to run the Chiarella and Iori example.  For example:
-</P>
+
 
 <code>
-ant ChiarellaAndIori
+ant chiarellaAndIori
 </code>
 
 <h3>From the command line</h3>
@@ -112,8 +111,8 @@ directory and use a command similar to the following:
 </P>
 
 <code>
- java -Djabm.config=examples/ChiarellaAndIori.xml
-  		net.sourceforge.jasa.market.MarketFacade
+ java -Djabm.config=examples/chiarellaAndIori/main.xml
+  		net.sourceforge.jabm.DesktopSimulationManager
 </code> 		
 
 <h3>From the Eclipse IDE</h3>
@@ -121,12 +120,12 @@ directory and use a command similar to the following:
 <P>
 The distribution archive can be imported directly into the <a href="http://www.eclipse.org/">Eclipse IDE</a> by
 using the <a href="http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-importproject.htm">File/Import</a> menu item.
-Create a <a href="http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.user/tasks/tasks-java-local-configuration.htm">launch configuration</a> with the main class <code>net.sourceforge.jasa.market.MarketFacade</code>
+Create a <a href="http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.user/tasks/tasks-java-local-configuration.htm">launch configuration</a> with the main class <code>net.sourceforge.jabm.DesktopSimulationManager</code>
 and specify which configuration file you want to use by setting the system property <code>jabm.config</code> using 
 the JVM argument <code>-D</code>, for example
 </P>
 
- <code>-Djabm.config=config/ChiarellaAndIori.xml</code>
+ <code>-Djabm.config=examples/chiarellaAndIori/main.xml</code>
  
 <H3>
 Documentation
@@ -134,10 +133,7 @@ Documentation
 
 <ul>
 <li>
-<a href="doc/javadoc/index.html">Javadoc</a>
-</li>
-<li>
-<a href="doc/uml/">UML</a>
+<a href="doc/api/index.html">Javadoc and UML</a>
 </li>
 </ul>
 
@@ -162,25 +158,46 @@ supported by the EU IST Programme through the SLIE project.
 The system is based on the 4-heap algorithm, described in the paper
 </p>
 <p>
-"Flexible Double Auctions for Electronic Commerce: Theory and Implementation"
-by Wurman, Walsh and Wellman 1998.
+Wurman, P. R., Walsh, W. E., & Wellman, M. P. (1998). Flexible double auctions 
+for electronic commerce: theory and implementation. International Journal of 
+Decision Support Systems, 24, 17–27.
 </p>
 
 <p>
-  JASA makes use of the  <a href="http://www.math.keio.ac.jp/matumoto/emt.html">Mersenne Twister PRNG</a>. Full details of the Mersenne Twister algorithm can be found in:
+  JASA makes use of the  <a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne Twister PRNG</a>. Full details of the Mersenne Twister algorithm can be found in:
 </p>
 <p>
-Makato Matsumoto and Takuji Nishimura, "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator", in <i>ACM Transactions on modeling and Computer Simulation</i>, Vol. 8, No. 1, January 1998, pp 3--30.
+Makato Matsumoto and Takuji Nishimura, "Mersenne Twister: A 623-Dimensionally 
+Equidistributed Uniform Pseudo-Random Number Generator", in <i>ACM Transactions 
+on modeling and Computer Simulation</i>, Vol. 8, No. 1, January 1998, pp 3--30.
 </p>
+
+<p>
+JASA includes implementations based on existing agent-based models described in the literature, including:
+</p>
+
+<p>
+<ul>
+<li>
+Iori, G., & Chiarella, C. (2002). A Simulation Analysis of the Microstructure of Double Auction Markets. Quantitative Finance, 2, 346–353.
+</li>
+<li>
+Cliff, D., & Bruten, J. (1997). Minimal-Intelligence Agents for Bargaining Behaviors in Market-Based Environments.
+</li>
+<li>
+Nicolaisen, J., Petrov, V., & Tesfatsion, L. (2001). Market power and efficiency in a computational electricity market with discriminatory double-auction pricing. IEEE Transactions on Evolutionary Computation, 5(5), 504–523.
+</li>
+</ul>
+</p>
+
 <P>
 This product includes software developed by the Apache Software Foundation <a href="http://www.apache.org">(http://www.apache.org)</A>.
 </P>
 
 <hr>
 
-
 <p>
-(C) 2011 <a href="http://www.essex.ac.uk/ccfea/Centre/people/staff/sphelps.htm">Steve Phelps</a>
+(C) 2013 <a href="http://sphelps.net/">Steve Phelps</a>
 </p>
 
 </body>

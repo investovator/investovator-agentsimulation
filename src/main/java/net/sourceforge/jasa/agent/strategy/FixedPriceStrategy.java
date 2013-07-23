@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ import net.sourceforge.jasa.market.Order;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 
 public class FixedPriceStrategy extends FixedDirectionStrategy implements

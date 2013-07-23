@@ -1,6 +1,6 @@
 /*
  * JASA Java Auction Simulator API
- * Copyright (C) 2001-2009 Steve Phelps
+ * Copyright (C) 2013 Steve Phelps
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -16,55 +16,61 @@
 package net.sourceforge.jasa.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-import net.sourceforge.jabm.event.RoundFinishedEvent;
+import net.sourceforge.jabm.event.InteractionsFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationFinishedEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
 import net.sourceforge.jabm.report.DataSeriesWriter;
-import net.sourceforge.jabm.report.Report;
-import net.sourceforge.jasa.market.MarketFacade;
+import net.sourceforge.jabm.report.ReportWithGUI;
+import net.sourceforge.jabm.view.XYDatasetAdaptor;
+import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.report.SupplyAndDemandStats;
 
 import org.apache.log4j.Logger;
-
-import uchicago.src.sim.analysis.plot.RepastPlot;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 
 /**
  * @author Steve Phelps
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.21 $
  */
 
 //TODO refactor this to use JFreeChart library
 
-public abstract class SupplyAndDemandFrame extends JFrame implements Report, Observer {
+public abstract class SupplyAndDemandFrame
+		implements ReportWithGUI {
+	
+	protected Market auction;
 
-	protected MarketFacade auction;
+	protected JFreeChart graph;
 
-	protected RepastPlot graph;
+	protected DataSeriesWriter supplyCurve = new DataSeriesWriter();
 
-	protected DataSeriesWriter supplyCurve;
-
-	protected DataSeriesWriter demandCurve;
+	protected DataSeriesWriter demandCurve = new DataSeriesWriter();
 
 	protected JButton updateButton;
 
 	protected JCheckBox autoUpdate;
+	
+	protected XYDatasetAdaptor dataset;
 
 	protected float maxX;
+
+	private JPanel panel;
 
 	public static final int SERIES_SUPPLY = 0;
 
@@ -72,140 +78,115 @@ public abstract class SupplyAndDemandFrame extends JFrame implements Report, Obs
 
 	static Logger logger = Logger.getLogger(SupplyAndDemandFrame.class);
 
-	public SupplyAndDemandFrame(MarketFacade auction) {
-
-		this.auction = auction;
-		Container contentPane = getContentPane();
-		BorderLayout layout = new BorderLayout();
-		contentPane.setLayout(layout);
-
-		graph = new RepastPlot(null);
-//		plotSupplyAndDemand();
-		graph.addLegend(SERIES_SUPPLY, "Supply", Color.BLUE);
-		graph.addLegend(SERIES_DEMAND, "Demand", Color.RED);
-		graph.setDoubleBuffered(true);
-
-		contentPane.add(graph, BorderLayout.CENTER);
-
-		JPanel controlPanel = new JPanel();
-		updateButton = new JButton("Update");
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				graph.clear(0);
-				graph.clear(1);
-				updateGraph();
+	public SupplyAndDemandFrame() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				initialiseGUI();
 			}
 		});
-		controlPanel.add(updateButton);
-
-//		autoUpdate = new JCheckBox("Auto Update");
-//		autoUpdate.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent event) {
-//				toggleAutoUpdate();
-//			}
-//		});
-//		controlPanel.add(autoUpdate);
-
-		contentPane.add(controlPanel, BorderLayout.SOUTH);
-
-		updateTitle();
-
-		pack();
 	}
+	
+	public void initialiseGUI() {
+		panel = new JPanel();
+		BorderLayout layout = new BorderLayout();
+		panel.setLayout(layout);
 
-	protected void toggleAutoUpdate() {
-//		if (autoUpdate.isSelected()) {
-//			auction.addObserver(this);
-//		} else {
-//			auction.deleteObserver(this);
-//		}
-		//TODO
-	}
-
-	public void update(Observable auction, Object o) {
-	}
-
-	public void updateGraph() {
-//		graph.clear(0);
-//		graph.clear(1);
-		graph.clearPoints();
-		plotSupplyAndDemand();
-		updateTitle();
-	}
-
-	public void updateTitle() {
-//		setTitle(getGraphName() + " at time "
-//		    + auction.getRound());
+		ArrayList<DataSeriesWriter> dataSeries = new ArrayList<DataSeriesWriter>(2);
+		dataSeries.add(0, supplyCurve);
+		dataSeries.add(1, demandCurve);
+		
+		ArrayList<String> seriesNames = new ArrayList<String>(2);
+		seriesNames.add(0, "Supply");
+		seriesNames.add(1, "Demand");
+		
+		dataset = new XYDatasetAdaptor(dataSeries, seriesNames); 
+		graph = ChartFactory
+				.createXYLineChart(getGraphName(), "Price", "Quantity",
+						dataset, PlotOrientation.HORIZONTAL, 
+						true, true, false);
+		
+		ChartPanel chartPanel = new ChartPanel(graph, false);
+        chartPanel.setPreferredSize(new Dimension(500, 270));
+        panel.add(chartPanel);
 	}
 
 	public void open() {
-		pack();
-		setVisible(true);
+//		pack();
+		panel.setVisible(true);
 	}
 
 	public void close() {
-		setVisible(false);
+		panel.setVisible(false);
+	}
+
+	public void updateData() {
+		supplyCurve.clear();
+		demandCurve.clear();
+		SupplyAndDemandStats stats = getSupplyAndDemandStats();
+		stats.compute(null);
+		stats.produceUserOutput();
+	}
+
+	@Override
+	public void eventOccurred(final SimEvent event) {
+		if (event instanceof SimulationStartingEvent) {
+			onSimulationStarting(event);
+		} else if (event instanceof SimulationFinishedEvent) {
+			onSimulationFinished();
+		} else if (event instanceof InteractionsFinishedEvent) {
+			onInteractionsFinished((InteractionsFinishedEvent) event);
+		}
+	}
+
+	public void onInteractionsFinished(final InteractionsFinishedEvent event) {
+		if (panel.isShowing()) {
+			try {
+				updateData();
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						dataset.datasetChanged(event);
+					}
+				});
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			} catch (InvocationTargetException e) {
+				logger.error(e);
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	public void onSimulationFinished() {
+		close();
+	}
+
+	public void onSimulationStarting(final SimEvent event) {
+		this.auction = (Market) 
+				((SimulationStartingEvent) event).getSimulation();
+		open();
+	}
+
+//	public void onOrderPlaced() {
+//		updateData();
+//	}
+
+	@Override
+	public Map<Object, Number> getVariableBindings() {
+		return new HashMap<Object, Number>();
+	}
+	
+	@Override
+	public String getName() {
+		return getGraphName();
+	}
+	
+	@Override
+	public JComponent getComponent() {
+		return panel;
 	}
 
 	public abstract String getGraphName();
 
 	public abstract SupplyAndDemandStats getSupplyAndDemandStats();
-	
-	public void updateData() {
-		supplyCurve = new DataSeriesWriter();
-		demandCurve = new DataSeriesWriter();
-		SupplyAndDemandStats stats = getSupplyAndDemandStats();
-		stats.calculate();
-		stats.produceUserOutput();
-	}
-
-	protected void plotSupplyAndDemand() {		
-		maxX = Float.NEGATIVE_INFINITY;
-		plotCurve(SERIES_SUPPLY, supplyCurve);
-		plotCurve(SERIES_DEMAND, demandCurve);
-		finishCurve(SERIES_SUPPLY, supplyCurve);
-		finishCurve(SERIES_DEMAND, demandCurve);
-	}
-
-	protected void plotCurve(int seriesIndex, DataSeriesWriter curve) {
-		if (curve.length() > 0) {
-			for (int i = 0; i < curve.length(); i++) {
-				graph.addPoint(seriesIndex, curve.getXCoord(i), curve.getYCoord(i),
-				    true);
-			}
-			float lastPointX = curve.getXCoord(curve.length() - 1);
-			if (lastPointX > maxX) {
-				maxX = lastPointX;
-			}
-		}
-	}
-
-	protected void finishCurve(int seriesIndex, DataSeriesWriter curve) {
-		if (curve.length() > 0) {
-			int l = curve.length() - 1;
-			double lastX = curve.getXCoord(l);
-			double lastY = curve.getYCoord(l);
-			if (lastX < maxX) {
-				graph.addPoint(seriesIndex, maxX, lastY, true);
-			}
-		}
-	}
-
-	@Override
-	public void eventOccurred(SimEvent event) {
-		if (event instanceof RoundFinishedEvent) {
-			updateData();
-			updateGraph();
-		} else if (event instanceof SimulationStartingEvent) {
-			open();
-		} else if (event instanceof SimulationFinishedEvent) {
-			close();
-		}
-	}
-	
-	@Override
-	public Map<Object, Number> getVariableBindings() {
-		return new HashMap<Object, Number>();
-	}
 
 }

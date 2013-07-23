@@ -5,13 +5,15 @@ import java.io.Serializable;
 import net.sourceforge.jabm.EventScheduler;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
-import net.sourceforge.jasa.agent.strategy.AbstractReturnForecaster;
 import net.sourceforge.jasa.market.Market;
+
+import org.springframework.beans.factory.annotation.Required;
+
 import cern.jet.random.AbstractContinousDistribution;
 import cern.jet.random.Normal;
 import cern.jet.random.engine.RandomEngine;
 
-public class NoiseTraderForecaster extends AbstractReturnForecaster
+public class NoiseTraderForecaster extends ReturnForecasterWithTimeHorizon
 		implements Serializable {
 
 	protected AbstractContinousDistribution noiseDistribution;
@@ -23,8 +25,11 @@ public class NoiseTraderForecaster extends AbstractReturnForecaster
 		noiseDistribution = new Normal(0, 1.0, prng);
 	}
 	
+	public NoiseTraderForecaster() {
+	}
+	
 	@Override
-	public double determineValue(Market market) {
+	public double getNextPeriodReturnForecast(Market market) {
 		return noiseDistribution.nextDouble();
 	}
 
@@ -37,8 +42,10 @@ public class NoiseTraderForecaster extends AbstractReturnForecaster
 		return prng;
 	}
 
+	@Required
 	public void setPrng(RandomEngine prng) {
 		this.prng = prng;
+		noiseDistribution = new Normal(0, 1.0, prng);
 	}
 
 	@Override
