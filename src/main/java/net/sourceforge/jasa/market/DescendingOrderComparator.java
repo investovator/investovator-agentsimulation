@@ -32,7 +32,7 @@ public class DescendingOrderComparator implements
 	public DescendingOrderComparator() {
 	}
 
-	public int compare(Order shout1, Order shout2) {
+	public synchronized int compare(Order shout1, Order shout2) {
 		return shout2.compareTo(shout1);
 	}
 }

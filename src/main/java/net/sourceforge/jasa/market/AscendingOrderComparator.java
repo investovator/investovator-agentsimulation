@@ -31,7 +31,7 @@ public class AscendingOrderComparator implements Comparator<Order>, Serializable
 	public AscendingOrderComparator() {
 	}
 
-	public int compare(Order shout1, Order shout2) {
+	public synchronized int compare(Order shout1, Order shout2) {
 		return shout1.compareTo(shout2);
 	}
 }

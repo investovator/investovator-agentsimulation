@@ -15,16 +15,11 @@
 
 package net.sourceforge.jasa.market;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.TreeSet;
-
 import org.apache.commons.collections.iterators.CollatingIterator;
 import org.apache.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * <p>
@@ -141,7 +136,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	 *          The shout to insert
 	 * 
 	 */
-	private static void insertShout(PriorityQueue<Order> heap, Order shout)
+	private void insertShout(PriorityQueue<Order> heap, Order shout)
 	    throws DuplicateShoutException {
 		try {
 			heap.add(shout);
@@ -221,7 +216,7 @@ public class FourHeapOrderBook implements OrderBook, Serializable {
 	 * @return A reference to the, possibly modified, shout.
 	 * 
 	 */
-	protected static Order unifyShout(Order shout, PriorityQueue<Order> heap) {
+	protected Order unifyShout(Order shout, PriorityQueue<Order> heap) {
 
 		Order top = (Order) heap.peek();
 
