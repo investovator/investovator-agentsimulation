@@ -18,7 +18,10 @@
 
 package org.investovator.multiasset.simulation;
 
+import net.infonode.docking.SplitWindow;
+import net.infonode.docking.TabWindow;
 import net.infonode.docking.View;
+import net.infonode.docking.util.DockingUtil;
 import net.infonode.docking.util.ViewMap;
 import net.sourceforge.jabm.DesktopSimulationManager;
 import net.sourceforge.jabm.SpringSimulationController;
@@ -35,6 +38,12 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +60,7 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
 
     private MultiAssetSimulationManager multiAssetSimulationManager;
 
-    private ArrayList<SpringSimulationController> simulationControllers;
+    private static ArrayList<SpringSimulationController> simulationControllers;
 
     private static final int ICON_SIZE = 8;
 
@@ -79,7 +88,7 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
 
     @Override
     public void initialise(){
-        this.simulationControllers = new ArrayList<SpringSimulationController>();
+        //this.simulationControllers = new ArrayList<SpringSimulationController>();
         this.multiAssetSimulationManager = getMultiAssetSimulationManager();
         loadSimulationProperties();
 
@@ -88,6 +97,62 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
                 initialiseGUI();
             }
         });
+    }
+
+    public void initialiseGUI() {
+
+        initialiseViews();
+
+        desktopPane = DockingUtil.createRootWindow(viewMap, true);
+
+        try {
+            restoreLayout();
+        } catch (IOException e) {
+            handleExceptionWithErrorDialog(e);
+        }
+
+        // Set gradient theme. The theme properties object is the super object of our properties object, which
+        // means our property value settings will override the theme values
+        properties.addSuperObject(currentTheme.getRootWindowProperties());
+
+        // Our properties object is the super object of the root window properties object, so all property values of the
+        // theme and in our property object will be used by the root window
+        desktopPane.getRootWindowProperties().addSuperObject(properties);
+
+        desktopFrame = new JFrame("JABM");
+        desktopFrame.getContentPane().add(desktopPane, BorderLayout.CENTER);
+        desktopFrame.getContentPane().add(createToolBar(), BorderLayout.NORTH);
+
+        desktopFrame.setPreferredSize(new Dimension(1200, 900));
+        desktopFrame.pack();
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(createFileMenu());
+        menuBar.add(createViewMenu());
+        menuBar.add(createHelpMenu());
+
+        desktopFrame.setJMenuBar(menuBar);
+        desktopFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        desktopFrame.addWindowListener(new SaveLayoutOnExitWindowListener());
+        desktopFrame.setVisible(true);
+    }
+
+    public void restoreLayout() throws IOException {
+        File layoutFile = new File(getLayoutFileName());
+        if (layoutFile.exists()) {
+            FileInputStream fis = new FileInputStream(layoutFile);
+            ObjectInputStream in = new ObjectInputStream(fis);
+            desktopPane.read(in);
+            in.close();
+        } else {
+            intialiseLayout();
+        }
+    }
+
+    public void intialiseLayout() {
+        desktopPane.setWindow(new SplitWindow(false, 0.75f,
+                new TabWindow(getWindows(reportViews)),
+                new TabWindow(getWindows(builtinViews))));
     }
 
     @Override
@@ -226,14 +291,15 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
 
     @Override
     public void runSingleExperiment() {
-        launchSimulations();
+        this.launchSimulations();
     }
 
     public void launchSimulations() {
         logger.info("Starting...");
         long start = System.currentTimeMillis();
         for (SpringSimulationController controller: simulationControllers){
-           controller.run();
+            Thread thread = new Thread(controller);
+            thread.start();
         }
         long finish = System.currentTimeMillis();
         long duration = finish - start;
@@ -263,8 +329,7 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
 
     @Override
     protected void helpDialog() {
-        String modelDescription = getMultiAssetSimulationManager()
-                .simulationControllers.get(0).getModelDescription();  //TODO
+        String modelDescription = simulationControllers.get(0).getModelDescription();  //TODO
         String message = Version.getVerboseVersion() + "\n"
                 + Version.getCopyright();
         if (modelDescription != null) {
@@ -276,12 +341,45 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
     }
 
     public void setSimulations(ArrayList<SpringSimulationController> securities) {
-        this.simulationControllers = securities;
+        simulationControllers = new ArrayList<SpringSimulationController>(securities);
     }
 
     public static void main(String[] args) {
         MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
         manager.initialise();
+    }
+
+    class SaveLayoutOnExitWindowListener implements WindowListener {
+
+        @Override
+        public void windowOpened(WindowEvent e) {
+        }
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            cleanUp();
+        }
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+        }
+
+        @Override
+        public void windowIconified(WindowEvent e) {
+        }
+
+        @Override
+        public void windowDeiconified(WindowEvent e) {
+        }
+
+        @Override
+        public void windowActivated(WindowEvent e) {
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+        }
+
     }
 
 }

@@ -92,8 +92,8 @@
                 <!-- 			<ref bean="midPriceTimeSeries"/> -->
                 <!-- 			<ref bean="orderFlowTimeSeries"/> -->
                 <ref bean="gbmPriceTimeSeries"/>
-                <ref bean="currentPriceTimeSeries"/>
-                <ref bean="equilibriumPriceTimeSeries"/>
+                <!--<ref bean="currentPriceTimeSeries"/>-->
+                <!--<ref bean="equilibriumPriceTimeSeries"/>-->
             </list>
         </property>
     </bean>
