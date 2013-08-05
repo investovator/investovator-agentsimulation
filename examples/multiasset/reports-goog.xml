@@ -234,7 +234,7 @@
     <bean id="priceTimeSeriesChart"
           class="net.sourceforge.jabm.view.TimeSeriesChart">
         <property name="series" ref="priceTimeSeries"/>
-        <property name="chartTitle" value="Price time series"/>
+        <property name="chartTitle" value="Price time series - GOOG"/>
         <property name="rangeAxisLabel" value="Price ($)"/>
     </bean>
 

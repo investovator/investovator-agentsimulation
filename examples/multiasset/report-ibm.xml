@@ -231,7 +231,7 @@
     <bean id="priceTimeSeriesChartIBM"
           class="net.sourceforge.jabm.view.TimeSeriesChart">
         <property name="series" ref="priceTimeSeriesIBM"/>
-        <property name="chartTitle" value="Price time series"/>
+        <property name="chartTitle" value="Price time series - IBM"/>
         <property name="rangeAxisLabel" value="Price ($)"/>
     </bean>
 
