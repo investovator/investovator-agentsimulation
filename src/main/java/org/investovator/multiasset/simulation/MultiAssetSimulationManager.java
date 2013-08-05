@@ -317,11 +317,6 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
             }
         }
 
-
-        /*for (SpringSimulationController controller: simulationControllers){
-            Thread thread = new Thread(controller);
-            thread.start();
-        }*/
         long finish = System.currentTimeMillis();
         long duration = finish - start;
         logger.info("all done.");

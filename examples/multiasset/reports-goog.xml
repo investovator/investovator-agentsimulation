@@ -88,12 +88,12 @@
     <bean id="priceTimeSeries" class="net.sourceforge.jabm.report.CombiSeriesReportVariables">
         <property name="seriesList">
             <list>
-                <!-- 			<ref bean="transactionPriceTimeSeries"/> -->
-                <!-- 			<ref bean="midPriceTimeSeries"/> -->
-                <!-- 			<ref bean="orderFlowTimeSeries"/> -->
+                <ref bean="transactionPriceTimeSeries"/>
+                <ref bean="midPriceTimeSeries"/>
+                <ref bean="orderFlowTimeSeries"/>
                 <ref bean="gbmPriceTimeSeries"/>
-                <!--<ref bean="currentPriceTimeSeries"/>-->
-                <!--<ref bean="equilibriumPriceTimeSeries"/>-->
+                <ref bean="currentPriceTimeSeries"/>
+                <ref bean="equilibriumPriceTimeSeries"/>
             </list>
         </property>
     </bean>
@@ -235,7 +235,7 @@
           class="net.sourceforge.jabm.view.TimeSeriesChart">
         <property name="series" ref="priceTimeSeries"/>
         <property name="chartTitle" value="Price time series - GOOG"/>
-        <property name="rangeAxisLabel" value="Price ($)"/>
+        <property name="rangeAxisLabel" value="Price (LKR)"/>
     </bean>
 
     <bean id="spreadTimeSeriesChart"

@@ -88,6 +88,9 @@
     <bean id="priceTimeSeriesIBM" class="net.sourceforge.jabm.report.CombiSeriesReportVariables">
         <property name="seriesList">
             <list>
+                <ref bean="transactionPriceTimeSeriesIBM"/>
+                <ref bean="midPriceTimeSeriesIBM"/>
+                <ref bean="orderFlowTimeSeriesIBM"/>
                 <ref bean="gbmPriceTimeSeriesIBM"/>
                 <ref bean="currentPriceTimeSeriesIBM"/>
                 <ref bean="equilibriumPriceTimeSeriesIBM"/>
@@ -232,7 +235,7 @@
           class="net.sourceforge.jabm.view.TimeSeriesChart">
         <property name="series" ref="priceTimeSeriesIBM"/>
         <property name="chartTitle" value="Price time series - IBM"/>
-        <property name="rangeAxisLabel" value="Price ($)"/>
+        <property name="rangeAxisLabel" value="Price (LKR)"/>
     </bean>
 
     <bean id="spreadTimeSeriesChartIBM"
