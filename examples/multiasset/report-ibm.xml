@@ -1,23 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  ~ investovator, Stock Market Gaming Framework
-  ~     Copyright (C) 2013  investovator
-  ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <!--  A JASA implementation of the model described in the following paper:
 
 		Iori, G., Chiarella, C., November 2002.
@@ -103,18 +85,15 @@
         <property name="reportVariables" ref="orderFlowTimeSeriesIBM"/>
     </bean>
 
-<!--    <bean id="priceTimeSeries" class="net.sourceforge.jabm.report.CombiSeriesReportVariables">
+    <bean id="priceTimeSeriesIBM" class="net.sourceforge.jabm.report.CombiSeriesReportVariables">
         <property name="seriesList">
             <list>
-                &lt;!&ndash; 			<ref bean="transactionPriceTimeSeries"/> &ndash;&gt;
-                &lt;!&ndash; 			<ref bean="midPriceTimeSeries"/> &ndash;&gt;
-                &lt;!&ndash; 			<ref bean="orderFlowTimeSeries"/> &ndash;&gt;
                 <ref bean="gbmPriceTimeSeries"/>
                 <ref bean="currentPriceTimeSeries"/>
                 <ref bean="equilibriumPriceTimeSeries"/>
             </list>
         </property>
-    </bean>-->
+    </bean>
 
     <bean id="orderFlowTimeSeriesIBM" class="net.sourceforge.jabm.report.SeriesReportVariables">
         <property name="reportVariables" ref="orderFlowReportVariablesIBM" />
@@ -249,12 +228,12 @@
     <bean id="spreadReportVariablesIBM" class="net.sourceforge.jasa.report.SpreadReportVariables">
     </bean>
 
-    <!--<bean id="priceTimeSeriesChart"-->
-          <!--class="net.sourceforge.jabm.view.TimeSeriesChart">-->
-        <!--<property name="series" ref="priceTimeSeries"/>-->
-        <!--<property name="chartTitle" value="Price time series"/>-->
-        <!--<property name="rangeAxisLabel" value="Price ($)"/>-->
-    <!--</bean>-->
+    <bean id="priceTimeSeriesChartIBM"
+          class="net.sourceforge.jabm.view.TimeSeriesChart">
+        <property name="series" ref="priceTimeSeriesIBM"/>
+        <property name="chartTitle" value="Price time series"/>
+        <property name="rangeAxisLabel" value="Price ($)"/>
+    </bean>
 
     <bean id="spreadTimeSeriesChartIBM"
           class="net.sourceforge.jabm.view.TimeSeriesChart">

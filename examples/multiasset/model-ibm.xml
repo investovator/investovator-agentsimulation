@@ -1,23 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  ~ investovator, Stock Market Gaming Framework
-  ~     Copyright (C) 2013  investovator
-  ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <!--  A JASA implementation of the model described in the following paper:
 
 		Iori, G., Chiarella, C., November 2002. 
@@ -30,10 +12,48 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
+    <bean id="ibmController"
+          class="net.sourceforge.jabm.SpringSimulationController"
+          scope="singleton">
+
+        <property name="simulationBeanName">
+            <idref local="ibm"/>
+        </property>
+
+        <property name="numSimulations" value="1"/>
+
+        <property name="reports">
+            <list>
+                <!--IBM-->
+                <ref bean="gbmPriceProcessIBM" />
+                <ref bean="gbmPriceTimeSeriesReportIBM" />
+                <ref bean="priceTimeSeriesChartIBM" />
+                <ref bean="equilibriumPriceTimeSeriesChartIBM" />
+                <ref bean="equilibriumPriceTimeSeriesReportIBM"/>
+                <ref bean="equilibriumPriceReportVariablesIBM"/>
+                <ref bean="equilibriumPriceUpdaterIBM"/>
+                <ref bean="equilibriumPriceCSVReportIBM"/>
+                <ref bean="currentPriceTimeSeriesReportIBM" />
+                <ref bean="currentPriceCSVReportIBM"/>
+                <ref bean="currentPriceReportVariablesIBM" />
+                <ref bean="spreadTimeSeriesReportIBM" />
+                <ref bean="spreadReportVariablesIBM" />
+                <ref bean="reportedSupplyAndDemandGraphIBM"/>
+                <ref bean="auctionStateSupplyAndDemandGraphIBM"/>
+                <ref bean="orderBookViewIBM"/>
+            </list>
+        </property>
+
+        <property name="modelDescription"
+                  value="Iori and Chiarella - A Simulation analysis of a the microstructure of double auction markets"/>
+
+    </bean>
+
 <!--  This is the top-level bean defining the experiment to be run -->
 <bean id="ibm" class="net.sourceforge.jasa.market.MarketSimulation"
 		scope="simulation">
-	<property name="simulationController" ref="simulationController"/>
+	<property name="simulationController" ref="ibmController"/>
 	<property name="maximumDays" value="1"/>
 	<property name="lengthOfDay" value="200000"/>
 	<property name="population" ref="staticPopulationIBM"/>
@@ -155,7 +175,7 @@
 
 <bean id="strategyIBM" scope="prototype"
 	class="net.sourceforge.jabm.strategy.AbstractStrategy">
-	<property name="scheduler" ref="simulationController"/>
+	<property name="scheduler" ref="ibmController"/>
 </bean>
 
 <bean id="returnForecastStrategyIBM" scope="prototype" parent="strategyIBM"

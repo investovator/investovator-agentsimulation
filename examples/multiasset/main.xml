@@ -16,73 +16,30 @@
 	<import resource="reports-goog.xml" />
     <import resource="model-ibm.xml"/>
     <import resource="report-ibm.xml"/>
-	
-	<bean id="simulationController" 
-			class="net.sourceforge.jabm.SpringSimulationController"
-			scope="singleton">
-			
-		<property name="simulationBeanName">
-		   <idref local="marketController"/>
-		</property>
-	
-		<property name="numSimulations" value="1"/>
-		
-		<property name="reports">
-			<list>
-				<ref bean="gbmPriceProcess" />
-				<ref bean="gbmPriceTimeSeriesReport" />
-				<ref bean="priceTimeSeriesChart" />
-				<ref bean="equilibriumPriceTimeSeriesChart" />
-				<ref bean="equilibriumPriceTimeSeriesReport"/>
-				<ref bean="equilibriumPriceReportVariables"/>
-				<ref bean="equilibriumPriceUpdater"/>
-				<ref bean="equilibriumPriceCSVReport"/>
-				<ref bean="currentPriceTimeSeriesReport" />
-				<ref bean="currentPriceCSVReport"/>
-				<ref bean="currentPriceReportVariables" />
-				<ref bean="spreadTimeSeriesReport" />
-				<ref bean="spreadReportVariables" />
-				<ref bean="reportedSupplyAndDemandGraph"/>
-				<ref bean="auctionStateSupplyAndDemandGraph"/>
-				<ref bean="orderBookView"/>
 
-                <!--IBM-->
-                <ref bean="gbmPriceProcessIBM" />
-                <ref bean="gbmPriceTimeSeriesReportIBM" />
-                <!--<ref bean="priceTimeSeriesChart" />-->
-                <ref bean="equilibriumPriceTimeSeriesChartIBM" />
-                <ref bean="equilibriumPriceTimeSeriesReportIBM"/>
-                <ref bean="equilibriumPriceReportVariablesIBM"/>
-                <ref bean="equilibriumPriceUpdaterIBM"/>
-                <ref bean="equilibriumPriceCSVReportIBM"/>
-                <ref bean="currentPriceTimeSeriesReportIBM" />
-                <ref bean="currentPriceCSVReportIBM"/>
-                <ref bean="currentPriceReportVariablesIBM" />
-                <ref bean="spreadTimeSeriesReportIBM" />
-                <ref bean="spreadReportVariablesIBM" />
-                <ref bean="reportedSupplyAndDemandGraphIBM"/>
-                <ref bean="auctionStateSupplyAndDemandGraphIBM"/>
-                <ref bean="orderBookViewIBM"/>
-			</list>
-		</property>
-		
-		<property name="modelDescription" 
-			value="Iori and Chiarella - A Simulation analysis of a the microstructure of double auction markets"/>
-			
-	</bean>
+    <bean id="simulationManager" class="org.investovator.multiasset.simulation.MultiAssetSimulationManager"
+          scope="singleton">
+        <property name="simulations">
+            <list>
+                <ref bean="googController"/>
+                <ref bean="ibmController"/>
+            </list>
+        </property>
+    </bean>
 
 	<bean id="fileNamePrefix" class="net.sourceforge.jabm.util.MutableStringWrapper"
 		scope="singleton">
 		<constructor-arg value="data/" />
 	</bean>
 
-    <bean id="marketController" class="net.sourceforge.jasa.market.MarketController" scope="singleton">
+<!--    <bean id="marketController" class="net.sourceforge.jasa.market.MarketController" scope="singleton">
         <property name="securities">
             <list>
                 <ref bean="google"/>
                 <ref bean="ibm"/>
             </list>
         </property>
-    </bean>
+        <property name="simulationController" ref="simulationController"/>
+    </bean>-->
 
 </beans>

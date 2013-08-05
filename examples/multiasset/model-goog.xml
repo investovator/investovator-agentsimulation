@@ -12,10 +12,47 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
+    <bean id="googController"
+          class="net.sourceforge.jabm.SpringSimulationController"
+          scope="singleton">
+
+        <property name="simulationBeanName">
+            <idref local="google"/>
+        </property>
+
+        <property name="numSimulations" value="1"/>
+
+        <property name="reports">
+            <list>
+                <ref bean="gbmPriceProcess" />
+                <ref bean="gbmPriceTimeSeriesReport" />
+                <ref bean="priceTimeSeriesChart" />
+                <ref bean="equilibriumPriceTimeSeriesChart" />
+                <ref bean="equilibriumPriceTimeSeriesReport"/>
+                <ref bean="equilibriumPriceReportVariables"/>
+                <ref bean="equilibriumPriceUpdater"/>
+                <ref bean="equilibriumPriceCSVReport"/>
+                <ref bean="currentPriceTimeSeriesReport" />
+                <ref bean="currentPriceCSVReport"/>
+                <ref bean="currentPriceReportVariables" />
+                <ref bean="spreadTimeSeriesReport" />
+                <ref bean="spreadReportVariables" />
+                <ref bean="reportedSupplyAndDemandGraph"/>
+                <ref bean="auctionStateSupplyAndDemandGraph"/>
+                <ref bean="orderBookView"/>
+            </list>
+        </property>
+
+        <property name="modelDescription"
+                  value="Iori and Chiarella - A Simulation analysis of a the microstructure of double auction markets"/>
+
+    </bean>
+
 <!--  This is the top-level bean defining the experiment to be run -->
 <bean id="google" class="net.sourceforge.jasa.market.MarketSimulation"
 		scope="simulation">
-	<property name="simulationController" ref="simulationController"/>
+	<property name="simulationController" ref="googController"/>
 	<property name="maximumDays" value="1"/>
 	<property name="lengthOfDay" value="200000"/>
 	<property name="population" ref="staticPopulation"/>
@@ -137,7 +174,7 @@
 
 <bean id="strategy" scope="prototype" 
 	class="net.sourceforge.jabm.strategy.AbstractStrategy">
-	<property name="scheduler" ref="simulationController"/>
+	<property name="scheduler" ref="googController"/>
 </bean>
 
 <bean id="returnForecastStrategy" scope="prototype" parent="strategy"

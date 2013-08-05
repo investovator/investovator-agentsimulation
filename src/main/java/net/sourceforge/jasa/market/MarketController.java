@@ -34,6 +34,7 @@ import java.util.ArrayList;
 public class MarketController implements Simulation {
 
     private ArrayList<MarketSimulation> securities = new ArrayList<MarketSimulation>();
+    private SimulationController simulationController;
 
 
     /**
@@ -41,7 +42,7 @@ public class MarketController implements Simulation {
      */
     @Override
     public SimulationController getSimulationController() {
-        return securities.get(0).getSimulationController();
+        return simulationController;
     }
 
     /**
@@ -145,5 +146,9 @@ public class MarketController implements Simulation {
 
     public void setSecurities(ArrayList<MarketSimulation> securities) {
         this.securities = securities;
+    }
+
+    public void setSimulationController(SimulationController simulationController){
+        this.simulationController = simulationController;
     }
 }
