@@ -31,15 +31,4 @@
 		scope="singleton">
 		<constructor-arg value="data/" />
 	</bean>
-
-<!--    <bean id="marketController" class="net.sourceforge.jasa.market.MarketController" scope="singleton">
-        <property name="securities">
-            <list>
-                <ref bean="google"/>
-                <ref bean="ibm"/>
-            </list>
-        </property>
-        <property name="simulationController" ref="simulationController"/>
-    </bean>-->
-
 </beans>
