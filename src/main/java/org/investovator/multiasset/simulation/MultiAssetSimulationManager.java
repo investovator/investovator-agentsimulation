@@ -308,6 +308,15 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
             simulationThread.start();
         }
 
+        for (Thread simulationThread : simulationThreads){
+            try {
+                simulationThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+
+
         /*for (SpringSimulationController controller: simulationControllers){
             Thread thread = new Thread(controller);
             thread.start();
