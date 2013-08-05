@@ -297,10 +297,21 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
     public void launchSimulations() {
         logger.info("Starting...");
         long start = System.currentTimeMillis();
-        for (SpringSimulationController controller: simulationControllers){
+
+        ArrayList<Thread> simulationThreads = new ArrayList<Thread>();
+        for (SpringSimulationController controller : simulationControllers){
+            Thread controllerThread = new Thread(controller);
+            simulationThreads.add(controllerThread);
+        }
+
+        for (Thread simulationThread : simulationThreads){
+            simulationThread.start();
+        }
+
+        /*for (SpringSimulationController controller: simulationControllers){
             Thread thread = new Thread(controller);
             thread.start();
-        }
+        }*/
         long finish = System.currentTimeMillis();
         long duration = finish - start;
         logger.info("all done.");
