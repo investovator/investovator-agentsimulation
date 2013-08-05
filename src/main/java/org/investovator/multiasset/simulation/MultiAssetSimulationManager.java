@@ -292,6 +292,7 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
     @Override
     public void runSingleExperiment() {
         this.launchSimulations();
+        this.simulationThread = new Thread(this);
     }
 
     public void launchSimulations() {
@@ -311,8 +312,8 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
         for (Thread simulationThread : simulationThreads){
             try {
                 simulationThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (InterruptedException ignored) {
+                //TODO
             }
         }
 
