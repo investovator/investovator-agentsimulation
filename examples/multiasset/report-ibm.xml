@@ -88,9 +88,9 @@
     <bean id="priceTimeSeriesIBM" class="net.sourceforge.jabm.report.CombiSeriesReportVariables">
         <property name="seriesList">
             <list>
-                <ref bean="gbmPriceTimeSeries"/>
-                <ref bean="currentPriceTimeSeries"/>
-                <ref bean="equilibriumPriceTimeSeries"/>
+                <ref bean="gbmPriceTimeSeriesIBM"/>
+                <ref bean="currentPriceTimeSeriesIBM"/>
+                <ref bean="equilibriumPriceTimeSeriesIBM"/>
             </list>
         </property>
     </bean>
