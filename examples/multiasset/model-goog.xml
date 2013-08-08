@@ -62,6 +62,7 @@
     <property name="agentInitialiser" ref="agentInitialiserProxy"/>
     <property name="auctioneer" ref="cda"/>
     <property name="initialPrice" value="100"/>
+    <property name="stockID" value="GOOG" />
 </bean>
 
 <!-- A continuous double auction (CDA) will be used to model the exchange -->
