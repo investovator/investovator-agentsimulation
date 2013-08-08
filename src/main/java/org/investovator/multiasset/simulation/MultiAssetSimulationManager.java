@@ -360,11 +360,6 @@ public class MultiAssetSimulationManager extends DesktopSimulationManager {
         simulationControllers = new ArrayList<SpringSimulationController>(securities);
     }
 
-    public static void main(String[] args) {
-        MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
-        manager.initialise();
-    }
-
     class SaveLayoutOnExitWindowListener implements WindowListener {
 
         @Override
