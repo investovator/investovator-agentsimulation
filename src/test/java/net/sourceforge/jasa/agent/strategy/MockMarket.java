@@ -14,6 +14,7 @@ import net.sourceforge.jasa.market.MarketQuote;
 import net.sourceforge.jasa.market.Order;
 import net.sourceforge.jasa.market.ShoutsNotVisibleException;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class MockMarket implements Market, Simulation {
 
@@ -40,7 +41,17 @@ public class MockMarket implements Market, Simulation {
 		
 	}
 
-	@Override
+    @Override
+    public String getStockID() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setStockID(String stockID) {
+        throw new NotImplementedException();
+    }
+
+    @Override
 	public boolean closed() {
 		// TODO Auto-generated method stub
 		return false;
