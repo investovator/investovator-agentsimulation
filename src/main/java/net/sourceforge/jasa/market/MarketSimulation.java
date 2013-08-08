@@ -47,6 +47,7 @@ import net.sourceforge.jasa.market.rules.NullAuctionClosingCondition;
 import net.sourceforge.jasa.market.rules.TimingCondition;
 
 import org.apache.log4j.Logger;
+import org.investovator.exchange.Exchange;
 
 /**
  * A simulation of an order-driven market.
@@ -56,6 +57,13 @@ import org.apache.log4j.Logger;
  */
 public class MarketSimulation extends AbstractSimulation 
 		implements Serializable, Market {
+
+
+    /**
+     * stock ID of the Market
+     */
+    protected String stockId;
+
 
 	/**
 	 * The auctioneer for this market.
@@ -553,7 +561,17 @@ public class MarketSimulation extends AbstractSimulation
 		this.auctioneer.setMarket(this);
 	}
 
-	public boolean closed() {
+    @Override
+    public String getStockID() {
+        return stockId;
+    }
+
+    @Override
+    public void setStockID(String stockID) {
+        this.stockId = stockID;
+    }
+
+    public boolean closed() {
 		return isClosed();
 	}
 
