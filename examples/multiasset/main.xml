@@ -27,6 +27,16 @@
         </property>
     </bean>
 
+
+    <bean id="exchange" class="org.investovator.exchange.Exchange" scope="singleton">
+        <property name="stocks">
+            <list>
+                <ref bean="google"/>
+                <ref bean="ibm" />
+            </list>
+        </property>
+    </bean>
+
 	<bean id="fileNamePrefix" class="net.sourceforge.jabm.util.MutableStringWrapper"
 		scope="singleton">
 		<constructor-arg value="data/" />
