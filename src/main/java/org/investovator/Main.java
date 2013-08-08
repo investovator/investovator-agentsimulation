@@ -21,9 +21,9 @@ package org.investovator;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import org.investovator.exchange.Exchange;
 import org.investovator.multiasset.simulation.MultiAssetSimulationManager;
-import org.springframework.beans.factory.BeanFactory;
+import org.investovator.ui.HumanInterface;
 
-import java.security.PublicKey;
+import javax.swing.*;
 
 /**
  * @author Amila Surendra
@@ -31,12 +31,15 @@ import java.security.PublicKey;
  */
 public class Main {
 
-    private Exchange exchange;
+    //private Exchange exchange;
 
 
     public static void main(String[] args) {
         MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
         manager.initialise();
+
+        HumanInterfaceRunner hir=new HumanInterfaceRunner(Main.getExchange());
+        SwingUtilities.invokeLater(hir);
     }
 
 
@@ -45,3 +48,25 @@ public class Main {
     }
 
 }
+
+
+class HumanInterfaceRunner implements Runnable{
+            private Exchange market;
+
+                    HumanInterfaceRunner(Exchange market) {
+                    this.market = market;
+                }
+
+
+                    @Override
+            public void run() {
+                    JFrame frame = new JFrame("HumanInterface");
+                    frame.setContentPane(new HumanInterface(Main.getExchange()).panel1);
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.pack();
+                    frame.setVisible(true);
+                }
+        }
+
+
+
