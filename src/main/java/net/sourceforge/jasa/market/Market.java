@@ -31,6 +31,21 @@ import net.sourceforge.jasa.market.auctioneer.Auctioneer;
  */
 public interface Market extends QuoteProvider, Resetable {
 
+
+    /**
+     * Returns stock id
+     * @return
+     */
+    public String getStockID();
+
+    /**
+     * Set Stock ID
+     * @param stockID
+     */
+    public void setStockID(String stockID);
+
+
+
 	/**
 	 * Returns true if the market is closed.
 	 */
