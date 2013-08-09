@@ -201,6 +201,10 @@ public class EquilibriumReportVariables extends DirectRevelationReportVariables
 //		result.add(VAR_MINPRICE);
 //		return result;
 //	}
+
+    public List<Order> getMatchedShouts(){
+        return matchedShouts;
+    }
 	
 	
 
