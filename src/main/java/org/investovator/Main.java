@@ -27,6 +27,7 @@ import javax.swing.*;
 
 /**
  * @author Amila Surendra
+ * @author rajith
  * @version $Revision
  */
 public class Main {
