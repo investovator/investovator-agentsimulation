@@ -42,6 +42,8 @@
                 <ref bean="reportedSupplyAndDemandGraphIBM"/>
                 <ref bean="auctionStateSupplyAndDemandGraphIBM"/>
                 <ref bean="orderBookViewIBM"/>
+                <ref bean="transactionPriceReportVariablesIBM"/>
+                <ref bean="transactionPriceTimeSeriesReportIBM"/>
             </list>
         </property>
 

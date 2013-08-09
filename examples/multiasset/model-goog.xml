@@ -41,6 +41,8 @@
                 <ref bean="reportedSupplyAndDemandGraph"/>
                 <ref bean="auctionStateSupplyAndDemandGraph"/>
                 <ref bean="orderBookView"/>
+                <ref bean="transactionPriceReportVariables"/>
+                <ref bean="transactionPriceTimeSeriesReport"/>
             </list>
         </property>
 

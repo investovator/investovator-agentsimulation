@@ -89,8 +89,8 @@
         <property name="seriesList">
             <list>
                 <ref bean="transactionPriceTimeSeries"/>
-                <ref bean="midPriceTimeSeries"/>
-                <ref bean="orderFlowTimeSeries"/>
+                <!--<ref bean="midPriceTimeSeries"/>-->
+                <!--<ref bean="orderFlowTimeSeries"/>-->
                 <ref bean="gbmPriceTimeSeries"/>
                 <ref bean="currentPriceTimeSeries"/>
                 <ref bean="equilibriumPriceTimeSeries"/>
