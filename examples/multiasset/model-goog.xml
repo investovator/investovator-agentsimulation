@@ -108,7 +108,20 @@
 <bean id="staticPopulation" class="net.sourceforge.jabm.Population" 
 		scope="simulation" >
 <!-- 	<property name="agentFactory" ref="linearCombinationTraderFactory"/> -->
-	<property name="agentList" ref="linearCombinationTraders"/>		
+	<!--<property name="agentList" ref="linearCombinationTraders"/>		-->
+
+    <property name="agentList">
+        <bean class="net.sourceforge.jabm.agent.AgentList">
+            <constructor-arg>
+                <list>
+                    <ref bean="linearCombinationTraders"/>
+                    <ref bean="noiseTraders"/>
+                    <ref bean="fundamentalistTraders"/>
+                    <ref bean="chartistTraders"/>
+                </list>
+            </constructor-arg>
+        </bean>
+    </property>
 </bean> 
 
 <!--  The population consists of 200 agents using linear-combination
@@ -116,8 +129,29 @@
 <bean id="linearCombinationTraders" 
 	scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
 		init-method="populateFromFactory">
-    <property name="size" value="200"/>
+    <property name="size" value="160"/>
     <property name="agentFactory" ref="linearCombinationTraderFactory"/>
+</bean>
+
+<bean id="noiseTraders"
+      scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
+      init-method="populateFromFactory">
+    <property name="size" value="15"/>
+    <property name="agentFactory" ref="noiseTraderFactory"/>
+</bean>
+
+<bean id="fundamentalistTraders"
+      scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
+      init-method="populateFromFactory">
+    <property name="size" value="15"/>
+    <property name="agentFactory" ref="fundamentalistFactory"/>
+</bean>
+
+<bean id="chartistTraders"
+      scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
+      init-method="populateFromFactory">
+    <property name="size" value="10"/>
+    <property name="agentFactory" ref="chartistFactory"/>
 </bean>
 
 <bean id="linearCombinationTraderFactory" scope="simulation"
