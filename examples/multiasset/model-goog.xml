@@ -67,13 +67,19 @@
 <!-- A continuous double auction (CDA) will be used to model the exchange -->
 <bean id="cda" scope="simulation"
         class="net.sourceforge.jasa.market.auctioneer.ContinuousDoubleAuctioneer">
-	<property name="pricingPolicy" ref="timePriorityPricing"/>
+	<property name="pricingPolicy" ref="stockMarketTimePriorityPricingPolicy"/>
 </bean>
 
 <!-- Transaction prices are set to the price of the earliest order to arrive -->
 <bean id="timePriorityPricing" scope="simulation"
         class="net.sourceforge.jasa.market.rules.TimePriorityPricingPolicy">
 </bean>
+
+    <!-- Transaction prices are set to the price of the ask -->
+    <bean id="stockMarketTimePriorityPricingPolicy" scope="simulation"
+          class="net.sourceforge.jasa.market.rules.StockMarketTimePriorityPricingPolicy">
+    </bean>
+
 
 <!-- Agents will arrive at the market with the specified probability -->
 <bean id="randomArrivalAgentMixer" scope="simulation"
