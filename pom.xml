@@ -6,7 +6,7 @@
 
     <groupId>org.investovator</groupId>
     <artifactId>jasa</artifactId>
-    <version>1.1.investovatorv1</version>
+    <version>1.1.investovatorv0.1</version>
 
     <dependencies>
         <dependency>
