@@ -78,9 +78,9 @@
 </bean>
 
     <!-- Transaction prices are set to the price of the ask -->
-    <bean id="stockMarketTimePriorityPricingPolicy" scope="simulation"
-          class="net.sourceforge.jasa.market.rules.StockMarketTimePriorityPricingPolicy">
-    </bean>
+    <!--<bean id="stockMarketTimePriorityPricingPolicy" scope="simulation"-->
+          <!--class="net.sourceforge.jasa.market.rules.StockMarketTimePriorityPricingPolicy">-->
+    <!--</bean>-->
 
 <!-- Agents will arrive at the market with the specified probability -->
 <bean id="randomArrivalAgentMixerIBM" scope="simulation"
