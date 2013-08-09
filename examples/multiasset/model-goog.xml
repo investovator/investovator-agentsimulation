@@ -51,7 +51,7 @@
 
 <!--  This is the top-level bean defining the experiment to be run -->
 <bean id="google" class="net.sourceforge.jasa.market.MarketSimulation"
-		scope="simulation">
+		scope="singleton">
 	<property name="simulationController" ref="googController"/>
 	<property name="maximumDays" value="1"/>
 	<property name="lengthOfDay" value="200000"/>
