@@ -214,7 +214,7 @@
     <bean id="maTraderPrototype" scope="prototype"
           class="net.sourceforge.jasa.agent.SimpleTradingAgent">
         <property name="strategy" ref="movingAverageCDStrategy"/>
-        <property name="valuationPolicy" ref="currentMarketEvaluatorPolicy"/>
+        <property name="valuationPolicy" ref="linearCombinationValuationPolicy"/>
         <property name="initialStock" value="20"/>
     </bean>
 
@@ -304,10 +304,6 @@
 	<property name="volatility" value="0.4"/>
 	<property name="dt" value="0.00005"/>
 	<property name="prng" ref="prng"/>
-</bean>
-
-<bean id="currentMarketEvaluatorPolicy" scope="prototype"
-      class="net.sourceforge.jasa.agent.valuation.CurrentMarketEvaluator">
 </bean>
 
 <bean id="noiseTraderValuationPolicy" scope="prototype"

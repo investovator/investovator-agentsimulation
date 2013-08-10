@@ -58,15 +58,16 @@ public class MovingAverageCDStrategy extends AbstractTradingStrategy {
 
     public boolean modifyShout(Order shout) {
         if(equilibriumReportVariables.getMatchedShouts() != null){
-            PlaceOrder placeOrder = inMarketSignal();
+            double currentPrice = getAgent().getValuation(auction);
+            PlaceOrder placeOrder = inMarketSignal(currentPrice);
             if(placeOrder == PlaceOrder.NOTHING){
                 return false;
             }
             else {
-                determineStockQuantity(placeOrder);
+                determineStockQuantity(placeOrder, currentPrice);
                 shout.setAgent(getAgent());
                 shout.setQuantity(quantity);
-                shout.setPrice(getAgent().getValuation(auction));
+                shout.setPrice(currentPrice);
                 if(placeOrder == PlaceOrder.BUY ) {
                     shout.setIsBid(true);
                 }
@@ -79,17 +80,17 @@ public class MovingAverageCDStrategy extends AbstractTradingStrategy {
             return false;
     }
 
-    private void determineStockQuantity(PlaceOrder signal){
+    private void determineStockQuantity(PlaceOrder signal, double currentPrice){
         if(signal == PlaceOrder.BUY){
-            quantity = (int) ((getAgent().getAccount().getFunds() / 2) /
-                    getAgent().getValuation(auction));
+            quantity = (int) ((getAgent().getAccount().getFunds()) /
+                    currentPrice);
         } else if (signal == PlaceOrder.SELL){
             quantity = Math.min(getAgent().getStock(), 5);
         } else
             quantity = 1;
     }
 
-    private PlaceOrder inMarketSignal(){
+    private PlaceOrder inMarketSignal(Double currentPrice){
         ArrayList<Order> matchedShouts =
                 new ArrayList<Order>(equilibriumReportVariables.getMatchedShouts());
         double[] closePrice = new double[matchedShouts.size()];
@@ -114,10 +115,12 @@ public class MovingAverageCDStrategy extends AbstractTradingStrategy {
         if (retCode == RetCode.Success){
             double lastMatchedPrice = macdHist[closePrice.length - signalSMABegin.value - 1];
             double previousMatchedPrice = macdHist[closePrice.length - signalSMALength.value - 2 ];
-            if (lastMatchedPrice > 0 && previousMatchedPrice <= 0){
+            if (lastMatchedPrice > 0 && previousMatchedPrice <= 0 &&
+                    getAgent().getAccount().getFunds() > currentPrice){
                 isBuy = true;
                 return PlaceOrder.BUY;
-            } else if (lastMatchedPrice < 0 && previousMatchedPrice >= 0 && getAgent().getStock() > 0){
+            } else if (lastMatchedPrice < 0 && previousMatchedPrice >= 0
+                    && getAgent().getStock() > 0){
                 isBuy = false;
                 return PlaceOrder.SELL;
             } else
