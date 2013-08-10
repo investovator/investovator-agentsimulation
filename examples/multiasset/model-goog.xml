@@ -127,6 +127,7 @@
                     <ref bean="noiseTraders"/>
                     <ref bean="fundamentalistTraders"/>
                     <ref bean="chartistTraders"/>
+                    <ref bean="maTraders"/>
                 </list>
             </constructor-arg>
         </bean>
@@ -140,6 +141,12 @@
 		init-method="populateFromFactory">
     <property name="size" value="160"/>
     <property name="agentFactory" ref="linearCombinationTraderFactory"/>
+</bean>
+
+<bean id="maTraders" scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
+      init-method="populateFromFactory">
+    <property name="size" value="50"/>
+    <property name="agentFactory" ref="maTraderFactory"/>
 </bean>
 
 <bean id="noiseTraders"
@@ -170,6 +177,13 @@
     </property>        
 </bean>
 
+<bean id="maTraderFactory" scope="simulation"
+      class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+    <property name="targetBeanName">
+        <idref local="maTraderPrototype" />
+    </property>
+</bean>
+
 <bean id="noiseTraderFactory" scope="simulation"
 	class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 	<property name="targetBeanName">
@@ -197,6 +211,13 @@
     <property name="valuationPolicy" ref="linearCombinationValuationPolicy"/>
 </bean>
 
+    <bean id="maTraderPrototype" scope="prototype"
+          class="net.sourceforge.jasa.agent.SimpleTradingAgent">
+        <property name="strategy" ref="movingAverageCDStrategy"/>
+        <property name="valuationPolicy" ref="currentMarketEvaluatorPolicy"/>
+        <property name="initialStock" value="20"/>
+    </bean>
+
 <bean id="noiseTraderPrototype" scope="prototype" 
         class="net.sourceforge.jasa.agent.SimpleTradingAgent">
 	<property name="strategy" ref="returnForecastStrategy"/>
@@ -218,6 +239,11 @@
 <bean id="strategy" scope="prototype" 
 	class="net.sourceforge.jabm.strategy.AbstractStrategy">
 	<property name="scheduler" ref="googController"/>
+</bean>
+
+<bean id="movingAverageCDStrategy" scope="singleton"
+     class="net.sourceforge.jasa.agent.strategy.MovingAverageCDStrategy" parent="strategy">
+    <property name="equilibriumReportVariables" ref="equilibriumPriceReportVariables"/>
 </bean>
 
 <bean id="returnForecastStrategy" scope="prototype" parent="strategy"
@@ -278,6 +304,10 @@
 	<property name="volatility" value="0.4"/>
 	<property name="dt" value="0.00005"/>
 	<property name="prng" ref="prng"/>
+</bean>
+
+<bean id="currentMarketEvaluatorPolicy" scope="prototype"
+      class="net.sourceforge.jasa.agent.valuation.CurrentMarketEvaluator">
 </bean>
 
 <bean id="noiseTraderValuationPolicy" scope="prototype"

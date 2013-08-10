@@ -115,7 +115,6 @@ public abstract class AbstractTradingStrategy extends AbstractStrategy
 		return tradeDirectionPolicy;
 	}
 
-	@Required
 	public void setTradeDirectionPolicy(TradeDirectionPolicy tradeDirectionPolicy) {
 		this.tradeDirectionPolicy = tradeDirectionPolicy;
 	}
