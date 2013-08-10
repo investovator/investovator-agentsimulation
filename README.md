@@ -1,10 +1,10 @@
-This is a fork of the project [JASA][1]. Our expectation is to customize JASA to match the simulation needs of our project, [investovator][2].
+This is an ongoing attempt to model a stock market using the [JASA](http://jasa.sourceforge.net/) framework. Currently the project,
+* Does the simulations according to the stock market conventions (JASA does the simulations adhering to the auction conventions).
+* Allows simulation of multiple markets (stocks).
+* Allows human players to interact with the simulation by placing orders (buy/ask).
 
-Up on completion, JASA will be able to,
+# How to run the project..?
 
- - Handle multiple assets in the simulation.
- - Let human players place bids in to the simulation.
-
-
-  [1]: http://jasa.sourceforge.net
-  [2]: http://investovator.github.com
+Create a run configuration in your IDE as follows.
+* Class to be run - **org.investovator.Main**
+* VM options -  **-Djabm.config=./examples/multiasset/main.xml**
