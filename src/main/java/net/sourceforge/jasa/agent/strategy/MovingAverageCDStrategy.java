@@ -21,11 +21,9 @@ package net.sourceforge.jasa.agent.strategy;
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MInteger;
 import com.tictactec.ta.lib.RetCode;
-import net.sourceforge.jasa.agent.TradingAgent;
 import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
 import net.sourceforge.jasa.report.EquilibriumReportVariables;
-import net.sourceforge.jasa.report.HistoricalDataReport;
 
 import java.util.ArrayList;
 
