@@ -30,6 +30,16 @@ import java.util.ArrayList;
 /**
  * @author rajith
  * @version $Revision$
+ *
+ * The MACD generates a buy signal when it moves above its own nine-day EMA,
+ * and it sends a sell sign when it moves below its nine-day EMA.
+ * reference: http://www.investopedia.com/articles/forex/05/macddiverge.asp
+ *          : http://zorro-trader.com/manual/en/ta.htm
+ *
+ * macd : moving average convergence divergence
+ * MACD = EMA(Data,FastPeriod)-EMA(Data,SlowPeriod);
+ * MACDSignal = EMA(MACD,SignalPeriod);
+ * MACDHist = MACD - MACDSignal     (MACD histogram)
  */
 public class MovingAverageCDStrategy extends AbstractTradingStrategy {
 
