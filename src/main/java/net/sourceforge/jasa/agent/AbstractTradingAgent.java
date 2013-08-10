@@ -130,8 +130,8 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 	 *          The amount of money for this trader.
 	 * @param privateValue
 	 *          The private value of the commodity traded by this trader.
-	 * @param isSeller
-	 *          Whether or not this trader is a seller.
+	 * @param scheduler
+	 *          The Event Scheduler.
 	 */
 	public AbstractTradingAgent(int stock, double funds, double privateValue,
 			EventScheduler scheduler) {
@@ -484,4 +484,7 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 	 */
 	public abstract boolean active();
 
+    public void setInitialStock(int initialStock) {
+        this.initialStock = initialStock;
+    }
 }
