@@ -128,6 +128,8 @@
                     <ref bean="fundamentalistTraders"/>
                     <ref bean="chartistTraders"/>
                     <ref bean="maTraders"/>
+                    <!--<ref bean="fixQVarStrategyTraders"/>-->
+                    <!--<ref bean="gdStrategyTraders"/>-->
                 </list>
             </constructor-arg>
         </bean>
@@ -139,7 +141,7 @@
 <bean id="linearCombinationTraders" 
 	scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
 		init-method="populateFromFactory">
-    <property name="size" value="160"/>
+    <property name="size" value="60"/>
     <property name="agentFactory" ref="linearCombinationTraderFactory"/>
 </bean>
 
@@ -241,7 +243,7 @@
 	<property name="scheduler" ref="googController"/>
 </bean>
 
-<bean id="movingAverageCDStrategy" scope="singleton"
+<bean id="movingAverageCDStrategy" scope="prototype"
      class="net.sourceforge.jasa.agent.strategy.MovingAverageCDStrategy" parent="strategy">
     <property name="equilibriumReportVariables" ref="equilibriumPriceReportVariables"/>
 </bean>
@@ -282,7 +284,7 @@
 </bean>
 
 <bean id="fundamentalistForecaster" parent="timeHorizonForecaster"
-	scope="simulation" 
+	scope="simulation"
 	class="net.sourceforge.jasa.agent.valuation.FundamentalistForecaster">
 	<property name="fundamentalPrice" ref="constantFundamentalPrice" />
 </bean>
@@ -456,6 +458,62 @@
 	<property name="imitationProbability" value="0.2"/>
 	
 </bean>
+
+<bean id="fixQVarStrategy"
+    class="net.sourceforge.jasa.agent.strategy.FixQVarDirStrategy" parent="strategy">
+</bean>
+
+    <!--<bean id="fixQVarStrategyTraders" class="net.sourceforge.jabm.agent.AgentList"
+          init-method="populateFromFactory">
+        <property name="size" value="50"/>
+        <property name="agentFactory" ref="fixQVarStrategyTradersFactory"/>
+    </bean>
+
+    <bean id="fixQVarStrategyTradersFactory"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="fixQVarStrategyTraderPrototype" />
+        </property>
+    </bean>
+
+    <bean id="fixQVarStrategyTraderPrototype" scope="prototype"
+          class="net.sourceforge.jasa.agent.SimpleTradingAgent">
+        <property name="strategy" ref="fixQVarStrategy"/>
+        <property name="valuationPolicy" ref="noiseTraderValuationPolicy"/>
+    </bean>-->
+
+ <!--   <bean id="gdStrategyTraders" scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
+          init-method="populateFromFactory">
+        <property name="size" value="50"/>
+        <property name="agentFactory" ref="gdTraderFactory"/>
+    </bean>
+
+    <bean id="gdTraderFactory" scope="simulation"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="gdTraderPrototype" />
+        </property>
+    </bean>
+
+    <bean id="gdTraderPrototype" scope="prototype"
+          class="net.sourceforge.jasa.agent.TokenTradingAgent">
+        <property name="strategy" ref="gdStrategy"/>
+        <property name="valuationPolicy" ref="linearCombinationValuationPolicy"/>
+    </bean>
+
+    <bean id="gdStrategy" scope="singleton"
+          class="net.sourceforge.jasa.agent.strategy.GDStrategy" parent="strategy">
+        <property name="historyStats" ref="historicalDataReport"/>
+        <property name="tradeDirectionPolicy">
+            <bean class="net.sourceforge.jasa.agent.strategy.ForecastTradeDirectionPolicy">
+                <property name="prng" ref="prng"/>
+            </bean>
+        </property>
+    </bean>
+
+<bean id="historicalDataReport" class="net.sourceforge.jasa.report.HistoricalDataReport">
+    <property name="auction" ref="google"/>
+</bean>-->
 
 
 </beans>
