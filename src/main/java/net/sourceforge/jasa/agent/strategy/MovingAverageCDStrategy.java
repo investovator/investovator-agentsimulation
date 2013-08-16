@@ -122,7 +122,7 @@ public class MovingAverageCDStrategy extends AbstractTradingStrategy {
 
         if (retCode == RetCode.Success){
             double lastMatchedPrice = macdHist[closePrice.length - signalSMABegin.value - 1];
-            double previousMatchedPrice = macdHist[closePrice.length - signalSMALength.value - 2 ];
+            double previousMatchedPrice = macdHist[closePrice.length - signalSMABegin.value - 2 ];
             if (lastMatchedPrice > 0 && previousMatchedPrice <= 0 &&
                     getAgent().getAccount().getFunds() > currentPrice){
                 isBuy = true;
