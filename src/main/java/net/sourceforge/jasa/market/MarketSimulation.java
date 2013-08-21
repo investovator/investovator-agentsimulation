@@ -502,7 +502,8 @@ public class MarketSimulation extends AbstractSimulation
 
 		buyer.orderFilled(this, bid, buyerCharge, quantity);
 		seller.orderFilled(this, ask, sellerPayment, quantity);
-	}
+        System.out.println("Matched @ "+ask.getPrice()+"-"+ask.getQuantity()+" stocks");
+    }
 	
 	/**
 	 * Determines whether or not the given shout was matched in the current round
