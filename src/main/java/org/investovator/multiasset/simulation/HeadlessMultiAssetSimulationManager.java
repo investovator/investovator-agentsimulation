@@ -1,14 +1,18 @@
 package org.investovator.multiasset.simulation;
 
+import net.sourceforge.jabm.SimulationExperiment;
 import net.sourceforge.jabm.SimulationManager;
 import net.sourceforge.jabm.SpringSimulationController;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import net.sourceforge.jabm.util.SystemProperties;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: ishan
@@ -24,21 +28,23 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
 
     protected Thread simulationThread;
 
+    private HeadlessMultiAssetSimulationManager headlessMultiAssetSimulationManager;
+
     public HeadlessMultiAssetSimulationManager() {
-        SystemProperties systemProperties = SystemProperties
-                .jabsConfiguration();
-        propFile = systemProperties
-                .getProperty(SystemProperties.PROPERTY_PROPFILE);
-        varFile = systemProperties.getProperty(
-                SystemProperties.PROPERTY_VARFILE);
-        baseDirName = systemProperties.getProperty(
-                SystemProperties.PROPERTY_BASE_DIR_NAME, "data");
-        configOnly = Boolean.parseBoolean(systemProperties.getProperty(
-                SystemProperties.PROPERTY_CONFIG_ONLY, "false"));
-        generateSeeds = Boolean.parseBoolean(systemProperties.getProperty(
-                SystemProperties.PROPERTY_SEEDS, "false"));
-        seedMask = Integer.parseInt(systemProperties.getProperty(
-                SystemProperties.PROPERTY_SEED_MASK, "-1"));
+//        SystemProperties systemProperties = SystemProperties
+//                .jabsConfiguration();
+//        propFile = systemProperties
+//                .getProperty(SystemProperties.PROPERTY_PROPFILE);
+//        varFile = systemProperties.getProperty(
+//                SystemProperties.PROPERTY_VARFILE);
+//        baseDirName = systemProperties.getProperty(
+//                SystemProperties.PROPERTY_BASE_DIR_NAME, "data");
+//        configOnly = Boolean.parseBoolean(systemProperties.getProperty(
+//                SystemProperties.PROPERTY_CONFIG_ONLY, "false"));
+//        generateSeeds = Boolean.parseBoolean(systemProperties.getProperty(
+//                SystemProperties.PROPERTY_SEEDS, "false"));
+//        seedMask = Integer.parseInt(systemProperties.getProperty(
+//                SystemProperties.PROPERTY_SEED_MASK, "-1"));
     }
 
     public HeadlessMultiAssetSimulationManager getHeadlessMultiAssetSimulationManager(){
@@ -48,6 +54,7 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
 
     @Override
     public void run() {
+        this.headlessMultiAssetSimulationManager=getHeadlessMultiAssetSimulationManager();
         if (propFile != null) {
             runSingleExperiment(propFile);
         } else {
@@ -141,6 +148,18 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
         manager.run();
     }
 
+//    public void setup(String baseDirName, boolean generateSeeds,
+//                      int seedMask) {
+//
+//        logger.info("Creating experiment with no variable bindings...");
+//        logger.debug("baseDirName = " + baseDirName);
+//        BeanFactory beanFactory = BeanFactorySingleton.getBeanFactory();
+//        Map<String, String> emptyBindings = new HashMap<String, String>();
+//        SimulationExperiment experiment = new SimulationExperiment(beanFactory,
+//                baseDirName, 0, emptyBindings, generateSeeds, seedMask);
+//        experiment.createPropertyFile();
+//        logger.info("done.");
+//    }
 
 
 
