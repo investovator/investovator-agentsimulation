@@ -22,7 +22,7 @@
         <property name="simulations">
             <list>
                 <ref bean="googController"/>
-                <ref bean="ibmController"/>
+                <!--<ref bean="ibmController"/>-->
             </list>
         </property>
     </bean>
@@ -32,7 +32,7 @@
         <property name="stocks">
             <list>
                 <ref bean="google"/>
-                <ref bean="ibm" />
+                <!--<ref bean="ibm" />-->
             </list>
         </property>
     </bean>

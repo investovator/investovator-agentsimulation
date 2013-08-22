@@ -43,6 +43,7 @@
                 <ref bean="orderBookView"/>
                 <ref bean="transactionPriceReportVariables"/>
                 <ref bean="transactionPriceTimeSeriesReport"/>
+                <ref bean="orderBookSimpleAverageReport"/>
             </list>
         </property>
 
@@ -124,10 +125,11 @@
             <constructor-arg>
                 <list>
                     <ref bean="linearCombinationTraders"/>
-                    <ref bean="noiseTraders"/>
-                    <ref bean="fundamentalistTraders"/>
-                    <ref bean="chartistTraders"/>
-                    <ref bean="maTraders"/>
+                    <!--<ref bean="noiseTraders"/>-->
+                    <!--<ref bean="fundamentalistTraders"/>-->
+                    <!--<ref bean="chartistTraders"/>-->
+                    <!--<ref bean="maTraders"/>-->
+                    <ref bean="herdMentalityTraders"/>
                     <!--<ref bean="fixQVarStrategyTraders"/>-->
                     <!--<ref bean="gdStrategyTraders"/>-->
                 </list>
@@ -515,5 +517,33 @@
     <property name="auction" ref="google"/>
 </bean>-->
 
+    <bean id="herdMentalityTraders" scope="simulation" class="net.sourceforge.jabm.agent.AgentList"
+          init-method="populateFromFactory">
+        <property name="size" value="50"/>
+        <property name="agentFactory" ref="herdMentalityTradersFactory"/>
+    </bean>
 
+    <bean id="herdMentalityTradersFactory" scope="simulation"
+          class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+        <property name="targetBeanName">
+            <idref local="herdMentalityTraderPrototype" />
+        </property>
+    </bean>
+
+    <bean id="herdMentalityTraderPrototype" scope="prototype"
+          class="net.sourceforge.jasa.agent.herdmentality.HerdingAgentImpl">
+        <property name="strategy" ref="herdAllQDirStrategy"/>
+        <property name="valuationPolicy" ref="herdingBeatMarketValuer"/>
+    </bean>
+
+    <bean id="herdAllQDirStrategy" scope="prototype"
+          class="net.sourceforge.jasa.agent.strategy.herdmentality.HerdAllQDirStrategy">
+          <property name="orderBookReport" ref="orderBookSimpleAverageReport"/>
+        <property name="scheduler" ref="googController"/>
+    </bean>
+
+    <bean id="herdingBeatMarketValuer" scope="prototype"
+          class="net.sourceforge.jasa.agent.valuation.herdmentality.HerdingBeatmarketValuer">
+        <property name="orderBookReport" ref="orderBookSimpleAverageReport"/>
+     </bean>
 </beans>

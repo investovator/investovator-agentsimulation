@@ -16,12 +16,14 @@
 package net.sourceforge.jasa.market;
 
 import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.jabm.Population;
 import net.sourceforge.jabm.agent.Agent;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
+import net.sourceforge.jasa.report.OrderBookSimpleAverageReport;
 
 /**
  * An order-driven market exchange.
@@ -143,5 +145,19 @@ public interface Market extends QuoteProvider, Resetable {
 	public void remove(AbstractTradingAgent abstractTradingAgent);
 
 	public Population getPopulation();
+
+    public List getFitnessList();
+
+    public void sortFitnessList();
+
+    public void setCanGoBankrupt(boolean b);
+
+    public boolean canGoBankrupt();
+
+    public OrderBookSimpleAverageReport getHerdAllReport();
+
+    public OrderBookSimpleAverageReport getHerdTopReport();
+
+    public void makeHerdReports();
 
 }

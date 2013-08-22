@@ -15,9 +15,7 @@
 package net.sourceforge.jasa.agent;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import net.sourceforge.jabm.EventScheduler;
 import net.sourceforge.jabm.agent.AbstractAgent;
@@ -28,6 +26,7 @@ import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.util.IdAllocator;
 import net.sourceforge.jabm.util.Prototypeable;
 import net.sourceforge.jabm.util.Resetable;
+import net.sourceforge.jabm.util.SummaryStats;
 import net.sourceforge.jasa.agent.strategy.FixedQuantityStrategy;
 import net.sourceforge.jasa.agent.valuation.FixedValuer;
 import net.sourceforge.jasa.agent.valuation.ValuationPolicy;
@@ -118,6 +117,26 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 	 * The grouping that this agent belongs to.
 	 */
 	protected AgentGroup group = null;
+
+    /**
+     * Field to keep track of how this agents fitness has been on average
+     */
+    protected SummaryStats fitnessStats = new SummaryStats();
+
+    /**
+     * Field to keep track of how this agents fortune has been on average
+     */
+    protected SummaryStats fortuneStats = new SummaryStats();
+
+    /**
+     * Total fortune last time 'fitness' was calculated
+     */
+    protected double oldFortune = 0;
+    protected double fitness = 0;
+    protected int daysUntilUpdateFitness = 20;
+    protected int updateFitnessInterval = 20;
+
+    protected boolean isBankrupt;
 	
 	protected Set<Market> markets = new HashSet<Market>();
 
@@ -228,7 +247,23 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 	}
 
 	public void onEndOfDay(MarketEvent event) {
-		// Do nothing
+        // if agent is bankrupt ==> make inactive on market
+        if(active()){
+            if(((Market)event.getAuction()).canGoBankrupt()){
+                if(getFortune()<0)
+                {
+                    this.isBankrupt = true;
+                    // remove agent from market when bankrupt
+                    (event.getAuction()).remove(this);
+                    // also remove from fitnessList
+                    (event.getAuction()).getFitnessList().remove(this);
+                    this.fitness=0.0;
+                    //System.out.println("Bankrupt agent on day " + event.getAuction().getDay() + "! " + this);
+                }
+            }
+        }
+        //update fortuneStats
+        fortuneStats.newData(getFortune());
 	}
 
 	public void onMarketOpen(MarketEvent event) {
@@ -295,6 +330,9 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 		if (valuer != null) {
 			valuer.initialise();
 		}
+        fitnessStats.reset();
+        fortuneStats.reset();
+        isBankrupt = false;
 	}
 
 	public void reset() {
@@ -428,6 +466,9 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 
 	@Override
 	public void onAgentArrival(AgentArrivalEvent event) {
+
+        // check if it is time to update the fitness measure for the agent
+        checkFitnessUpdate();
 		if (markets == null || markets.isEmpty()) {
 			throw new RuntimeException("Agent is not configured in any markets");
 		}
@@ -474,7 +515,107 @@ public abstract class AbstractTradingAgent extends AbstractAgent implements
 			int quantity) {
 		return calculateProfit(auction, quantity, equilibriumPrice);
 	}
-	
+
+    public double getRankingPercent(){
+        Market market = getMarket();
+        if(market.getDay()<1){
+            return 0.5;
+        }
+        int ranknbr = getRankingNbr();
+        int totnbr = ((Market)getMarket()).getFitnessList().size();
+        double rankpc = ((double)ranknbr)/((double)totnbr);
+        return rankpc;
+    }
+
+    /**
+     * Get current fitness of the agent.
+     */
+    public double getFitness(){
+        return this.fitness;
+    }
+
+    /**
+     * Get the average fitness of this agent
+     */
+    public double getFitnessAverage(){
+        return this.fitnessStats.getMean();
+    }
+
+    /**
+     * getRanking -- get how good this agents fitness is compared to the other agents.
+     */
+    public int getRankingNbr(){
+        Market market = ((Market)getMarket());
+        List fitList = market.getFitnessList();
+        Iterator it = fitList.iterator();
+        AbstractTradingAgent currAgent = this;
+        int counter = 0;
+        do{
+            if(it.hasNext()){
+                currAgent = (AbstractTradingAgent)it.next();
+                //tprint("agent[" + counter + "]: " + currAgent);
+            }
+            counter++;
+            if(counter>fitList.size()){
+                // if agent is not in the collection
+                return -1;
+            }
+        } while(currAgent!=this);
+        return counter;
+    }
+
+    /*
+ * Update the fitness of the agent.
+ */
+    public double updateFitness(){
+        if(getMarket().getDay() > 1) // f�r att slippa NullPointerException eftersom auction inte �r initierad �nnu
+        {
+            // delta_payoff / (olfPayoff * updateFitnessInterval) ~ dp/dt
+            double delta_payoff = (getFortune() - this.oldFortune);
+            this.fitness = delta_payoff / (0.1 + this.oldFortune * this.updateFitnessInterval);
+            this.daysUntilUpdateFitness = this.updateFitnessInterval;
+            fitnessStats.newData(this.fitness);
+
+            // remove itself from market fitnessCollection and add again to get new placing
+            //List fitList = ((MarketFacade)getMarket()).getFitnessList();
+            //tprint("##### Time:" + getMarket().getDay());
+            //tprint("  [1] nbr " + getRankingNbr() + " of " + fitList.size());
+            //fitList.remove(this);
+            //fitList.add(this);
+            //Collections.sort(fitList, ascendingFitnessComparator);
+
+            //tprint("  [2] nbr " + getRankingNbr() + " of " + fitList.size());
+            //tprint("  Fortune:" + this.getFortune() + "  Fitness:" + this.getFitness() + "\n  " + this);
+        }
+        return this.fitness;
+    }
+
+    /**
+     * Determine the collected fortune for the agent
+     * @return funds + stocks*currentPrice
+     */
+    public double getFortune(){
+        return getFunds() + getStock()*getMarket().getCurrentPrice();
+    }
+
+    /**
+     * Get the average fortune of this agent
+     */
+    public double getFortuneAverage(){
+        return this.fortuneStats.getMean();
+    }
+
+    /*
+ * Check if it is time to update the fitness of this agent
+ */
+    public void checkFitnessUpdate(){
+        if(this.daysUntilUpdateFitness < 1){
+            updateFitness();
+        } else {
+            this.daysUntilUpdateFitness--;
+        }
+    }
+
 	/**
 	 * Determine whether or not this trader is active. Inactive traders do not
 	 * place shouts in the market, but do carry on learning through their

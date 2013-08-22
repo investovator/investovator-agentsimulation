@@ -8,15 +8,11 @@ import net.sourceforge.jabm.SimulationController;
 import net.sourceforge.jabm.SimulationTime;
 import net.sourceforge.jabm.agent.Agent;
 import net.sourceforge.jasa.agent.AbstractTradingAgent;
-import net.sourceforge.jasa.market.AuctionException;
-import net.sourceforge.jasa.market.Market;
-import net.sourceforge.jasa.market.MarketQuote;
-import net.sourceforge.jasa.market.Order;
-import net.sourceforge.jasa.market.ShoutsNotVisibleException;
+import net.sourceforge.jasa.market.*;
 import net.sourceforge.jasa.market.auctioneer.Auctioneer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public class MockMarket implements Market, Simulation {
+public class MockMarket extends MarketSimulation {
 
 	protected MarketQuote quote;
 	

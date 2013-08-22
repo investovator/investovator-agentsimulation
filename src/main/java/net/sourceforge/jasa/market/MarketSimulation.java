@@ -16,7 +16,7 @@
 package net.sourceforge.jasa.market;
 
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.*;
 
 import net.sourceforge.jabm.AbstractSimulation;
 import net.sourceforge.jabm.Population;
@@ -46,6 +46,8 @@ import net.sourceforge.jasa.market.rules.MaxRoundsDayEndingCondition;
 import net.sourceforge.jasa.market.rules.NullAuctionClosingCondition;
 import net.sourceforge.jasa.market.rules.TimingCondition;
 
+import net.sourceforge.jasa.report.OrderBookAverageTopReport;
+import net.sourceforge.jasa.report.OrderBookSimpleAverageReport;
 import org.apache.log4j.Logger;
 import org.investovator.exchange.Exchange;
 
@@ -114,6 +116,23 @@ public class MarketSimulation extends AbstractSimulation
 	public static final String ERROR_SHOUTSVISIBLE 
 		= "Auctioneer does not permit shout inspection";
 
+    /**
+     * A list to manage the ordering of agents with respect to their fitness.
+     * Should be in MarketFacade to be easily accessible from everywhere.
+     */
+    protected List<AbstractTradingAgent> fitnessList = new ArrayList();
+
+    /**
+     * Decide if it is possible for an agent to go bankrupt then his fortune is negative
+     */
+    private boolean canGoBankrupt = false;
+
+    /**
+     * Two OrderBookReports used by all herding agents on the market.
+     */
+    public OrderBookSimpleAverageReport herdAllReport;
+    public OrderBookSimpleAverageReport herdTopReport;
+
 	static Logger logger = Logger.getLogger(MarketSimulation.class);
 
 
@@ -141,6 +160,7 @@ public class MarketSimulation extends AbstractSimulation
 	
 	public void reset() {
 		initialiseCounters();
+        this.fitnessList.clear();
 	}
 	
 	public void informAuctionClosed() {
@@ -598,8 +618,8 @@ public class MarketSimulation extends AbstractSimulation
 	/**
 	 * Submit a new order to the market.
 	 * 
-	 * @param shout
-	 *          The new shout in the market.
+	 * @param order
+	 * The new shout in the market.
 	 */
 	public void placeOrder(Order order) throws AuctionException {
 		if (closed()) {
@@ -620,7 +640,10 @@ public class MarketSimulation extends AbstractSimulation
 	
 	public void register(TradingAgent trader) {
 		getTraders().add(trader);
-		trader.register(this);		
+		trader.register(this);
+
+        // add the agent to the fitnessList to keep track of the fitnessRanking for it
+        fitnessList.add((AbstractTradingAgent)trader);
 	}
 
 	public Iterator<Agent> getTraderIterator() {
@@ -679,4 +702,45 @@ public class MarketSimulation extends AbstractSimulation
 		close();
 	}
 
+    public void sortFitnessList(){
+        Collections.sort(fitnessList, descendingFitnessComparator);
+    }
+
+    public static final Comparator<AbstractTradingAgent> descendingFitnessComparator = new Comparator<AbstractTradingAgent>() {
+        public int compare(AbstractTradingAgent o1, AbstractTradingAgent o2) {
+            if (o1.getFitness() < o2.getFitness()) {
+                return 1;
+            } else if (o1.getFitness() > o2.getFitness()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    };
+
+    public List getFitnessList(){
+        return this.fitnessList;
+    }
+
+    public void setCanGoBankrupt(boolean b){
+        this.canGoBankrupt = b;
+    }
+
+    public boolean canGoBankrupt(){
+        return this.canGoBankrupt;
+    }
+
+    public OrderBookSimpleAverageReport getHerdAllReport(){
+        return herdAllReport;
+    }
+
+    public OrderBookSimpleAverageReport getHerdTopReport(){
+        return herdTopReport;
+    }
+
+    public void makeHerdReports(){
+        // make OrderBookReports for herding agents
+        herdAllReport = new OrderBookSimpleAverageReport(this);
+        herdTopReport = new OrderBookAverageTopReport(this);
+    }
 }

@@ -277,4 +277,9 @@
     <bean id="auctionStateSupplyAndDemandGraph"
           class="net.sourceforge.jasa.view.AuctionStateFrame">
     </bean>
+
+    <bean id="orderBookSimpleAverageReport"
+          class="net.sourceforge.jasa.report.OrderBookSimpleAverageReport" scope="singleton">
+        <property name="auction" ref="google"/>
+    </bean>
 </beans>
