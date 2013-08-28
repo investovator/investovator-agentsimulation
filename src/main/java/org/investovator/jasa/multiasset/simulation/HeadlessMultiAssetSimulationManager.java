@@ -23,13 +23,14 @@ import net.sourceforge.jabm.SpringSimulationController;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import org.apache.log4j.Logger;
+import org.investovator.jasa.exchange.Exchange;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author: ishan
- * @version: ${Revision}
+ * @author ishan
+ * @version ${Revision}
  */
 public class HeadlessMultiAssetSimulationManager extends SimulationManager {
 
@@ -154,6 +155,10 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
             reports.addAll(controller.getReports());
         }
         return reports;
+    }
+
+    public Exchange getExchange(){
+        return (Exchange) BeanFactorySingleton.getBean("exchange");
     }
 
     public static void main(String[] args) {
