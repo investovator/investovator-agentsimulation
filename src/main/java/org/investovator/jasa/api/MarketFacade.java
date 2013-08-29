@@ -47,7 +47,7 @@ public interface MarketFacade {
 
     /**
      *
-     * @return List of in the market
+     * @return List of reports in the market
      * {@link Report}
      */
     public List<Report> getReports();
