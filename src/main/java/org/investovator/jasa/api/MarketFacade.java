@@ -45,6 +45,11 @@ public interface MarketFacade {
      */
     public String AddUserAgent(double initFunds);
 
+    /**
+     *
+     * @return List of in the market
+     * {@link Report}
+     */
     public List<Report> getReports();
 
 
@@ -75,7 +80,17 @@ public interface MarketFacade {
 
     //TODO throwing an event when the orders get matched
 
+    /**
+     *
+     * @param humanAgentId human agent's id
+     * @return HashMap containing stockId and number od stocks holding
+     */
     public HashMap<String, Integer> getUserAgentAssets(String humanAgentId);
 
+    /**
+     *
+     * @param humanAgentId human agent's id
+     * @return human agent's funds in the simulation
+     */
     public double getUserAgentFunds(String humanAgentId);
 }
