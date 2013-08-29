@@ -53,7 +53,12 @@ public class JASAFacade implements MarketFacade {
     private JASAFacade() {
         manager = new HeadlessMultiAssetSimulationManager();
         humanPlayers = new HashMap<String, HumanAgent>();
+    }
+
+    @Override
+    public boolean startSimulation() {
         new Thread(manager).run();
+        return true;
     }
 
     @Override

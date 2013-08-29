@@ -31,7 +31,7 @@ public interface MarketFacade {
 
     /*Simulation related*/
 
-    //TODO start simulation
+    public boolean startSimulation();
 
     public boolean pauseSimulation();
 
