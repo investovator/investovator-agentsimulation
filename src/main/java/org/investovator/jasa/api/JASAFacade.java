@@ -21,6 +21,7 @@ package org.investovator.jasa.api;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jasa.market.Account;
 import net.sourceforge.jasa.market.Order;
+import org.investovator.core.simulationengine.SimulationFacade;
 import org.investovator.jasa.api.utils.HollowTradingAgent;
 import org.investovator.jasa.api.utils.HumanAgent;
 import org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationManager;
@@ -33,7 +34,7 @@ import java.util.UUID;
  * @author rajith
  * @version $Revision$
  */
-public class JASAFacade implements MarketFacade {
+public class JASAFacade implements SimulationFacade {
 
     private static volatile JASAFacade jasaFacade;
 
@@ -89,7 +90,6 @@ public class JASAFacade implements MarketFacade {
         return uuid;
     }
 
-    @Override
     public List<Report> getReports() {
         return manager.getReports();
     }
