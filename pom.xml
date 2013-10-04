@@ -30,11 +30,6 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/trove-3.0.0a7.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>org.investovator</groupId>
-            <artifactId>investovator-core</artifactId>
-            <version>0.1</version>
-        </dependency>
     </dependencies>
 
     <build>
