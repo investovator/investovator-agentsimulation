@@ -44,7 +44,7 @@ public class Main {
 //        SwingUtilities.invokeLater(hir);
 
         HeadlessMultiAssetSimulationManager manager=new HeadlessMultiAssetSimulationManager();
-        new Thread(manager).run();
+        new Thread(manager).start();
     }
 
 
