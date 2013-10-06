@@ -3,6 +3,8 @@ This is an ongoing attempt to model a stock market using the [JASA](http://jasa.
 * Allows simulation of multiple markets (stocks).
 * Allows human players to interact with the simulation by placing orders (buy/ask).
 
+**This branch includes the version of investovator-jasa with a GUI** .
+
 # How to run the project..?
 ##Using maven
 Run the following commands.
