@@ -80,13 +80,12 @@ public class JASAFacade implements MarketFacade {
     }
 
     /**
-     * @return spawned AgentId
+     * @param username username
+     * @param initFunds initial account balance
      */
     @Override
-    public String AddUserAgent(double initFunds) {
-        String uuid = UUID.randomUUID().toString();
-        humanPlayers.put(uuid,  new HumanAgent(uuid, initFunds));
-        return uuid;
+    public void AddUserAgent(String username, double initFunds) {
+        humanPlayers.put(username,  new HumanAgent(username, initFunds));
     }
 
     public List<Report> getReports() {
@@ -94,7 +93,7 @@ public class JASAFacade implements MarketFacade {
     }
 
     /**
-     * @param humanAgentId  corresponding agentId
+     * @param username  corresponding username
      * @param stockId  security id
      * @param quantity stock quantity
      * @param isBuy    buy = true, sell=false;
@@ -102,10 +101,10 @@ public class JASAFacade implements MarketFacade {
      * @return adding order successful
      */
     @Override
-    public boolean putLimitOrder(String humanAgentId, String stockId, int quantity,
+    public boolean putLimitOrder(String username, String stockId, int quantity,
                                  double price, boolean isBuy) {
 
-        HumanAgent humanAgent = humanPlayers.get(humanAgentId);
+        HumanAgent humanAgent = humanPlayers.get(username);
 
         if(!humanAgent.isHollowAgentAvailable(stockId)){
             humanAgent.addHollowAgentToStock(stockId);
@@ -123,26 +122,26 @@ public class JASAFacade implements MarketFacade {
     }
 
     /**
-     * @param humanAgentId  corresponding agentId
+     * @param username  corresponding username
      * @param stockId  security id
      * @param quantity stock quantity
      * @param isBuy    buy = true, sell=false;
      * @return adding order successful
      */
     @Override
-    public boolean putMarketOrder(String humanAgentId, String stockId, int quantity,
+    public boolean putMarketOrder(String username, String stockId, int quantity,
                                   boolean isBuy) {
         return false;  //TODO adding a Market order
     }
 
     @Override
-    public HashMap<String, Integer> getUserAgentAssets(String humanAgentId) {
-        return humanPlayers.get(humanAgentId).getAssets();
+    public HashMap<String, Integer> getUserAgentAssets(String username) {
+        return humanPlayers.get(username).getAssets();
     }
 
     @Override
-    public double getUserAgentFunds(String humanAgentId) {
-        return humanPlayers.get(humanAgentId).getAccount().getFunds();
+    public double getUserAgentFunds(String username) {
+        return humanPlayers.get(username).getAccount().getFunds();
     }
 
     private void putOrder(String stockId, int quantity, double price,
