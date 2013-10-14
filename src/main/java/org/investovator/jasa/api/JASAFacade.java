@@ -58,7 +58,7 @@ public class JASAFacade implements MarketFacade {
 
     @Override
     public boolean startSimulation() {
-        new Thread(manager).run();
+        new Thread(manager).start();
         return true;
     }
 
