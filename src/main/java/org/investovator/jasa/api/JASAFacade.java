@@ -25,6 +25,7 @@ import org.investovator.jasa.api.utils.HollowTradingAgent;
 import org.investovator.jasa.api.utils.HumanAgent;
 import org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -88,7 +89,7 @@ public class JASAFacade implements MarketFacade {
         humanPlayers.put(username,  new HumanAgent(username, initFunds));
     }
 
-    public List<Report> getReports() {
+    public HashMap <String, ArrayList> getReports() {
         return manager.getReports();
     }
 

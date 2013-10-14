@@ -22,10 +22,12 @@ import net.sourceforge.jabm.SimulationManager;
 import net.sourceforge.jabm.SpringSimulationController;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
+import net.sourceforge.jasa.market.MarketSimulation;
 import org.apache.log4j.Logger;
 import org.investovator.jasa.exchange.Exchange;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -149,10 +151,11 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
         }
     }
 
-    public List<Report> getReports() {
-        List<Report> reports = new ArrayList<Report>();
+    public HashMap <String, ArrayList> getReports() {
+        HashMap <String, ArrayList> reports = new HashMap<String, ArrayList>();
         for (SpringSimulationController controller: simulationControllers) {
-            reports.addAll(controller.getReports());
+            reports.put(((MarketSimulation)controller.getSimulation()).getStockID(),
+                    controller.getReports());
         }
         return reports;
     }

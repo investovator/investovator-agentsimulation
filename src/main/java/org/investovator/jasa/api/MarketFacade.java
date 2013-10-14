@@ -21,6 +21,8 @@ package org.investovator.jasa.api;
 import net.sourceforge.jabm.report.Report;
 import org.investovator.core.simulationengine.SimulationFacade;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,5 +35,5 @@ public interface MarketFacade extends SimulationFacade {
      *
      * @return {@link Report}
      */
-    public List<Report> getReports();
+    public HashMap<String, ArrayList> getReports();
 }
