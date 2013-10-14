@@ -27,8 +27,6 @@ import org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationM
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author rajith
@@ -89,7 +87,7 @@ public class JASAFacade implements MarketFacade {
         humanPlayers.put(username,  new HumanAgent(username, initFunds));
     }
 
-    public HashMap <String, ArrayList> getReports() {
+    public HashMap<String, ArrayList<Report>> getReports() {
         return manager.getReports();
     }
 

@@ -28,7 +28,6 @@ import org.investovator.jasa.exchange.Exchange;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author ishan
@@ -151,8 +150,8 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
         }
     }
 
-    public HashMap <String, ArrayList> getReports() {
-        HashMap <String, ArrayList> reports = new HashMap<String, ArrayList>();
+    public HashMap <String, ArrayList<Report>> getReports() {
+        HashMap <String, ArrayList<Report>> reports = new HashMap<String, ArrayList<Report>>();
         for (SpringSimulationController controller: simulationControllers) {
             reports.put(((MarketSimulation)controller.getSimulation()).getStockID(),
                     controller.getReports());

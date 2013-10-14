@@ -23,7 +23,6 @@ import org.investovator.core.simulationengine.SimulationFacade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author rajith
@@ -35,5 +34,5 @@ public interface MarketFacade extends SimulationFacade {
      *
      * @return {@link Report}
      */
-    public HashMap<String, ArrayList> getReports();
+    public HashMap<String, ArrayList<Report>> getReports();
 }
