@@ -163,6 +163,15 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
         return (Exchange) BeanFactorySingleton.getBean("exchange");
     }
 
+
+    public SpringSimulationController getController(String stockID){
+        for (SpringSimulationController controller: simulationControllers) {
+            if( ((MarketSimulation)controller.getSimulation()).getStockID().equals(stockID) ) return controller;
+        }
+        return null;
+    }
+
+
     public static void main(String[] args) {
         HeadlessMultiAssetSimulationManager manager = new HeadlessMultiAssetSimulationManager();
         manager.run();
