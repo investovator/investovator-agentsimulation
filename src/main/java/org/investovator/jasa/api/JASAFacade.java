@@ -18,6 +18,7 @@
 
 package org.investovator.jasa.api;
 
+import net.sourceforge.jabm.event.EventListener;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jasa.market.Account;
 import net.sourceforge.jasa.market.Order;
@@ -89,6 +90,11 @@ public class JASAFacade implements MarketFacade {
 
     public HashMap<String, ArrayList<Report>> getReports() {
         return manager.getReports();
+    }
+
+    @Override
+    public void addListener(String stockID, EventListener eventListener) {
+        manager.getController(stockID).addListener(eventListener);
     }
 
     /**

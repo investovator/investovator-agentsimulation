@@ -18,6 +18,8 @@
 
 package org.investovator.jasa.api;
 
+import net.sourceforge.jabm.event.EventListener;
+import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.report.Report;
 import org.investovator.core.simulationengine.SimulationFacade;
 
@@ -35,4 +37,6 @@ public interface MarketFacade extends SimulationFacade {
      * @return {@link Report}
      */
     public HashMap<String, ArrayList<Report>> getReports();
+
+    public void addListener(String stockID, EventListener eventListener);
 }
