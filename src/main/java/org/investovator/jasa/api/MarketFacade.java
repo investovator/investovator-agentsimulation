@@ -21,7 +21,7 @@ package org.investovator.jasa.api;
 import net.sourceforge.jabm.event.EventListener;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.report.Report;
-import org.investovator.core.simulationengine.SimulationFacade;
+import org.investovator.core.commons.simulationengine.SimulationFacade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
