@@ -47,7 +47,6 @@ import net.sourceforge.jasa.market.rules.NullAuctionClosingCondition;
 import net.sourceforge.jasa.market.rules.TimingCondition;
 
 import org.apache.log4j.Logger;
-import org.investovator.exchange.Exchange;
 
 /**
  * A simulation of an order-driven market.

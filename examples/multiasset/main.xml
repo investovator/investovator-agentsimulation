@@ -17,7 +17,8 @@
     <import resource="model-ibm.xml"/>
     <import resource="report-ibm.xml"/>
 
-    <bean id="simulationManager" class="org.investovator.multiasset.simulation.HeadlessMultiAssetSimulationManager"
+    <bean id="simulationManager"
+          class="org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationManager"
           scope="singleton">
         <property name="simulations">
             <list>
@@ -28,7 +29,7 @@
     </bean>
 
 
-    <bean id="exchange" class="org.investovator.exchange.Exchange" scope="singleton">
+    <bean id="exchange" class="org.investovator.jasa.exchange.Exchange" scope="singleton">
         <property name="stocks">
             <list>
                 <ref bean="google"/>

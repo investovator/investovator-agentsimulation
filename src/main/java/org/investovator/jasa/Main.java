@@ -16,13 +16,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.investovator;
+package org.investovator.jasa;
 
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
-import org.investovator.exchange.Exchange;
-import org.investovator.multiasset.simulation.HeadlessMultiAssetSimulationManager;
-import org.investovator.multiasset.simulation.MultiAssetSimulationManager;
-import org.investovator.ui.HumanInterface;
+import org.investovator.jasa.exchange.Exchange;
+import org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationManager;
+import org.investovator.jasa.multiasset.simulation.MultiAssetSimulationManager;
+import org.investovator.jasa.ui.HumanInterface;
 
 import javax.swing.*;
 
@@ -37,11 +37,11 @@ public class Main {
 
 
     public static void main(String[] args) {
-//        MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
-//        manager.initialise();
+        /*MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
+        manager.initialise();
 
-//        HumanInterfaceRunner hir=new HumanInterfaceRunner(Main.getExchange());
-//        SwingUtilities.invokeLater(hir);
+        HumanInterfaceRunner hir=new HumanInterfaceRunner(Main.getExchange());
+        SwingUtilities.invokeLater(hir);*/
 
         HeadlessMultiAssetSimulationManager manager=new HeadlessMultiAssetSimulationManager();
         new Thread(manager).start();

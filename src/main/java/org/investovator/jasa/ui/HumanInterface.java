@@ -16,16 +16,12 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.investovator.ui;
+package org.investovator.jasa.ui;
 
 import net.sourceforge.jasa.agent.SimpleTradingAgent;
 import net.sourceforge.jasa.agent.strategy.TruthTellingStrategy;
-import net.sourceforge.jasa.market.AuctionException;
-import net.sourceforge.jasa.market.IllegalOrderException;
-import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.Order;
-import net.sourceforge.jasa.market.auctioneer.Auctioneer;
-import org.investovator.exchange.Exchange;
+import org.investovator.jasa.exchange.Exchange;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

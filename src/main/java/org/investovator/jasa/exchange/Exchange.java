@@ -1,7 +1,6 @@
-package org.investovator.exchange;
+package org.investovator.jasa.exchange;
 
 import net.sourceforge.jasa.market.AuctionException;
-import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.Order;
 import org.apache.log4j.Logger;

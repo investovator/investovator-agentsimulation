@@ -1,22 +1,37 @@
-package org.investovator.multiasset.simulation;
+/*
+ * investovator, Stock Market Gaming Framework
+ *     Copyright (C) 2013  investovator
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import net.sourceforge.jabm.SimulationExperiment;
+package org.investovator.jasa.multiasset.simulation;
+
 import net.sourceforge.jabm.SimulationManager;
 import net.sourceforge.jabm.SpringSimulationController;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
-import net.sourceforge.jabm.util.SystemProperties;
+import net.sourceforge.jasa.market.MarketSimulation;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
+import org.investovator.jasa.exchange.Exchange;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
- * @author: ishan
- * @version: ${Revision}
+ * @author ishan
+ * @version ${Revision}
  */
 public class HeadlessMultiAssetSimulationManager extends SimulationManager {
 
@@ -135,13 +150,27 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
         }
     }
 
-    public List<Report> getReports() {
-        List<Report> reports = new ArrayList<Report>();
+    public HashMap <String, ArrayList<Report>> getReports() {
+        HashMap <String, ArrayList<Report>> reports = new HashMap<String, ArrayList<Report>>();
         for (SpringSimulationController controller: simulationControllers) {
-            reports.addAll(controller.getReports());
+            reports.put(((MarketSimulation)controller.getSimulation()).getStockID(),
+                    controller.getReports());
         }
         return reports;
     }
+
+    public Exchange getExchange(){
+        return (Exchange) BeanFactorySingleton.getBean("exchange");
+    }
+
+
+    public SpringSimulationController getController(String stockID){
+        for (SpringSimulationController controller: simulationControllers) {
+            if( ((MarketSimulation)controller.getSimulation()).getStockID().equals(stockID) ) return controller;
+        }
+        return null;
+    }
+
 
     public static void main(String[] args) {
         HeadlessMultiAssetSimulationManager manager = new HeadlessMultiAssetSimulationManager();
