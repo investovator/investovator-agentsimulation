@@ -27,8 +27,19 @@ import net.sourceforge.jasa.market.Account;
  */
 public class HollowTradingAgent extends SimpleTradingAgent {
 
-    public HollowTradingAgent(Account account){
+    private String userName;
+
+    public HollowTradingAgent(Account account, String userName){
         super();
         this.account = account;
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

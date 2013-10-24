@@ -30,19 +30,19 @@ import java.util.HashMap;
  */
 public class HumanAgent {
 
-    private String uuid;
+    private String userName;
     private HashMap <String, HollowTradingAgent> hollowAgents;
 
     private Account account;
 
-    public HumanAgent(String uuid, double initFunds){
-        this.uuid = uuid;
-        this.account = new Account(uuid, initFunds);
+    public HumanAgent(String userName, double initFunds){
+        this.userName = userName;
+        this.account = new Account(userName, initFunds);
         this.hollowAgents = new HashMap<String, HollowTradingAgent>();
     }
 
-    public String getUUID () {
-        return uuid;
+    public String getUserName () {
+        return userName;
     }
 
     public HollowTradingAgent getHollowTradingAgent(String stockId){
@@ -58,7 +58,7 @@ public class HumanAgent {
     }
 
     public void addHollowAgentToStock(String stockId){
-        HollowTradingAgent agent = new HollowTradingAgent(account);
+        HollowTradingAgent agent = new HollowTradingAgent(account, userName);
         agent.setStrategy(new TruthTellingStrategy());
         hollowAgents.put(stockId, agent);
     }
