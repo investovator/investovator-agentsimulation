@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.investovator.jasa.multiasset.simulation;
+package org.investovator.agentsimulation.multiasset.simulation;
 
 import net.infonode.docking.SplitWindow;
 import net.infonode.docking.TabWindow;

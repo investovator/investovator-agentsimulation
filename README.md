@@ -11,5 +11,5 @@ Run the following commands.
 
 ## Using your IDE
 Create a run configuration in your IDE as follows.
-* Class to be run - **org.investovator.jasa.Main**
+* Class to be run - **org.investovator.agentsimulation.Main**
 * VM options -  **-Djabm.config=./examples/multiasset/main.xml**

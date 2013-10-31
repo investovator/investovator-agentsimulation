@@ -16,13 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.investovator.jasa;
+package org.investovator.agentsimulation;
 
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
-import org.investovator.jasa.exchange.Exchange;
-import org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationManager;
-import org.investovator.jasa.multiasset.simulation.MultiAssetSimulationManager;
-import org.investovator.jasa.ui.HumanInterface;
+import org.investovator.agentsimulation.exchange.Exchange;
+import org.investovator.agentsimulation.multiasset.simulation.HeadlessMultiAssetSimulationManager;
+import org.investovator.agentsimulation.ui.HumanInterface;
 
 import javax.swing.*;
 

@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.investovator.jasa.multiasset.simulation;
+package org.investovator.agentsimulation.multiasset.simulation;
 
 import net.sourceforge.jabm.SimulationManager;
 import net.sourceforge.jabm.SpringSimulationController;
@@ -24,7 +24,7 @@ import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import net.sourceforge.jasa.market.MarketSimulation;
 import org.apache.log4j.Logger;
-import org.investovator.jasa.exchange.Exchange;
+import org.investovator.agentsimulation.exchange.Exchange;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -16,15 +16,15 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.investovator.jasa.api;
+package org.investovator.agentsimulation.api;
 
 import net.sourceforge.jabm.event.EventListener;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jasa.market.Account;
 import net.sourceforge.jasa.market.Order;
-import org.investovator.jasa.api.utils.HollowTradingAgent;
-import org.investovator.jasa.api.utils.HumanAgent;
-import org.investovator.jasa.multiasset.simulation.HeadlessMultiAssetSimulationManager;
+import org.investovator.agentsimulation.api.utils.HollowTradingAgent;
+import org.investovator.agentsimulation.api.utils.HumanAgent;
+import org.investovator.agentsimulation.multiasset.simulation.HeadlessMultiAssetSimulationManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

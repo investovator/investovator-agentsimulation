@@ -1,4 +1,4 @@
-package org.investovator.jasa.exchange;
+package org.investovator.agentsimulation.exchange;
 
 import net.sourceforge.jasa.market.AuctionException;
 import net.sourceforge.jasa.market.MarketSimulation;
