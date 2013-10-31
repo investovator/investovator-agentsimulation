@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.investovator</groupId>
-    <artifactId>jasa</artifactId>
-    <version>1.2_01investovatorv0.2</version>
+    <artifactId>investovator-agentsimualtion</artifactId>
+    <version>0.2</version>
+    <name>investovator - Agent Simulation</name>
 
     <dependencies>
         <dependency>
