@@ -13,3 +13,7 @@ Run the following commands.
 Create a run configuration in your IDE as follows.
 * Class to be run - **org.investovator.agentsimulation.Main**
 * VM options -  **-Djabm.config=./examples/multiasset/main.xml**
+
+
+
+[![Build Status](https://drone.io/github.com/investovator/investovator-agentsimulation/status.png)](https://drone.io/github.com/investovator/investovator-agentsimulation/latest)
