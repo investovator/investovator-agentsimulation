@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class CurrentPriceReportTimeseriesVariables extends MarketPriceReportTimeseriesVariables {
 
-    public static final String NAME = "current";
+    public static final String NAME = "time.current";
 
     public Map<Object, ArrayList<Number>> getTimeseriesVariableBindings() {
         LinkedHashMap<Object,  ArrayList<Number>> result =
