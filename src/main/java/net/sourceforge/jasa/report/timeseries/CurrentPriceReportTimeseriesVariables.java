@@ -19,6 +19,7 @@
 package net.sourceforge.jasa.report.timeseries;
 
 import net.sourceforge.jabm.event.RoundFinishedEvent;
+import net.sourceforge.jasa.event.TransactionExecutedEvent;
 import net.sourceforge.jasa.market.MarketSimulation;
 
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class CurrentPriceReportTimeseriesVariables extends MarketPriceReportTime
         return ((MarketSimulation) event.getSimulation()).getCurrentPrice();
     }
 
+    @Override
+    public double getPrice(TransactionExecutedEvent event) {
+        return (((TransactionExecutedEvent) event).getAuction().getCurrentPrice());
+    }
 
 
 }

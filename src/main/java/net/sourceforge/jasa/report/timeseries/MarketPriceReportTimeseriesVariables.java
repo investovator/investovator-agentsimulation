@@ -6,6 +6,7 @@ import java.util.*;
 import net.sourceforge.jabm.event.RoundFinishedEvent;
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.report.XYReportVariables;
+import net.sourceforge.jasa.event.TransactionExecutedEvent;
 
 public abstract class MarketPriceReportTimeseriesVariables implements Serializable,
         XYReportVariables {
@@ -59,14 +60,19 @@ public abstract class MarketPriceReportTimeseriesVariables implements Serializab
 
     @Override
     public void eventOccurred(SimEvent ev) {
-        if (ev instanceof RoundFinishedEvent) {
-            onRoundFinished((RoundFinishedEvent) ev);
+        if (ev instanceof TransactionExecutedEvent) {
+            onTransaction((TransactionExecutedEvent) ev);
         }
     }
 
     public void onRoundFinished(RoundFinishedEvent event) {
         this.price.add(getPrice(event));
-        this.time.add( (int) event.getSimulation().getSimulationTime().getTicks());
+        this.time.add((int) event.getSimulation().getSimulationTime().getTicks());
+    }
+
+    public void onTransaction(TransactionExecutedEvent event) {
+        this.price.add(getPrice(event));
+        this.time.add(event.getAuction().getRound());
     }
 
     @Override
@@ -85,5 +91,7 @@ public abstract class MarketPriceReportTimeseriesVariables implements Serializab
     public abstract String getName();
 
     public abstract double getPrice(RoundFinishedEvent event);
+
+    public abstract double getPrice(TransactionExecutedEvent event);
 
 }
