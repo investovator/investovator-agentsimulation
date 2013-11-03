@@ -13,6 +13,17 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
+
+    <!--Added for investovator timeline-->
+    <bean id="currentPriceTimeSeriesReportVariables" class="net.sourceforge.jasa.report.timeseries.CurrentPriceReportTimeseriesVariables">
+    </bean>
+
+    <bean id="spreadTimeSeriesReportVariables" class="net.sourceforge.jasa.report.timeseries.SpreadReportTimeseriesVariables">
+    </bean>
+    <!--Added for investovator timeline-->
+
+
+
     <!-- A graphical display of the current state of the order book -->
     <bean id="orderBookView" class="net.sourceforge.jasa.view.OrderBookView">
         <property name="maxDepth" value="20"/>

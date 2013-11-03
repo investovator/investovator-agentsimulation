@@ -13,7 +13,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<import resource="model-goog.xml"/>
-	<import resource="reports-goog.xml" />
     <import resource="model-ibm.xml"/>
     <import resource="report-ibm.xml"/>
 
