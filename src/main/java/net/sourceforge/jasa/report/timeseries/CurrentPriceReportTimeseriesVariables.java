@@ -18,25 +18,12 @@
 
 package net.sourceforge.jasa.report.timeseries;
 
-import net.sourceforge.jabm.event.RoundFinishedEvent;
+import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jasa.event.TransactionExecutedEvent;
-import net.sourceforge.jasa.market.MarketSimulation;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+public class CurrentPriceReportTimeseriesVariables extends PriceReportTimeseriesVariables {
 
-public class CurrentPriceReportTimeseriesVariables extends MarketPriceReportTimeseriesVariables {
-
-    public static final String NAME = "time.current";
-
-    public Map<Object, ArrayList<Number>> getTimeseriesVariableBindings() {
-        LinkedHashMap<Object,  ArrayList<Number>> result =
-                new LinkedHashMap<Object,  ArrayList<Number>>();
-        result.put(getName() + ".t", time);
-        result.put(getName() + "." + PRICE_VAR, price);
-        return result;
-    }
+    public static final String NAME = "market price";
 
     @Override
     public String getName() {
@@ -44,14 +31,17 @@ public class CurrentPriceReportTimeseriesVariables extends MarketPriceReportTime
     }
 
     @Override
-    public double getPrice(RoundFinishedEvent event) {
-        return ((MarketSimulation) event.getSimulation()).getCurrentPrice();
+    public void eventOccurred(SimEvent event) {
+
+        if(event instanceof TransactionExecutedEvent){
+            this.price.add(getPrice((TransactionExecutedEvent)event));
+            this.time.add( ((TransactionExecutedEvent) event).getTime() );
+        }
+
     }
 
-    @Override
-    public double getPrice(TransactionExecutedEvent event) {
-        return (((TransactionExecutedEvent) event).getAuction().getCurrentPrice());
+
+    private double getPrice(TransactionExecutedEvent event){
+        return event.getAuction().getCurrentPrice();
     }
-
-
 }

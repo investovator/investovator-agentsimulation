@@ -15,10 +15,11 @@
 
 
     <!--Added for investovator timeline-->
-
     <bean id="currentPriceTimeSeriesReportVariables" class="net.sourceforge.jasa.report.timeseries.CurrentPriceReportTimeseriesVariables">
     </bean>
 
+    <bean id="spreadTimeSeriesReportVariables" class="net.sourceforge.jasa.report.timeseries.SpreadReportTimeseriesVariables">
+    </bean>
     <!--Added for investovator timeline-->
 
 

@@ -8,7 +8,7 @@ import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.report.XYReportVariables;
 import net.sourceforge.jasa.event.TransactionExecutedEvent;
 
-public abstract class MarketPriceReportTimeseriesVariables implements Serializable,
+public abstract class PriceReportTimeseriesVariables implements Serializable,
         XYReportVariables {
 
     protected ArrayList<Number> price = new ArrayList<Number>();
@@ -17,7 +17,13 @@ public abstract class MarketPriceReportTimeseriesVariables implements Serializab
 
     public static final String PRICE_VAR = "price";
 
-    public abstract Map<Object, ArrayList<Number>> getTimeseriesVariableBindings();
+    public Map<Object, ArrayList<Number>> getTimeseriesVariableBindings() {
+        LinkedHashMap<Object,  ArrayList<Number>> result =
+                new LinkedHashMap<Object,  ArrayList<Number>>();
+        result.put(getName() + ".t", time);
+        result.put(getName() + "." + PRICE_VAR, price);
+        return result;
+    }
 
     @Override
     public Map<Object, Number> getVariableBindings() {
@@ -58,22 +64,6 @@ public abstract class MarketPriceReportTimeseriesVariables implements Serializab
         return 1;
     }
 
-    @Override
-    public void eventOccurred(SimEvent ev) {
-        if (ev instanceof TransactionExecutedEvent) {
-            onTransaction((TransactionExecutedEvent) ev);
-        }
-    }
-
-    public void onRoundFinished(RoundFinishedEvent event) {
-        this.price.add(getPrice(event));
-        this.time.add((int) event.getSimulation().getSimulationTime().getTicks());
-    }
-
-    public void onTransaction(TransactionExecutedEvent event) {
-        this.price.add(getPrice(event));
-        this.time.add(event.getAuction().getRound());
-    }
 
     @Override
     public List<Object> getyVariableNames() {
@@ -90,8 +80,5 @@ public abstract class MarketPriceReportTimeseriesVariables implements Serializab
     @Override
     public abstract String getName();
 
-    public abstract double getPrice(RoundFinishedEvent event);
-
-    public abstract double getPrice(TransactionExecutedEvent event);
 
 }
