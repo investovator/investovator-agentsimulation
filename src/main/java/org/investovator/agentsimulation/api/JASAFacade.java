@@ -163,4 +163,8 @@ public class JASAFacade implements MarketFacade {
     private boolean sellOrderApproved(HollowTradingAgent agent, int quantity){
         return agent.getStock() >= quantity;
     }
+
+    public long getSimulationTime(String stockID){
+        return  manager.getController(stockID).getSimulationTime().getTicks();
+    }
 }
