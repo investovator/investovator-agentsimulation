@@ -12,9 +12,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
     <bean id="ibmController"
-          class="net.sourceforge.jabm.SpringSimulationController"
+          class="org.investovator.agentsimulation.InvestovatorSimulationController"
           scope="singleton">
 
         <property name="simulationBeanName">
@@ -62,7 +61,7 @@
     <property name="agentMixer" ref="randomArrivalAgentMixerIBM"/>
     <property name="agentInitialiser" ref="agentInitialiserProxyIBM"/>
     <property name="auctioneer" ref="cdaIBM"/>
-    <property name="initialPrice" value="1"/>
+    <property name="initialPrice" value="${IBM.init.price}"/>
     <property name="stockID" value="IBM" />
     <property name="slowSleepInterval" value="100" />
 </bean>
