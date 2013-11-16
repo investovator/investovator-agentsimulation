@@ -22,8 +22,12 @@ import net.sourceforge.jabm.Simulation;
 import net.sourceforge.jabm.SpringSimulationController;
 import net.sourceforge.jabm.init.SpringSimulationFactory;
 import net.sourceforge.jabm.spring.SimulationScope;
+import net.sourceforge.jasa.market.MarketSimulation;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 /**
  * @author Amila Surendra
@@ -31,17 +35,25 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
  */
 public class InvestovatorSimulationController extends SpringSimulationController {
 
+    private static boolean isPropSet = false;
+
     @Override
     public void afterPropertiesSet() throws Exception {
-
-        PropertyPlaceholderConfigurer test = (PropertyPlaceholderConfigurer) beanFactory.getBean("configurer");
-
-        test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
-
         this.simulation = (Simulation) beanFactory.getBean(simulationBeanName);
         this.simulationScope = SimulationScope.getSingletonInstance();
         if (this.simulationFactory == null) {
             this.simulationFactory = new SpringSimulationFactory();
+        }
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = (DefaultListableBeanFactory) beanFactory;
+
+        if(!isPropSet){
+            PropertyPlaceholderConfigurer test = (PropertyPlaceholderConfigurer) beanFactory.getBean("configurer");
+            test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
+            isPropSet=true;
         }
     }
 }
