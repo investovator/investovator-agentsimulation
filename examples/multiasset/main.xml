@@ -45,8 +45,8 @@
     <bean id="configurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>file:/home/amila/git/investovator-jasa/examples/multiasset/GOOG.properties</value>
-                <value>file:/home/amila/git/investovator-jasa/examples/multiasset/IBM.properties</value>
+                <value>file:examples/multiasset/GOOG.properties</value>
+                <value>file:examples/multiasset/IBM.properties</value>
             </list>
         </property>
     </bean>

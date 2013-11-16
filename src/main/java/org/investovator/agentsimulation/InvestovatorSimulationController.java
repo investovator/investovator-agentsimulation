@@ -51,8 +51,12 @@ public class InvestovatorSimulationController extends SpringSimulationController
         this.beanFactory = (DefaultListableBeanFactory) beanFactory;
 
         if(!isPropSet){
-            PropertyPlaceholderConfigurer test = (PropertyPlaceholderConfigurer) beanFactory.getBean("configurer");
-            test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
+            Object configurer =  beanFactory.getBean("configurer");
+
+            if(configurer != null){
+                PropertyPlaceholderConfigurer test = (PropertyPlaceholderConfigurer)configurer;
+                test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
+            }
             isPropSet=true;
         }
     }
