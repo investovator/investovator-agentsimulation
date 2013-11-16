@@ -39,6 +39,17 @@ public class InvestovatorSimulationController extends SpringSimulationController
 
     @Override
     public void afterPropertiesSet() throws Exception {
+
+        if(!isPropSet){
+            Object configurer =  beanFactory.getBean("configurer");
+
+            if(configurer != null){
+                PropertyPlaceholderConfigurer test = (PropertyPlaceholderConfigurer)configurer;
+                test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
+                isPropSet=true;
+            }
+        }
+
         this.simulation = (Simulation) beanFactory.getBean(simulationBeanName);
         this.simulationScope = SimulationScope.getSingletonInstance();
         if (this.simulationFactory == null) {
@@ -49,15 +60,5 @@ public class InvestovatorSimulationController extends SpringSimulationController
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = (DefaultListableBeanFactory) beanFactory;
-
-        if(!isPropSet){
-            Object configurer =  beanFactory.getBean("configurer");
-
-            if(configurer != null){
-                PropertyPlaceholderConfigurer test = (PropertyPlaceholderConfigurer)configurer;
-                test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
-            }
-            isPropSet=true;
-        }
     }
 }
