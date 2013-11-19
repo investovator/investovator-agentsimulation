@@ -15,18 +15,17 @@
 
 package net.sourceforge.jasa.report;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.event.SimulationStartingEvent;
 import net.sourceforge.jasa.market.Market;
 import net.sourceforge.jasa.market.Order;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -201,7 +200,9 @@ public class EquilibriumReportVariables extends DirectRevelationReportVariables
 //		result.add(VAR_MINPRICE);
 //		return result;
 //	}
-	
-	
+
+    public List<Order> getMatchedShouts(){
+        return matchedShouts;
+    }
 
 }
