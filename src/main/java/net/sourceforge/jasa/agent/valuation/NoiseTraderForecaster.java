@@ -45,6 +45,7 @@ public class NoiseTraderForecaster extends ReturnForecasterWithTimeHorizon
 	@Required
 	public void setPrng(RandomEngine prng) {
 		this.prng = prng;
+
 		noiseDistribution = new Normal(0, 0.05, prng);
 
 	}
