@@ -15,7 +15,7 @@
     <import resource="reports-goog.xml" />
 
     <bean id="googController"
-          class="org.investovator.agentsimulation.InvestovatorSimulationController"
+          class="net.sourceforge.jabm.SpringSimulationController"
           scope="singleton">
 
         <property name="simulationBeanName">
@@ -66,7 +66,7 @@
     <property name="agentMixer" ref="randomArrivalAgentMixer"/>
     <property name="agentInitialiser" ref="agentInitialiserProxy"/>
     <property name="auctioneer" ref="cda"/>
-    <property name="initialPrice" value="${GOOG.init.price}"/>
+    <property name="initialPrice" value="100"/>
     <property name="stockID" value="GOOG" />
     <property name="slowSleepInterval" value="100" />
 
@@ -130,10 +130,10 @@
         <bean class="net.sourceforge.jabm.agent.AgentList">
             <constructor-arg>
                 <list>
-                    <ref bean="linearCombinationTraders"/>
+                    <!--<ref bean="linearCombinationTraders"/>-->
                     <ref bean="noiseTraders"/>
-                    <ref bean="fundamentalistTraders"/>
-                    <ref bean="chartistTraders"/>
+                    <!--<ref bean="fundamentalistTraders"/>-->
+                    <!--<ref bean="chartistTraders"/>-->
                 </list>
             </constructor-arg>
         </bean>

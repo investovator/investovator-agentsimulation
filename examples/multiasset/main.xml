@@ -17,12 +17,12 @@
     <import resource="report-ibm.xml"/>
 
     <bean id="simulationManager"
-          class="org.investovator.agentsimulation.multiasset.simulation.HeadlessMultiAssetSimulationManager"
+          class="org.investovator.agentsimulation.multiasset.simulation.MultiAssetSimulationManager"
           scope="singleton">
         <property name="simulations">
             <list>
                 <ref bean="googController"/>
-                <ref bean="ibmController"/>
+                <!--<ref bean="ibmController"/>-->
             </list>
         </property>
     </bean>

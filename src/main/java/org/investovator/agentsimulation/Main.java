@@ -21,6 +21,7 @@ package org.investovator.agentsimulation;
 import net.sourceforge.jabm.spring.BeanFactorySingleton;
 import org.investovator.agentsimulation.exchange.Exchange;
 import org.investovator.agentsimulation.multiasset.simulation.HeadlessMultiAssetSimulationManager;
+import org.investovator.agentsimulation.multiasset.simulation.MultiAssetSimulationManager;
 import org.investovator.agentsimulation.ui.HumanInterface;
 
 import javax.swing.*;
@@ -36,13 +37,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-        /*MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
+        MultiAssetSimulationManager manager = new MultiAssetSimulationManager();
         manager.initialise();
 
+        /*
         HumanInterfaceRunner hir=new HumanInterfaceRunner(Main.getExchange());
         SwingUtilities.invokeLater(hir);*/
 
-        HeadlessMultiAssetSimulationManager manager=new HeadlessMultiAssetSimulationManager();
         new Thread(manager).start();
     }
 
