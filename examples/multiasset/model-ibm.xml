@@ -13,7 +13,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="ibmController"
-          class="org.investovator.agentsimulation.InvestovatorSimulationController"
+          class="org.investovator.agentsimulation.multiasset.simulation.MultiAssetSimulationManager"
           scope="singleton">
 
         <property name="simulationBeanName">
