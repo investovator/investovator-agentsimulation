@@ -25,7 +25,6 @@ import net.sourceforge.jasa.market.auctioneer.ContinuousDoubleAuctioneer;
 
 /**
  * @author Amila Surendra
- * @author rajith
  * @version $Revision
  */
 public class SpreadReportTimeseriesVariables extends PriceReportTimeseriesVariables {

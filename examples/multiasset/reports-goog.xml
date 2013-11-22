@@ -13,6 +13,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
+    <bean id="topOrdersStatReport" class="org.investovator.agentsimulation.multiasset.report.statistics.TopOrdersStatReport">
+    </bean>
 
     <!--Added for investovator timeline-->
     <bean id="currentPriceTimeSeriesReportVariables" class="org.investovator.agentsimulation.multiasset.report.timeseries.CurrentPriceReportTimeseriesVariables">
