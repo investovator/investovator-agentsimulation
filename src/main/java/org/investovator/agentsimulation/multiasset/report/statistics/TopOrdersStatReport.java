@@ -35,6 +35,10 @@ public class TopOrdersStatReport implements MultiStatReport, Serializable, Clone
     protected List<Number> topBuy;
     protected List<Number> topSell;
 
+    public TopOrdersStatReport() {
+        initialise();
+    }
+
     @Override
     public void eventOccurred(SimEvent event) {
         if(event instanceof OrderPlacedEvent){
