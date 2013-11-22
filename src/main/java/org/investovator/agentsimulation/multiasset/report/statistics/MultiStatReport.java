@@ -29,7 +29,6 @@ import java.util.Map;
  */
 public interface MultiStatReport extends Report {
 
-    public void initialise();
-
     public Map<String, List<Number>> getStatValues();
+
 }
