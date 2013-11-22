@@ -13,6 +13,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
+    <bean id="midPriceReportTimeSeriesVariables" class="org.investovator.agentsimulation.multiasset.report.timeseries.MidPriceReportTimeSeriesVariables">
+    </bean>
+
     <bean id="topOrdersStatReport" class="org.investovator.agentsimulation.multiasset.report.statistics.TopOrdersStatReport">
         <property name="topSize" value="5"/>
     </bean>

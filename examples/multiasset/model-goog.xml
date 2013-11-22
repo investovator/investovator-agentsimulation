@@ -47,6 +47,7 @@
 
 
                 <ref bean="currentPriceTimeSeriesReportVariables" />
+                <ref bean="midPriceReportTimeSeriesVariables"/>
                 <ref bean="topOrdersStatReport"/>
 
             </list>
