@@ -16,11 +16,16 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.sourceforge.jasa.report.timeseries;
+package org.investovator.agentsimulation.multiasset.report.timeseries;
 
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jasa.event.TransactionExecutedEvent;
 
+/**
+ * @author Amila Surendra
+ * @author rajith
+ * @version $Revision
+ */
 public class CurrentPriceReportTimeseriesVariables extends PriceReportTimeseriesVariables {
 
     public static final String NAME = "market price";

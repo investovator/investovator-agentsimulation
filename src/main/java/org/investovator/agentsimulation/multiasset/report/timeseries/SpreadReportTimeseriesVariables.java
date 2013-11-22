@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.sourceforge.jasa.report.timeseries;
+package org.investovator.agentsimulation.multiasset.report.timeseries;
 
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jasa.event.OrderPlacedEvent;
@@ -25,6 +25,7 @@ import net.sourceforge.jasa.market.auctioneer.ContinuousDoubleAuctioneer;
 
 /**
  * @author Amila Surendra
+ * @author rajith
  * @version $Revision
  */
 public class SpreadReportTimeseriesVariables extends PriceReportTimeseriesVariables {

@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.sourceforge.jasa.report.timeseries;
+package org.investovator.agentsimulation.multiasset.report.timeseries;
 
 import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.report.XYReportVariables;
@@ -24,6 +24,11 @@ import net.sourceforge.jabm.report.XYReportVariables;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * @author Amila Surendra
+ * @author rajith
+ * @version $Revision
+ */
 public abstract class PriceReportTimeseriesVariables implements Serializable,
         XYReportVariables {
 
