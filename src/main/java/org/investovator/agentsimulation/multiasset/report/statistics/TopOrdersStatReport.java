@@ -22,6 +22,8 @@ import net.sourceforge.jabm.event.SimEvent;
 import net.sourceforge.jabm.util.Resetable;
 import net.sourceforge.jasa.event.OrderPlacedEvent;
 import net.sourceforge.jasa.market.Order;
+import net.sourceforge.jasa.market.auctioneer.ContinuousDoubleAuctioneer;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.io.Serializable;
 import java.util.*;
@@ -35,39 +37,21 @@ public class TopOrdersStatReport implements MultiStatReport, Serializable, Clone
     protected List<Number> topBuy;
     protected List<Number> topSell;
 
-    public TopOrdersStatReport() {
-        initialise();
-    }
+    protected int size;
 
     @Override
     public void eventOccurred(SimEvent event) {
         if(event instanceof OrderPlacedEvent){
             Order order = ((OrderPlacedEvent) event).getOrder();
+            ContinuousDoubleAuctioneer auctioneer = (ContinuousDoubleAuctioneer) ((OrderPlacedEvent) event)
+                    .getAuction().getAuctioneer();
+
             if (order.isBid()) {
-                addToList(topSell, order.getPrice());
+                topSell = addToList(auctioneer.getUnmatchedBids());
             } else {
-                addToList(topBuy, order.getPrice());
+                topBuy = addToList(auctioneer.getUnmatchedAsks());
             }
         }
-    }
-
-    @Override
-    public void initialise() {
-        topBuy = new ArrayList<Number>() {
-            public boolean add(Number order) {
-                super.add(order);
-                Collections.sort(topBuy, Collections.reverseOrder());
-                return true;
-            }
-        };
-
-        topSell = new ArrayList<Number>() {
-            public boolean add(Number order) {
-                super.add(order);
-                Collections.sort(topSell, Collections.reverseOrder());
-                return true;
-            }
-        };
     }
 
     @Override
@@ -90,12 +74,22 @@ public class TopOrdersStatReport implements MultiStatReport, Serializable, Clone
 
     @Override
     public void reset() {
-       initialise();
+        topBuy.clear();
+        topSell.clear();
     }
 
-    protected List<Number> addToList(List<Number> list, Number order) {
-        list.add(order);
-        Collections.sort(list, Collections.reverseOrder());
-        return list.size() > 4 ?  list.subList(0, 5) : list;
+    protected List<Number> addToList(List<Order> list) {
+
+        List <Number> priceList = new ArrayList<>();
+        for (Order order : list){
+            priceList.add(order.getPrice());
+        }
+        Collections.sort(priceList, Collections.reverseOrder());
+        return priceList.size() > (size - 1) ?  priceList.subList(0, size) : priceList;
+    }
+
+    @Required
+    public void setTopSize(int size){
+        this.size = size;
     }
 }

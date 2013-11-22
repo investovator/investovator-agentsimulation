@@ -14,6 +14,7 @@
 
 
     <bean id="topOrdersStatReport" class="org.investovator.agentsimulation.multiasset.report.statistics.TopOrdersStatReport">
+        <property name="topSize" value="5"/>
     </bean>
 
     <!--Added for investovator timeline-->
