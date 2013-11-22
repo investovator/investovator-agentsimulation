@@ -26,7 +26,6 @@ import java.util.*;
 
 /**
  * @author Amila Surendra
- * @author rajith
  * @version $Revision
  */
 public abstract class PriceReportTimeseriesVariables implements Serializable,

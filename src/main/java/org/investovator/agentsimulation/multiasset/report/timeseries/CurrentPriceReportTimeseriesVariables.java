@@ -23,7 +23,6 @@ import net.sourceforge.jasa.event.TransactionExecutedEvent;
 
 /**
  * @author Amila Surendra
- * @author rajith
  * @version $Revision
  */
 public class CurrentPriceReportTimeseriesVariables extends PriceReportTimeseriesVariables {
