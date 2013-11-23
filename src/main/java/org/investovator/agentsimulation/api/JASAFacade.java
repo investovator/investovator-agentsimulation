@@ -21,13 +21,16 @@ package org.investovator.agentsimulation.api;
 import net.sourceforge.jabm.event.EventListener;
 import net.sourceforge.jabm.report.Report;
 import net.sourceforge.jasa.market.Account;
+import net.sourceforge.jasa.market.MarketSimulation;
 import net.sourceforge.jasa.market.Order;
 import org.investovator.agentsimulation.api.utils.HollowTradingAgent;
 import org.investovator.agentsimulation.api.utils.HumanAgent;
 import org.investovator.agentsimulation.multiasset.simulation.HeadlessMultiAssetSimulationManager;
+import org.investovator.core.commons.simulationengine.MarketOrder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author rajith
@@ -147,6 +150,39 @@ public class JASAFacade implements MarketFacade {
     @Override
     public double getUserAgentFunds(String username) {
         return humanPlayers.get(username).getAccount().getFunds();
+    }
+
+    @Override
+    public HashMap<String, ArrayList<MarketOrder>> getUserUnmatchedOrders(String username) {
+        HashMap<String, MarketSimulation> stocks = (manager.getExchange()).getStocks();
+
+        HashMap<String, ArrayList<MarketOrder>> unmatchedOrders = new HashMap<>();
+        for(String stockId : stocks.keySet()){
+            ArrayList<MarketOrder> ordersForId = new ArrayList<>();
+
+            List<Order> unmatchedAsksList = ((stocks.get(stockId)).getAuctioneer()).getUnmatchedAsks();
+            getUserOrdersFromList(username, ordersForId, unmatchedAsksList);
+
+            List<Order> unmatchedBidsList = ((stocks.get(stockId)).getAuctioneer()).getUnmatchedBids();
+            getUserOrdersFromList(username, ordersForId, unmatchedBidsList);
+
+            unmatchedOrders.put(stockId, ordersForId);
+        }
+
+        return unmatchedOrders;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private void getUserOrdersFromList(String username, ArrayList<MarketOrder> orders,
+                                                         List<Order> unmatchedList) {
+        for (Order order : unmatchedList){
+            if((order.getAgent()) instanceof HollowTradingAgent){
+                HollowTradingAgent agent = (HollowTradingAgent) order.getAgent();
+                if(agent.getUserName().equals(username)){
+                    orders.add(order);
+                }
+
+            }
+        }
     }
 
     private void putOrder(String stockId, int quantity, double price,
