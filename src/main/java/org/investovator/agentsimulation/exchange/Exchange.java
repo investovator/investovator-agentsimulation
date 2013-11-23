@@ -31,6 +31,10 @@ public class Exchange {
 
     }
 
+    public HashMap<String, MarketSimulation> getStocks(){
+        return stocks;
+    }
+
     public void placeOrder(String stockID, Order order){
 
         MarketSimulation simulation = stocks.get(stockID);

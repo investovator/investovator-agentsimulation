@@ -15,11 +15,12 @@
 
 package net.sourceforge.jasa.market;
 
-import java.io.Serializable;
-import java.text.DecimalFormat;
-
 import net.sourceforge.jabm.SimulationTime;
 import net.sourceforge.jasa.agent.TradingAgent;
+import org.investovator.core.commons.simulationengine.MarketOrder;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
 
 /**
  * <p>
@@ -37,7 +38,7 @@ import net.sourceforge.jasa.agent.TradingAgent;
  * @version $Revision: 1.14 $
  */
 
-public class Order implements Comparable<Order>, Cloneable, Serializable {
+public class Order implements Comparable<Order>, Cloneable, Serializable, MarketOrder {
 
 	/**
 	 * The volume of this order.
