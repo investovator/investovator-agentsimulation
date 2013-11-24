@@ -158,7 +158,7 @@ public class JASAFacade implements MarketFacade {
 
     @Override
     public HashMap<String, ArrayList<MarketOrder>> getUserUnmatchedOrders(String username) {
-        HashMap<String, MarketSimulation> stocks = (manager.getExchange()).getStocks();
+        HashMap<String, MarketSimulation> stocks = (manager.getExchange()).getStocksListed();
 
         HashMap<String, ArrayList<MarketOrder>> unmatchedOrders = new HashMap<>();
         for(String stockId : stocks.keySet()){

@@ -31,7 +31,7 @@ public class Exchange {
 
     }
 
-    public HashMap<String, MarketSimulation> getStocks(){
+    public HashMap<String, MarketSimulation> getStocksListed(){
         return stocks;
     }
 
