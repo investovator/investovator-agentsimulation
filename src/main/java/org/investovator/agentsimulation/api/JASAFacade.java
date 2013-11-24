@@ -91,6 +91,10 @@ public class JASAFacade implements MarketFacade {
         humanPlayers.put(username,  new HumanAgent(username, initFunds));
     }
 
+    public boolean isUserAgentAvailable(String userName){
+        return humanPlayers.containsKey(userName);
+    }
+
     public HashMap<String, ArrayList<Report>> getReports() {
         return manager.getReports();
     }
