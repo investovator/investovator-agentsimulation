@@ -173,7 +173,7 @@ public class JASAFacade implements MarketFacade {
             unmatchedOrders.put(stockId, ordersForId);
         }
 
-        return unmatchedOrders;  //To change body of implemented methods use File | Settings | File Templates.
+        return unmatchedOrders;
     }
 
     private void getUserOrdersFromList(String username, ArrayList<MarketOrder> orders,
