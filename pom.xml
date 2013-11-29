@@ -83,7 +83,6 @@
                 <version>2.16</version>
                 <configuration>
                     <excludes>
-                        <!-- skipping RSSManager,DirectoryDAO tests-->
                         <exclude>**/NPTReplicationTest.java</exclude>
                         <exclude>**/DynamicSurplusReportTest.java</exclude>
                         <exclude>**/DirectRevelationTest.java</exclude>
