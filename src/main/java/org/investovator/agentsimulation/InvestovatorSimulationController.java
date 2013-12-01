@@ -40,7 +40,7 @@ public class InvestovatorSimulationController extends SpringSimulationController
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        if(!isPropSet){
+        //if(!isPropSet){
             Object configurer =  beanFactory.getBean("configurer");
 
             if(configurer != null){
@@ -48,7 +48,7 @@ public class InvestovatorSimulationController extends SpringSimulationController
                 test.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);
                 isPropSet=true;
             }
-        }
+       // }
 
         this.simulation = (Simulation) beanFactory.getBean(simulationBeanName);
         this.simulationScope = SimulationScope.getSingletonInstance();

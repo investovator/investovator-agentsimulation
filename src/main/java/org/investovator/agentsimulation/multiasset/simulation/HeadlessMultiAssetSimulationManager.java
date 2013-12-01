@@ -63,6 +63,10 @@ public class HeadlessMultiAssetSimulationManager extends SimulationManager {
     }
 
     public HeadlessMultiAssetSimulationManager getHeadlessMultiAssetSimulationManager(){
+
+        BeanFactorySingleton.initialiseFactory();
+
+
         return  (HeadlessMultiAssetSimulationManager) BeanFactorySingleton
                 .getBean(SIMULATION_MANAGER_BEAN);
     }
