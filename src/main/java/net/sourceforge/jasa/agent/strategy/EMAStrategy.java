@@ -116,12 +116,12 @@ public class EMAStrategy extends AbstractTradingStrategy {
             double previousMatchedPrice = out[closePrice.length - signalSMABegin.value - 2 ];
             if (lastMatchedPrice < -2 && previousMatchedPrice >= 0 &&
                     getAgent().getAccount().getFunds() > currentPrice){
-                isBuy = true;
+                isBuy = false;
                 return PlaceOrder.SELL;
             } else if (lastMatchedPrice > 2 && previousMatchedPrice <= 0
                     && getAgent().getStock() > 0){
-                isBuy = false;
-                return PlaceOrder.SELL;
+                isBuy = true;
+                return PlaceOrder.BUY;
             } else
                 return PlaceOrder.NOTHING;
         } else
