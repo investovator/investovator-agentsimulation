@@ -27,6 +27,7 @@ import org.investovator.agentsimulation.api.utils.HollowTradingAgent;
 import org.investovator.agentsimulation.api.utils.HumanAgent;
 import org.investovator.agentsimulation.multiasset.simulation.HeadlessMultiAssetSimulationManager;
 import org.investovator.core.commons.simulationengine.MarketOrder;
+import org.investovator.core.commons.utils.ExecutionResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +114,7 @@ public class JASAFacade implements MarketFacade {
      * @return adding order successful
      */
     @Override
-    public boolean putLimitOrder(String username, String stockId, int quantity,
+    public ExecutionResult putLimitOrder(String username, String stockId, int quantity,
                                  double price, boolean isBuy) {
 
         HumanAgent humanAgent = humanPlayers.get(username);
@@ -122,15 +123,23 @@ public class JASAFacade implements MarketFacade {
             humanAgent.addHollowAgentToStock(stockId);
         }
 
-        if(isBuy && buyOrderApproved(humanAgent.getAccount(), quantity, price)){
+        if(isBuy){
             //create the order
-            putOrder(stockId, quantity, price, isBuy, humanAgent);
-            return true;
-        } else if(!isBuy && sellOrderApproved(humanAgent.getHollowTradingAgent(stockId), quantity)){
-            putOrder(stockId, quantity, price, isBuy, humanAgent);
-            return true;
-        } else
-            return false;
+            if(buyOrderApproved(humanAgent.getAccount(), quantity, price)){
+                putOrder(stockId, quantity, price, isBuy, humanAgent);
+                return new ExecutionResult(true,"");
+            }else{
+                return new ExecutionResult(false,"Funds are not sufficient");
+            }
+        }else{
+            if(sellOrderApproved(humanAgent.getHollowTradingAgent(stockId), quantity)){
+                putOrder(stockId, quantity, price, isBuy, humanAgent);
+                return new ExecutionResult(true,"");
+            } else
+                return new ExecutionResult(false,"You don't have sufficient stocks to trade");
+
+        }
+
     }
 
     /**
@@ -141,9 +150,9 @@ public class JASAFacade implements MarketFacade {
      * @return adding order successful
      */
     @Override
-    public boolean putMarketOrder(String username, String stockId, int quantity,
+    public ExecutionResult putMarketOrder(String username, String stockId, int quantity,
                                   boolean isBuy) {
-        return false;  //TODO adding a Market order
+        return new ExecutionResult(false,"Not Implemented");  //TODO adding a Market order
     }
 
     @Override
